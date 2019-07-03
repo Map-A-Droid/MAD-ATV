@@ -1,0 +1,36 @@
+#!/system/bin/sh
+
+if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
+   until ping -c1 8.8.8.8 >/dev/null 2>/dev/null ;do sleep 10 ;done
+   until [ -d /data/data/com.mad.pogodroid ] ;do
+   /system/bin/curl -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
+   /system/bin/chmod 644 /sdcard/pogodroid.apk
+   /system/bin/pm install /sdcard/pogodroid.apk
+   /system/bin/rm /sdcard/pogodroid.apk
+   sleep 1
+   done
+   until [ -d /data/data/com.nianticlabs.pokemongo ] ;do
+   /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
+   /system/bin/chmod 644 /sdcard/pogo.apk
+   /system/bin/pm install /sdcard/pogo.apk
+   /system/bin/rm /sdcard/pogo.apk
+   sleep 1
+   done
+   /system/bin/curl -o /system/priv-app/RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
+   /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
+   /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
+   echo "finished installing" > /sdcard/MAD
+fi
+
+if [ -f /system/smali.zip ]; then
+   /system/bin/setprop persist.sys.app.rotation middle_port
+   /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
+   /system/bin/mv /system/smali.zip /sdcard/smali.zip
+   reboot recovery
+fi
+if [ -f /sbin/magiskhide ]; then
+   /sbin/magiskhide --add com.nianticlabs.pokemongo
+   rm /sdcard/Magisk-v18.1.zip
+fi
+[ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
+exit 0
