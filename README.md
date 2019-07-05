@@ -1,6 +1,6 @@
 This is where we'll be uploading the MAD atv roms
 <br>
-Click releases https://github.com/Map-A-Droid/MAD-ATV/releases to find them.
+Click [releases](https://github.com/Map-A-Droid/MAD-ATV/releases) to find them.
 <br><br>
 -Insert burning instructions here-
 <br>
