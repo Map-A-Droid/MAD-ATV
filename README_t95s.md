@@ -8,7 +8,7 @@
 <br>INSTALLATION:
 <br>
 <br>After you flashed the rom:
-<br> * Put TWRP311.zip on to a usb disk.
+<br> * Put TWRP311.zip which you have from the ROM zip on to a usb disk.
 <br> * Let the system fully boot.
 <br> * Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC.
 <br> * After it finishes this it will boot in to the stock recovery. now you need to put your usb disk in the box and select "apply update from EXT" then select usb and choose TWRP311.zip.
