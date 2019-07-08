@@ -1,4 +1,4 @@
-FOR THE R95S 2gb/16gb (s905x)
+For the R95S 2gb/16gb (s905x)
 <br>(and probably some other s905x boxes)
 <br>
 <br>INSTALLATION:
