@@ -1,4 +1,4 @@
-FOR THE X96 mini 2gb/16gb (s905w) and the a95x f1
+For the X96 mini 2gb/16gb (s905w) and the a95x f1
 <br>(and probably some other s905w boxes)
 <br>
 <br>INSTALLATION:
