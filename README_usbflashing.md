@@ -1,5 +1,5 @@
 How to flash a ROM using a USB-a to USB-a cable.
-<br> Avoid the $1 cables because you need a data cable, not just a charging cable. People often have problems with longer cables. I got a $5 cable from amazon and it has been working perfectly for me.
+<br> Avoid the $1 cables because you need a data cable, not just a charging cable. People often have problems with longer cables. I got a $5 cable from [amazon](https://www.amazon.com/gp/product/B00P0E3954/) and it has been working perfectly for me.
 
 <br> Run USB Burning tool
 <br> click File and then import image.
