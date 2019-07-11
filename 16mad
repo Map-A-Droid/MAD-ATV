@@ -34,3 +34,14 @@ if [ -f /sbin/magiskhide ]; then
 fi
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 exit 0
+
+# UNTESTED, work in progress for rc5
+pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
+[ -d /data/data/com.mad.pogodroid ] && ! [ -f "$pdconf" ]
+usbfile="$(find /mnt/media_rw/ -name com.mad.pogodroid_preferences.xml|head -n1)"
+if [ "$usbfile" ] ;then
+ newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
+ oldserial="$(awk -F'>' '/auth_id/{print $2}'|cut -d'<' -f1 "$usbfile")"
+ sessionid="$(awk -F'>' '/session_id/{print $2}'|cut -d'<' -f1 "$usbfile")" 
+ sed -e "s,$oldserial,$newserial,g" -e "s,$sessionid,,g" "$usbfile" > "$pdconf"
+fi
