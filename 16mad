@@ -42,27 +42,26 @@ exit 0
 ## /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml
 # de.grennith.rgc.remotegpscontroller_preferences.xml - config file from the first working box which you setup by hand. do not edit, get it from:
 ## /data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml
-
 pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
 if [ -d /data/data/com.mad.pogodroid ] && ! [ -f "$pdconf" ] ;then
- usbfile="$(find /mnt/media_rw/ -name com.mad.pogodroid_preferences.xml|head -n1)"
- if [ "$usbfile" ] ;then
-  newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
-  oldserial="$(awk -F'>' '/auth_id/{print $2}'|cut -d'<' -f1 "$usbfile")"
-  injtime="$(awk -F'>' '/last_time_injected/{print $2}'|cut -d'<' -f1 "$usbfile")"
-  sessionid="$(awk -F'>' '/session_id/{print $2}'|cut -d'<' -f1 "$usbfile")"
-  usbofile="$(find /mnt/media_rw/ -name madorigin.txt|head -n1)"
-  [ -f "$usbofile" ] && neworigin=$(sed -n -e 1p -e 's,\n,,' -e 's,\r,,' "$usbofile") || neworigin=""
-  sed -e "s,$oldserial,$newserial,g" -e "s,$sessionid,,g" -e "s,$injtime,,g" -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$pdconf"
- fi
+   usbfile="$(find /mnt/media_rw/ -name com.mad.pogodroid_preferences.xml|head -n1)"
+   if [ "$usbfile" ] ;then
+      newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
+      oldserial="$(awk -F'>' '/auth_id/{print $2}'|cut -d'<' -f1 "$usbfile")"
+      injtime="$(awk -F'>' '/last_time_injected/{print $2}'|cut -d'<' -f1 "$usbfile")"
+      sessionid="$(awk -F'>' '/session_id/{print $2}'|cut -d'<' -f1 "$usbfile")"
+      usbofile="$(find /mnt/media_rw/ -name madorigin.txt|head -n1)"
+      [ -f "$usbofile" ] && neworigin=$(sed -n -e 1p -e 's,\n,,' -e 's,\r,,' "$usbofile") || neworigin=""
+      sed -e "s,$oldserial,$newserial,g" -e "s,$sessionid,,g" -e "s,$injtime,,g" -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$pdconf"
+   fi
 fi
 rgcconf="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml"
 if [ -d /data/data/de.grennith.rgc.remotegpscontroller ] && ! [ -f "$rgcconf" ] ;then
- usbfile="$(find /mnt/media_rw/ -name de.grennith.rgc.remotegpscontroller_preferences.xml|head -n1)"
- if [ "$usbfile" ] ;then
-  oldorigin="$(awk -F'>' '/origin/{print $2}'|cut -d'<' -f1 "$usbfile")"
-  usbofile="$(find /mnt/media_rw/ -name madorigin.txt|head -n1)"
-  [ -f "$usbofile" ] && neworigin=$(sed -n -e 1p -e 's,\n,,' -e 's,\r,,' "$usbofile") || neworigin=""
-  sed -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$rgcconf"
- fi
+   usbfile="$(find /mnt/media_rw/ -name de.grennith.rgc.remotegpscontroller_preferences.xml|head -n1)"
+   if [ "$usbfile" ] ;then
+      oldorigin="$(awk -F'>' '/origin/{print $2}'|cut -d'<' -f1 "$usbfile")"
+      usbofile="$(find /mnt/media_rw/ -name madorigin.txt|head -n1)"
+      [ -f "$usbofile" ] && neworigin=$(sed -n -e 1p -e 's,\n,,' -e 's,\r,,' "$usbofile") || neworigin=""
+      sed -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$rgcconf"
+   fi
 fi
