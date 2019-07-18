@@ -14,5 +14,5 @@
 
 ## Question #4) <br> After flashing rom have the newset version of Pokemon Go that not support yet by MAD.
 * Answer: Download a proper version game and install it via ADB:
-adb uninstall com.nianticlabs.pokemongo
-adb install pathtoapk/game.apk
+<br>adb uninstall com.nianticlabs.pokemongo
+<br>adb install pathtoapk/game.apk
