@@ -8,3 +8,4 @@ How to flash a ROM using a USB-a to USB-a cable.
 <br> Then push in and hold the reset button while plugging the usb cable into your android box.
 <br> It will only work on 1 of your boxes USB ports, so if nothing happens try the other one. If that doesnt help try other ports on your computer, or maybe even another computer, or another cable
 <br> When the box is seen in the burn tool it will start flashing. Connect the power cable.
+<br> After 100% you may click stop. Then close the USB burn tool. Then unplug the box. Congratulations, you have flashed the ROM!
