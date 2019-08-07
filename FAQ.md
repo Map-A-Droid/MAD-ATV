@@ -16,3 +16,7 @@
 * Answer: First of all, this is extremely unlikely. MAD is usually updated within minutes of the apk being available. I'm calling your bluff on this question. It did not happen. Anyways, if you want to control the installed version just download the version you desire and install it via ADB:
 <br> `adb install -r pathtoapk/game.apk` for upgrading
 <br> `adb install -d pathtoapk/game.apk` for downgrading
+
+## Question #5) <br> After successfully flashing the box only goes to the MAD splash screen - I've checked that I have the right ROM.
+* Answer: There's a possibility that it came with the wrong motherboard, so check the markings on-board. There's been multiple instances of this happening since there's no QA on these.
+  * For example, when purchasing a S905X, you might get a S905W, even when the outer casing is what you bought.
