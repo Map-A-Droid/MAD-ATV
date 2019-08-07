@@ -12,7 +12,7 @@
 ## Question #3) <br> Can't login and "account action required" notification on GSuite account.
 * Answer: GSuite does not support device management of Android TV. Turn off Mobile Device Management at GSuite Console or use google account.
 
-## Question #4) <br> After flashing rom I have the newset version of Pokemon Go that is not support yet by MAD.
+## Question #4) <br> After flashing rom I have the newest version of Pokemon Go that is not support yet by MAD.
 * Answer: First of all, this is extremely unlikely. MAD is usually updated within minutes of the apk being available. I'm calling your bluff on this question. It did not happen. Anyways, if you want to control the installed version just download the version you desire and install it via ADB:
 <br> `adb install -r pathtoapk/game.apk` for upgrading
 <br> `adb install -d pathtoapk/game.apk` for downgrading
