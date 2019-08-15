@@ -107,10 +107,10 @@ do
 	esac
 done
 
-if [ $UpdateRGC == "True" ] || [ $UpdatePogoDroid == "True" ] || [ $UpdatePoGo == "True" ]; then stop_mad; fi
-[ $UpdateRGC == "True" ]       && update_rgc
-[ $UpdatePogoDroid == "True" ] && update_pogodroid
-[ $UpdatePoGo == "True" ]      && update_pokemon
-if [ $UpdateRGC == "True" ] || [ $UpdatePogoDroid == "True" ] || [ $UpdatePoGo == "True" ]; then reboot_device; fi
+if (($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo)); then stop_mad; fi
+(($UpdateRGC))       && update_rgc
+(($UpdatePogoDroid)) && update_pogodroid
+(($UpdatePoGo))      && update_pokemon
+if (($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo)); then reboot_device; fi
 
 exit
