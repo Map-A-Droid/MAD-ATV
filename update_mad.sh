@@ -84,21 +84,21 @@ for i in "$@"
 do
 	case  $i  in
 		-r)
-			UpdateRGC=True
+			UpdateRGC=1
 			;;
 		-p)
-			UpdatePoGo=True
+			UpdatePoGo=1
 			;;
 		-d)
-			UpdatePogoDroid=True
+			UpdatePogoDroid=1
 			;;
 		-a)
-			UpdateRGC=True
-			UpdatePoGo=True
-			UpdatePogoDroid=True
+			UpdateRGC=1
+			UpdatePoGo=1
+			UpdatePogoDroid=1
 			;;
 		-c)
-			ClearCache=True
+			ClearCache=1
 			;;
 		*)
 			print_help
@@ -108,9 +108,9 @@ do
 done
 
 if [ $UpdateRGC == "True" ] || [ $UpdatePogoDroid == "True" ] || [ $UpdatePoGo == "True" ]; then stop_mad; fi
-if [ $UpdateRGC == "True" ]; then update_rgc; fi
-if [ $UpdatePogoDroid == "True" ]; then update_pogodroid; fi
-if [ $UpdatePoGo == "True" ]; then update_pokemon; fi
+[ $UpdateRGC == "True" ]       && update_rgc
+[ $UpdatePogoDroid == "True" ] && update_pogodroid
+[ $UpdatePoGo == "True" ]      && update_pokemon
 if [ $UpdateRGC == "True" ] || [ $UpdatePogoDroid == "True" ] || [ $UpdatePoGo == "True" ]; then reboot_device; fi
 
 exit
