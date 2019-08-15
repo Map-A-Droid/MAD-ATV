@@ -23,12 +23,17 @@ cd /sdcard/Download/
 /system/bin/curl -o pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
 /system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
 
+#stop mad
+echo "stopping MAD processes"
+/system/bin/killall com.mad.pogodroid
+/system/bin/am force-stop de.grennith.rgc.remotegpscontroller
+
 #install apk
 echo "Install APK"
 /system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
 /system/bin/pm install -r /sdcard/Download/PogoDroid.apk
 /system/bin/pm install -r /sdcard/Download/pogo.apk
-
+/system/bin/pm clear com.nianticlabs.pokemongo
 
 #reboot device
 echo "Rebooting Device"
