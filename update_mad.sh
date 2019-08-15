@@ -10,6 +10,10 @@
 #
 # just run: /usr/bin/adb -s <DEVICEIP>:5555 shell su -c "update_mad"
 
+# note from krz
+# Before this goes into RC5 I will make every app (and cache clearing) be commandline options, -r (rgc) -p (pokemon) -d (pogodroid) -c (clear cache)
+# Please feel free to add this code before I do, if you like... Otherwise I'll get to it sometime soonish
+
 #delete old apk
 echo "Delete old APK"
 /system/bin/rm -f /sdcard/Download/RemoteGpsController.apk
