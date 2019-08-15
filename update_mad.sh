@@ -75,10 +75,6 @@ function print_help(){
 	echo "          -c   (ClearCache of PokemonGo)"
 }
 
-UpdateRGC=False
-UpdatePoGo=False
-UpdatePogoDroid=False
-ClearCache=False
 
 for i in "$@"
 do
