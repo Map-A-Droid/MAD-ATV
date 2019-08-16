@@ -49,11 +49,7 @@ function update_pokemon(){
 	/system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
 	echo "Install APK PokemonGo"
 	/system/bin/pm install -r /sdcard/Download/pogo.apk
-	if [ $ClearCache == "True" ];
-		then
-			echo "clearing cache of app pokemongo"
-			/system/bin/pm clear com.nianticlabs.pokemongo;
-	fi
+	(($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
 	echo ""
 }
 
