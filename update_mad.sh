@@ -49,7 +49,6 @@ function update_pokemon(){
 	/system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
 	echo "Install APK PokemonGo"
 	/system/bin/pm install -r /sdcard/Download/pogo.apk
-	(($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
 	echo ""
 }
 
@@ -99,10 +98,11 @@ do
 	esac
 done
 
-if (($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo)); then stop_mad; fi
+((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && stop_mad
 (($UpdateRGC))       && update_rgc
 (($UpdatePogoDroid)) && update_pogodroid
 (($UpdatePoGo))      && update_pokemon
-if (($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo)); then reboot_device; fi
+(($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
+((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
 
 exit
