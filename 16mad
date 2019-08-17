@@ -5,7 +5,6 @@ pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 #if ! [[ $(pm list packages de.grennith.rgc.remotegpscontroller) ]]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
-#   until [ -d /data/data/com.mad.pogodroid ]; do
    until [[ $(pm list packages com.mad.pogodroid) ]]; do
     /system/bin/curl -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
     /system/bin/chmod 644 /sdcard/pogodroid.apk
@@ -14,7 +13,6 @@ until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
     sleep 1
    done
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed Pogodroid successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
- #  until [ -d /data/data/com.nianticlabs.pokemongo ]; do
    until [[ $(pm list packages com.nianticlabs.pokemongo) ]]; do
     /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
     /system/bin/chmod 644 /sdcard/pogo.apk
@@ -23,15 +21,11 @@ until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
     sleep 1
    done
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed PokémonGo successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
-   until [[ $(pm list packages de.grennith.rgc.remotegpscontroller) ]]; do
-    /system/bin/curl -o /system/priv-app/RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
-    /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
-    /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
-    echo "finished installing" > /sdcard/MAD
-   done
+   /system/bin/curl -o /system/priv-app/RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
+   /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
+   /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed RGC successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
-
 if [ -f /system/smali.zip ]; then
    /system/bin/setprop persist.sys.app.rotation middle_port
    /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
