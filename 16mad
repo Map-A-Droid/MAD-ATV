@@ -55,7 +55,7 @@ else
  if [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;then
   newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
   ifconfig eth0 down
-  until ifconfig eth0 hw ether "$newmac"; do
+  until ifconfig eth0 hw ether "$newmac" 2>/dev/null; do
    newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
   done
   ifconfig eth0 up
