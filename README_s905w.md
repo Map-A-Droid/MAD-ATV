@@ -6,7 +6,8 @@ For the X96 mini 2gb/16gb (s905w) and the a95x f1
 <br>After you flashed the rom:
 <br>* Let the system fully boot.
 <br>* Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC.
-<br>* After it finishes this it will boot in to TWRP. In TWRP slide to allow system mods, then choose install and select Magisk-v18.1.zip, then add more zips and select smali.zip.
+<br>* After it finishes this it will boot in to TWRP. (WARNING: The TWRP-screen may potentially trigger seizures for people with photosensitive epilepsy.)
+<br>* In TWRP slide to allow system mods, then choose install and select Magisk-v18.1.zip, then add more zips and select smali.zip.
 <br>* Install the zips and then wipe cache/dalvik cache.
 <br>* Reboot the system and let Android load.
 <br>* Go to Android settings, about, scroll down and click build until it says you are a developer. Then go to Android settings - developer settings - turn on "stay awake"
