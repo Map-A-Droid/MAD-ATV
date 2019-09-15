@@ -4,9 +4,9 @@ For those that might suffer with performance issues with their atv devices, for 
 
 Not that the previous statment means that you should go and buy a ton of 1 gb models, because it's not recommended at all, some people just get sent the wrong models or have bad ram and this can help out so as your money was not a complete waste. However the device in question wouldn't even load the game properly before but yielded some results with the module installed.
 
-Another example, a 2gb model would freeze up completely and would require the power cord to be pulled out nearly every 10 minutes, now said device will run for hours before freezing up, if at all.
+Another example, some 2gb models would freeze up completely and would require the power cord to be pulled out nearly every 10 minutes. Now said device might run for hours or even stop freezing up completely.
 
-Below is the link to the xda page to get more information which includes instructions on how to change the modes you can use, between Balanced, Gaming and Ultra.
+Below is the link to the XDA page to get more information which includes instructions on how to change the modes you can use, between Balanced, Gaming and Ultra.
 
 https://forum.xda-developers.com/apps/magisk/module-nfs-injectorv1-t3857231
 
