@@ -1,4 +1,4 @@
-####Magisk module: NFS-Injector
+Magisk module: NFS-Injector
 
 For those that might suffer with performance issues with their atv devices, for example, constant crashing, NFS Injector helps manage your ram and provides an overall better experience with performance. It will probably need more testing, but so far there are reports that even a 1gb model was able to scan for quests. 
 
