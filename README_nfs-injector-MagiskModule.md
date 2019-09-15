@@ -1,4 +1,4 @@
-####Magisk module: NFS-Injector
+Magisk module: NFS-Injector
 
 For those that might suffer with performance issues with their atv devices, for example, constant crashing, NFS Injector helps manage your ram and provides an overall better experience with performance. It will probably need more testing, but so far there are reports that even a 1gb model was able to scan for quests. 
 
@@ -6,14 +6,17 @@ Not that the previous statment means that you should go and buy a ton of 1 gb mo
 
 Another example, some 2gb models would freeze up completely and would require the power cord to be pulled out nearly every 10 minutes. Now said device might run for hours or even stop freezing up completely.
 
-Below is the link to the XDA page to get more information which includes instructions on how to change the modes you can use, between Balanced, Gaming and Ultra.
+Below is the link to the XDA page to get more information which includes instructions on how to change the modes you can use, between Balanced (Default), Gaming and Ultra.
 
 https://forum.xda-developers.com/apps/magisk/module-nfs-injectorv1-t3857231
 
-To install:
-Load up Magisk Manager.
+To install via Magisk Manager:
 Open up the side options in the top left corner of the app and choose Downloads.
 Find the module NFS-Injector and choose install, wait for it to flash and then choose Reboot.
+
+To manually install the module:
+Visit the above XDA thread and download the zip and flash from either recovery or by installing the zip through Magisk Manager.
+
 
 Congratulations on a slightly more reliable device!
 
