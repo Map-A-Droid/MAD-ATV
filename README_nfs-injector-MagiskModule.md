@@ -17,6 +17,7 @@ Find the module NFS-Injector and choose install, wait for it to flash and then c
 To manually install the module:
 Visit the above XDA thread and download the zip and flash from either recovery or by installing the zip through Magisk Manager.
 
+
 Congratulations on a slightly more reliable device!
 
 One thing to note is, if you are using scrcpy to install the module, there's a chance that the scrcpy screen might crash with the error "Could not send video packet/ could not process frame. This is fine and won't mess anything up with installing, it just means you can't see it happening without reloading scrcpy.
