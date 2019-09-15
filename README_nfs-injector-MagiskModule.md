@@ -6,7 +6,7 @@ Not that the previous statment means that you should go and buy a ton of 1 gb mo
 
 Another example, some 2gb models would freeze up completely and would require the power cord to be pulled out nearly every 10 minutes. Now said device might run for hours or even stop freezing up completely.
 
-Below is the link to the XDA page to get more information which includes instructions on how to change the modes you can use, between Balanced, Gaming and Ultra.
+Below is the link to the XDA page to get more information which includes instructions on how to change the modes you can use, between Balanced (Default), Gaming and Ultra.
 
 https://forum.xda-developers.com/apps/magisk/module-nfs-injectorv1-t3857231
 
