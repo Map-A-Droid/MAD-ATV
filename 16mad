@@ -100,6 +100,7 @@ if ! [ -f "$rgcconf" ] || [[ $(awk -F'>' '/websocket_uri/{print $2}' "$rgcconf"|
  puser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
  ! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
  sed -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$rgcconf"
+ chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
  am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Found USB stick with autoconfig files, attempted to autoconfig RGC." -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
 fi
