@@ -30,6 +30,7 @@ if [ -f /system/smali.zip ]; then
    /system/bin/setprop persist.sys.app.rotation middle_port
    /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
    /system/bin/mv /system/smali.zip /sdcard/smali.zip
+   /system/bin/mv /system/NFS-INJECTOR-v7.0.DEATHSTROKE.zip /sdcard/NFS-INJECTOR-v7.0.DEATHSTROKE.zip
    reboot recovery
 fi
 if [ -f /sbin/magiskhide ]; then
