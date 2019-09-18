@@ -1,6 +1,12 @@
 A new feature in RC5 is the ability to autoconfig your RGC and Pogodroid.
 
-In order to use this, you will need to grab your config files from a system which is already running correctly. So you setup your first device by hand, and then run the following commands on that running system:
+In order to use this, you will need to grab your config files from a system which is already running correctly. So you setup your first device by hand. Then you connect to the working box via adb shell:
+```
+adb connect IPADDRESS_OF_DEVICE
+adb shell
+su
+```
+Now you are in a root shell on a running ATV box. Run the following commands:
 ```
 mkdir /sdcard/mad
 cp /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml /sdcard/mad/
