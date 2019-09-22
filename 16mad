@@ -61,9 +61,9 @@ fi
 #In case you want to set mac on wifi interface
 if [[ -e /sdcard/madmac2 ]] ;then
  newmac=$(cat /sdcard/madmac2)
- ifconfig eth0 down
- ifconfig eth0 hw ether "$newmac"
- ifconfig eth0 up
+ ifconfig wlan0 down
+ ifconfig wlan0 hw ether "$newmac"
+ ifconfig wlan0 up
 fi
 # this stuff should check for a USB stick and if there is one it looks for:
 # madorigin.txt - put nothing in this file except the origin to configure for pogo/rgc
