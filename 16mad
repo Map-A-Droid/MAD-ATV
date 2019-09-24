@@ -36,6 +36,8 @@ fi
 if [ -f /sbin/magiskhide ]; then
    /sbin/magiskhide --add com.nianticlabs.pokemongo
    rm /sdcard/Magisk-v18.1.zip
+   chmod +x /system/bin/update_mad.sh
+   chmod +x /system/bin/pingreboot.sh
 fi
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 
