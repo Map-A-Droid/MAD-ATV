@@ -4,7 +4,7 @@
 <hr />
 <strong>Image: </strong><strong>MAD RC7 ROM</strong><br>
 <strong>Attention:
-I don't force you to use this way. It's stable and can be used as daily driver. Read careful</strong></h6><br><br>
+I don't force you to use this way. It's stable and can be used as daily driver. <br><br>- Read careful -</strong></h6><br><br>
 <em>* We (MAD Team) are not responsible for bricked devices, dead SD cards,<br>
  * thermonuclear war, or you getting fired because you work to hard on this project. <br> * Please do some research before flashing<br>
  * Please do some research for resizing and reformating SD cards to FAT<br>
@@ -77,10 +77,11 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
 <ul>
 <li>Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC.</li>
 <li>After it finishes this it will boot in to TWRP. <b>(WARNING: The TWRP-screen may potentially trigger seizures for people with photosensitive epilepsy.)</b></li>
-<ul><li>In TWRP slide to allow system mods, then choose <b>install</b> and select <b>Magisk-v18.1.zip</b>, then <b>add more zips</b> and select <b>smali.zip</b>, then add more zips and select the <b>NFS module zip.</b></li>
+<ul>
+<li>In TWRP slide to allow system mods, then choose <b>install</b> and select <b>Magisk-v18.1.zip</b>, then <b>add more zips</b> and select <b>smali.zip</b>, then add more zips and select the <b>NFS module zip.</b></li>
 <li>Install the zips and then wipe cache/dalvik cache.</li></ul>
 <li>Now is the time to plug in your USB stick if you want to use <a href="https://github.com/Map-A-Droid/MAD-ATV/blob/master/README_autoconfig.md">RGC/pogodroid autoconfig</a> (available since RC5). If you do that when you reboot they should configure themselves from your USB.</li>
-<ul><li>Reboot the system and let Android load. You must not reboot again for at least 5 minutes according to the NFS module docs.</li>
+<li>Reboot the system and let Android load. You must not reboot again for at least 5 minutes according to the NFS module docs.</li>
 <li>Go to Android settings, about, scroll down and click build until it says you are a developer. Then go to Android settings - developer settings - turn on "stay awake"</li>
 <li>Now go to magisk and double check that you pass safetynet.</li>
 <li>In magisk settings repackage magisk.</li>
