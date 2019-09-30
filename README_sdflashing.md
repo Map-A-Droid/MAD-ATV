@@ -39,7 +39,7 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
  	<li>Navigate -&gt; Disk Management (Datenträgerverwaltung)</li>
  	<li>Look for SD Card</li>
  	<li>Delete the whole (f.e. 8GB) partition</li>
- 	<li>Create a new one with >=4000MB</li>
+ 	<li>Create a new one with <=4000MB (FAT is able to address up to 4096MB)</li>
  	<li>format with FAT16</li>
 <a href="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/fat16.png"><img class="wp-image-229 size-full" src="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/fat16.png" alt="" width="490" height="383" /></a>
 </ul>
