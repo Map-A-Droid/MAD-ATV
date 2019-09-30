@@ -1,7 +1,8 @@
 <p>
 <ul>
-<p style="text-align: ;"><strong>Flashing X96 Mini</strong> (<strong>S905W 2GB/16GB) via SD Card</strong>
-<strong>Image: </strong><strong>MAD RC7 ROM</strong>
+<p style="text-align: ;"><strong>Flashing X96 Mini</strong> (<strong>S905W 2GB/16GB) via SD Card</strong><br>
+<hr />
+<strong>Image: </strong><strong>MAD RC7 ROM</strong><br>
 <strong>Attention:
 I don't force you to use this way. It's stable and can be used as daily driver. Read careful</strong></h6><br><br>
 <em>* We (MAD Team) are not responsible for bricked devices, dead SD cards,<br>
