@@ -14,7 +14,7 @@ until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
    done
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed Pogodroid successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
    until [[ $(pm list packages com.nianticlabs.pokemongo) ]]; do
-    /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
+    /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"
     /system/bin/chmod 644 /sdcard/pogo.apk
     /system/bin/pm install /sdcard/pogo.apk
     /system/bin/rm /sdcard/pogo.apk
