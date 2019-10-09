@@ -31,7 +31,7 @@ if [ -f /system/smali.zip ]; then
    echo "rc8" > /sdcard/madversion
    /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
    /system/bin/mv /system/smali.zip /sdcard/smali.zip
-   /system/bin/mv /system/NFS-INJECTOR-v7.0.DEATHSTROKE.zip /sdcard/NFS-INJECTOR-v7.0.DEATHSTROKE.zip
+   /system/bin/mv /system/NFS-INJECTOR-v7.8.FLASHPOINT.zip /sdcard/NFS-INJECTOR.zip
    reboot recovery
 fi
 if [ -f /sbin/magiskhide ]; then
