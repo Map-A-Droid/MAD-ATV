@@ -28,7 +28,6 @@ until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
 fi
 if [ -f /system/smali.zip ]; then
    /system/bin/setprop persist.sys.app.rotation middle_port
-   echo "rc8" > /sdcard/madversion
    /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
    /system/bin/mv /system/smali.zip /sdcard/smali.zip
    /system/bin/mv /system/NFS-INJECTOR-v7.8.FLASHPOINT.zip /sdcard/NFS-INJECTOR.zip
@@ -41,6 +40,10 @@ if [ -f /sbin/magiskhide ]; then
    chmod +x /system/bin/pingreboot.sh
 fi
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
+if ! [[ -f /sdcard/madversion ]] ;then
+   echo "rc8" > /sdcard/madversion
+   echo 1 > /data/NFS/mode.txt && chmod 666 /data/NFS/mode.txt && chown shell:shell /data/NFS/mode.txt
+fi
 
 # Fix for a95xf1 eth0 mac address issue. Also a tool for people who wish to control their MAC
 # To fix a95xf1 we will save our random mac in /sdcard/madmac and if the user wants to change it they may
