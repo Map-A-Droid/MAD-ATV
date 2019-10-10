@@ -83,7 +83,7 @@ if [[ "$usbfile" != "" ]] && [ -d /data/data/com.mad.pogodroid ] ;then
 if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdconf"|cut -d'<' -f1) == "" ]] ;then    
  newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
  [[ "$newserial" == "" ]] && newserial="$(ifconfig wlan0|grep -q inet && ifconfig wlan0|awk '/HWaddr/{print $5}')"
- [[ "$newserial" == "" ]] && newserial="$(ifconfig eth0|grep -q inet && ifconfig wlan0|awk '/HWaddr/{print $5}')"
+ [[ "$newserial" == "" ]] && newserial="$(ifconfig eth0|grep -q inet && ifconfig eth0|awk '/HWaddr/{print $5}')"
  oldserial="$(awk -F'>' '/auth_id/{print $2}' "$usbfile"|cut -d'<' -f1)"
  oldorigin="$(awk -F'>' '/post_origin/{print $2}' "$usbfile"|cut -d'<' -f1)"
  injtime="$(awk -F'>' '/last_time_injected/{print $2}' "$usbfile"|cut -d'<' -f1)"
