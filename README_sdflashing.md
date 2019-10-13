@@ -6,7 +6,7 @@
 <strong>Attention:
 I don't force you to use this way. It's stable and can be used as daily driver. <br><br>- Read careful -</strong></h6><br><br>
 <em>* We (MAD Team) are not responsible for bricked devices, dead SD cards,<br>
- * thermonuclear war, or you getting fired because you work to hard on this project. <br> * Please do some research before flashing<br>
+ * thermonuclear war, or you getting fired because you work too hard on this project. <br> * Please do some research before flashing<br>
  * Please do some research for resizing and reformating SD cards to FAT<br>
  * YOU are choosing to make these modifications, and if you point the finger at us for messing up your device, We will laugh at you.<br>
  </em>
