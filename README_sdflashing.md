@@ -2,7 +2,7 @@
 <ul>
 <p style="text-align: ;"><strong>Flashing X96 Mini</strong> (<strong>S905W 2GB/16GB) via SD Card</strong><br>
 <hr />
-<strong>Image: </strong><strong>MAD RC7 ROM</strong><br>
+<strong>Image: </strong><strong>MAD ROM</strong><br>
 <strong>Attention:
 I don't force you to use this way. It's stable and can be used as daily driver. <br><br>- Read careful -</strong></h6><br><br>
 <em>* We (MAD Team) are not responsible for bricked devices, dead SD cards,<br>
@@ -24,7 +24,7 @@ I don't force you to use this way. It's stable and can be used as daily driver. 
  	<li>USB Keyboard + Mouse</li>
  	<li><b>Needed downloads:</b></li>
 	<ul>
- 	<li>MAD ROM< [ <a href="https://github.com/Map-A-Droid/MAD-ATV/releases/download/">direct link</a> ] /li>
+ 	<li>MAD ROM< [ <a href="https://github.com/Map-A-Droid/MAD-ATV/releases/download/"direct link</a> ] </li>
  	<li>Burn_Card_Maker.exe [ <a href="https://share108.com/06r0pntu2p6h/Burn_Card_Maker%E5%B7%A5%E5%85%B7.rar">direct link</a> ], [ <a href="https://www.mediafire.com/?v28g81wjx25dyk3">direct link</a> ] or [ <a href="http://www.filefactory.com/file/7d4u08th9qpn/Burn_Card_Maker%E5%B7%A5%E5%85%B7.rar">direct link</a> ]</li>
  	</ul></ul><p>
  
