@@ -3,11 +3,11 @@
 <p style="text-align: ;"><strong>Flashing X96 Mini</strong> (<strong>S905W 2GB/16GB) via SD Card</strong><br>
 <hr />
 <strong>Image: </strong><strong>MAD ROM</strong><br>
-<strong>Attention:
-I don't force you to use this way. It's stable and can be used as daily driver. <br><br>- Read careful -</strong></h6><br><br>
+<strong>Attention:<br>
+We don't force you to use this way. It's stable and can be used as daily driver. Make sure youre read this how to carefully, if you miss a step it could cause to a bricked ATV. <br><br>- Read careful -</strong></h6><br><br>
 <em>* We (MAD Team) are not responsible for bricked devices, dead SD cards,<br>
  * thermonuclear war, or you getting fired because you work too hard on this project. <br> * Please do some research before flashing<br>
- * Please do some research for resizing and reformating SD cards to FAT<br>
+ * Please do some research for resizing and reformating SD cards to FAT <a href="https://www.instructables.com/id/Format-USB-Flash-Drive-to-FATFAT16-not-FAT32/"> -> [ read this ]</a> <br>
  * YOU are choosing to make these modifications, and if you point the finger at us for messing up your device, We will laugh at you.<br>
  </em>
 <hr />
@@ -55,7 +55,7 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
 &nbsp;
 <ul>
 <li>Make sure, you are selecting the right volume letter of your SD card!</li>
- 	<li>Flash the MAD RC7 ROM Imagefile with Burn_Card_Maker with '<em>make</em>'</li>
+ 	<li>Flash the MAD RC ROM Imagefile with Burn_Card_Maker with '<em>make</em>'</li>
 <a href="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/burncardmaker2.png"><img class="wp-image-181 aligncenter" src="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/burncardmaker2.png" alt="" width="405" height="291" /></a>
 </ul>
 <hr />
@@ -93,9 +93,8 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
 <h3>Hint:</h3>
 <ul>
  	<li>RJ45 connection is recommend</li>
- 	<li><strong>If you want to scan quests</strong> - Use Portaitmode
- 	<li>Switch to 480p res if you're ready to go (Settings/Display/Screen Resolution/Display Mode)</li>
- 	<li>Use Teamviewer.apk to remote control your games (Some games don't reacting on keyboards) or use <strong>scrcpy</strong>!</li>
+ 	<li>You can switch to 480p res if you're ready to go (Settings/Display/Screen Resolution/Display Mode)</li>
+ 	<li>You can use Teamviewer.apk to remote control your games (Some games don't reacting on keyboards) or use <strong>scrcpy</strong>!</li>
 </ul>
 
 <hr />
