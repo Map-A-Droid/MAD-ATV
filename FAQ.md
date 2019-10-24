@@ -23,3 +23,6 @@
 
 ## Question #6) Not Flashable X96 Mini Version
 * There is one new Versoin of X96 mini that you can not flash. Please don't try to flash over USB, you will brick your device. To identify the wrong version, you will have a look into it. THe Board Version is Q9M V1.8 2D    18 11 21, with the Flash Chip: PFF62 - IOAL 1840.
+
+## Question #7) `adb shell` gives `Access Denied`
+*If you get `Access Denied` from the `su` command, you have to go into Magisk (in the UI) and allow root for `Shell`, then you should be able to `su` and succeed.
