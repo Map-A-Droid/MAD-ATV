@@ -1,8 +1,14 @@
 #!/system/bin/sh
 # update mad
-# version 2.0.1
+# version 2.0.2
 # created by GhostTalker
 #
+# adb connect %1:5555
+# adb -s %1:5555 push update_mad.sh sdcard
+# adb -s %1:5555 shell su -c "mount -o rw,remount /system"
+# adb -s %1:5555 shell su -c "cp /sdcard/update_mad.sh /system/bin/update_mad"
+# adb -s %1:5555 shell su -c "chmod 555 /system/bin/update_mad"
+# adb -s %1:5555 shell su -c "mount -o ro,remount /system"
 
 function stop_mad(){
 	echo "stopping MAD processes"
@@ -46,14 +52,9 @@ function update_pokemon(){
 	/system/bin/rm -f /sdcard/Download/pogo.apk
 	echo "Download APK PokemonGo"
 	cd /sdcard/Download/
-	/system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
+	/system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"
 	echo "Install APK PokemonGo"
 	/system/bin/pm install -r /sdcard/Download/pogo.apk
-	if [ $ClearCache == "True" ];
-		then
-			echo "clearing cache of app pokemongo"
-			/system/bin/pm clear com.nianticlabs.pokemongo;
-	fi
 	echo ""
 }
 
@@ -75,30 +76,26 @@ function print_help(){
 	echo "          -c   (ClearCache of PokemonGo)"
 }
 
-UpdateRGC=False
-UpdatePoGo=False
-UpdatePogoDroid=False
-ClearCache=False
 
 for i in "$@"
 do
 	case  $i  in
 		-r)
-			UpdateRGC=True
+			UpdateRGC=1
 			;;
 		-p)
-			UpdatePoGo=True
+			UpdatePoGo=1
 			;;
 		-d)
-			UpdatePogoDroid=True
+			UpdatePogoDroid=1
 			;;
 		-a)
-			UpdateRGC=True
-			UpdatePoGo=True
-			UpdatePogoDroid=True
+			UpdateRGC=1
+			UpdatePoGo=1
+			UpdatePogoDroid=1
 			;;
 		-c)
-			ClearCache=True
+			ClearCache=1
 			;;
 		*)
 			print_help
@@ -107,10 +104,11 @@ do
 	esac
 done
 
-if [ $UpdateRGC == "True" ] || [ $UpdatePogoDroid == "True" ] || [ $UpdatePoGo == "True" ]; then stop_mad; fi
-if [ $UpdateRGC == "True" ]; then update_rgc; fi
-if [ $UpdatePogoDroid == "True" ]; then update_pogodroid; fi
-if [ $UpdatePoGo == "True" ]; then update_pokemon; fi
-if [ $UpdateRGC == "True" ] || [ $UpdatePogoDroid == "True" ] || [ $UpdatePoGo == "True" ]; then reboot_device; fi
+((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && stop_mad
+(($UpdateRGC))       && update_rgc
+(($UpdatePogoDroid)) && update_pogodroid
+(($UpdatePoGo))      && update_pokemon
+(($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
+((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
 
 exit
