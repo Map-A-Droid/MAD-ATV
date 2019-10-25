@@ -1,38 +1,49 @@
 #!/system/bin/sh
 
+pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
+
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
-   until ping -c1 8.8.8.8 >/dev/null 2>/dev/null ;do sleep 10 ;done
-   until [ -d /data/data/com.mad.pogodroid ] ;do
-   /system/bin/curl -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
-   /system/bin/chmod 644 /sdcard/pogodroid.apk
-   /system/bin/pm install /sdcard/pogodroid.apk
-   /system/bin/rm /sdcard/pogodroid.apk
-   sleep 1
+#if ! [[ $(pm list packages de.grennith.rgc.remotegpscontroller) ]]; then
+until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
+   until [[ $(pm list packages com.mad.pogodroid) ]]; do
+    /system/bin/curl -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
+    /system/bin/chmod 644 /sdcard/pogodroid.apk
+    /system/bin/pm install /sdcard/pogodroid.apk
+    /system/bin/rm /sdcard/pogodroid.apk
+    sleep 1
    done
-   until [ -d /data/data/com.nianticlabs.pokemongo ] ;do
-   /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/download' | grep 'click here'|awk -F'"' '{print $12}')"
-   /system/bin/chmod 644 /sdcard/pogo.apk
-   /system/bin/pm install /sdcard/pogo.apk
-   /system/bin/rm /sdcard/pogo.apk
-   sleep 1
+   am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed Pogodroid successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
+   until [[ $(pm list packages com.nianticlabs.pokemongo) ]]; do
+    /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"
+    /system/bin/chmod 644 /sdcard/pogo.apk
+    /system/bin/pm install /sdcard/pogo.apk
+    /system/bin/rm /sdcard/pogo.apk
+    sleep 1
    done
+   am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed PokémonGo successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
    /system/bin/curl -o /system/priv-app/RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
    /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
    /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
-   echo "finished installing" > /sdcard/MAD
+   am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed RGC successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
-
 if [ -f /system/smali.zip ]; then
    /system/bin/setprop persist.sys.app.rotation middle_port
    /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
    /system/bin/mv /system/smali.zip /sdcard/smali.zip
+   /system/bin/mv /system/NFS-INJECTOR-v7.8.FLASHPOINT.zip /sdcard/NFS-INJECTOR.zip
    reboot recovery
 fi
 if [ -f /sbin/magiskhide ]; then
    /sbin/magiskhide --add com.nianticlabs.pokemongo
    rm /sdcard/Magisk-v18.1.zip
+   chmod +x /system/bin/update_mad.sh
+   chmod +x /system/bin/pingreboot.sh
 fi
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
+if ! [[ -f /sdcard/madversion ]] ;then
+   echo "rc8" > /sdcard/madversion
+   echo 1 > /data/NFS/mode.txt && chmod 666 /data/NFS/mode.txt && chown shell:shell /data/NFS/mode.txt
+fi
 
 # Fix for a95xf1 eth0 mac address issue. Also a tool for people who wish to control their MAC
 # To fix a95xf1 we will save our random mac in /sdcard/madmac and if the user wants to change it they may
@@ -45,17 +56,20 @@ else
  if [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;then
   newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
   ifconfig eth0 down
-  ifconfig eth0 hw ether "$newmac"
+  until ifconfig eth0 hw ether "$newmac" 2>/dev/null; do
+   newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+  done
   ifconfig eth0 up
   echo "$newmac" > /sdcard/madmac
+  am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "a95xf1 eth0 mac bug detected and fixed. eth0 MAC updated." -n com.hal9k.notify4scripts/.NotifyServiceCV
  fi
 fi
 #In case you want to set mac on wifi interface
 if [[ -e /sdcard/madmac2 ]] ;then
  newmac=$(cat /sdcard/madmac2)
- ifconfig eth0 down
- ifconfig eth0 hw ether "$newmac"
- ifconfig eth0 up
+ ifconfig wlan0 down
+ ifconfig wlan0 hw ether "$newmac"
+ ifconfig wlan0 up
 fi
 # this stuff should check for a USB stick and if there is one it looks for:
 # madorigin.txt - put nothing in this file except the origin to configure for pogo/rgc
@@ -68,6 +82,8 @@ usbfile="$(find /mnt/media_rw/ -name com.mad.pogodroid_preferences.xml|head -n1)
 if [[ "$usbfile" != "" ]] && [ -d /data/data/com.mad.pogodroid ] ;then
 if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdconf"|cut -d'<' -f1) == "" ]] ;then    
  newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
+ [[ "$newserial" == "" ]] && newserial="$(ifconfig wlan0|grep -q inet && ifconfig wlan0|awk '/HWaddr/{print $5}')"
+ [[ "$newserial" == "" ]] && newserial="$(ifconfig eth0|grep -q inet && ifconfig eth0|awk '/HWaddr/{print $5}')"
  oldserial="$(awk -F'>' '/auth_id/{print $2}' "$usbfile"|cut -d'<' -f1)"
  oldorigin="$(awk -F'>' '/post_origin/{print $2}' "$usbfile"|cut -d'<' -f1)"
  injtime="$(awk -F'>' '/last_time_injected/{print $2}' "$usbfile"|cut -d'<' -f1)"
@@ -79,6 +95,7 @@ if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdcon
  ! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
  sed -e "s,$oldserial,$newserial,g" -e "s,$sessionid,,g" -e "s,$injtime,,g" -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$pdconf"
  chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
+ am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Found USB stick with autoconfig files, attempted to autoconfig pogodroid." -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
 fi
 rgcconf="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml"
@@ -92,6 +109,8 @@ if ! [ -f "$rgcconf" ] || [[ $(awk -F'>' '/websocket_uri/{print $2}' "$rgcconf"|
  puser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
  ! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
  sed -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$rgcconf"
+ chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
+ am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Found USB stick with autoconfig files, attempted to autoconfig RGC." -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
 fi
 exit 0
