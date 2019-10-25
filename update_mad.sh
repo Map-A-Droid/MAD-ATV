@@ -1,8 +1,14 @@
 #!/system/bin/sh
 # update mad
-# version 2.0.1
+# version 2.0.2
 # created by GhostTalker
 #
+# adb connect %1:5555
+# adb -s %1:5555 push update_mad.sh sdcard
+# adb -s %1:5555 shell su -c "mount -o rw,remount /system"
+# adb -s %1:5555 shell su -c "cp /sdcard/update_mad.sh /system/bin/update_mad"
+# adb -s %1:5555 shell su -c "chmod 555 /system/bin/update_mad"
+# adb -s %1:5555 shell su -c "mount -o ro,remount /system"
 
 function stop_mad(){
 	echo "stopping MAD processes"
@@ -22,7 +28,7 @@ function update_pogodroid(){
 	/system/bin/rm -f /sdcard/Download/PogoDroid.apk
 	echo "Download APK PogoDroid"
 	cd /sdcard/Download/
-	/system/bin/curl -o PogoDroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
+	/system/bin/curl -o pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
 	echo "Install APK PogoDroid"
 	/system/bin/pm install -r /sdcard/Download/PogoDroid.apk
 	echo ""
@@ -46,9 +52,10 @@ function update_pokemon(){
 	/system/bin/rm -f /sdcard/Download/pogo.apk
 	echo "Download APK PokemonGo"
 	cd /sdcard/Download/
-        /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"	echo "Install APK PokemonGo"
-        echo "Install APK PokemonGo"
-        /system/bin/pm install -r /sdcard/Download/pogo.apk
+
+	/system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"
+	echo "Install APK PokemonGo"
+	/system/bin/pm install -r /sdcard/Download/pogo.apk
 	echo ""
 }
 
