@@ -26,3 +26,6 @@
 
 ## Question #7) `adb shell` gives `Access Denied`
 *If you get `Access Denied` from the `su` command, you have to go into Magisk (in the UI) and allow root for `Shell`, then you should be able to `su` and succeed.
+
+## Question #8) How do I maintain my ATV / What are my powering options?
+See [madBeavis/PimpMyAtv](https://github.com/madBeavis/PimpMyAtv/) for helpful tips and more information.
