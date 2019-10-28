@@ -28,7 +28,7 @@ function update_pogodroid(){
 	/system/bin/rm -f /sdcard/Download/PogoDroid.apk
 	echo "Download APK PogoDroid"
 	cd /sdcard/Download/
-	/system/bin/curl -o pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
+	/system/bin/curl -o PogoDroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
 	echo "Install APK PogoDroid"
 	/system/bin/pm install -r /sdcard/Download/PogoDroid.apk
 	echo ""
