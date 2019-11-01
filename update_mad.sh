@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.0.1
+# version 2.0.2
 # created by GhostTalker
 #
 
@@ -52,6 +52,13 @@ function update_pokemon(){
 	echo ""
 }
 
+function update_scripts(){
+	echo "updating myself..."
+	/system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh
+	chmod +x /system/bin/update_mad.sh
+	echo ""
+}
+
 function print_help(){
 	echo "install:"
 	echo "su"
@@ -91,6 +98,9 @@ do
 		-c)
 			ClearCache=1
 			;;
+		-s)
+			UpdateScripts=1
+			;;			
 		*)
 			print_help
 			exit
@@ -104,5 +114,6 @@ done
 (($UpdatePoGo))      && update_pokemon
 (($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
 ((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
+(($UpdateScripts))      && update_scripts
 
 exit
