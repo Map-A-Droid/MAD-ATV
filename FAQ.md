@@ -29,3 +29,6 @@
 
 ## Question #8) How do I maintain my ATV / What are my powering options?
 See [madBeavis/PimpMyAtv](https://github.com/madBeavis/PimpMyAtv/) for helpful tips and more information.
+
+## Question #9) GPS signal not found
+If you got `GPS signal not found` and this is brand new install there is a chance that you *disabled* Location while connecting your Google Account. First make sure that RGC is set as MGo to Android Settings and enable Location.
