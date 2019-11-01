@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.0.2
+# version 2.1
 # created by GhostTalker
 #
 # adb connect %1:5555
@@ -14,7 +14,7 @@ function stop_mad(){
 	echo "stopping MAD processes"
 	/system/bin/killall com.mad.pogodroid
 	/system/bin/am force-stop de.grennith.rgc.remotegpscontroller
-	echo ""
+	echo
 }
 
 function reboot_device(){
@@ -31,7 +31,7 @@ function update_pogodroid(){
 	/system/bin/curl -o PogoDroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
 	echo "Install APK PogoDroid"
 	/system/bin/pm install -r /sdcard/Download/PogoDroid.apk
-	echo ""
+	echo
 }
 
 function update_rgc(){
@@ -43,7 +43,7 @@ function update_rgc(){
 	/system/bin/curl -o RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
 	echo "Install APK RGC"
 	/system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
-	echo ""
+	echo
 }
 
 function update_pokemon(){
@@ -56,7 +56,13 @@ function update_pokemon(){
 	/system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"
 	echo "Install APK PokemonGo"
 	/system/bin/pm install -r /sdcard/Download/pogo.apk
-	echo ""
+	echo
+}
+
+function update_init(){
+	echo "updating init scripts..."
+	/system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
+	echo
 }
 
 function print_help(){
@@ -73,6 +79,7 @@ function print_help(){
 	echo "          -r   (Update RemoteGPSController)"
 	echo "          -p   (Update PokemonGO)"
 	echo "          -d   (Update PogoDroid)"
+        echo "          -i   (Update MAD ROM init script)"
 	echo "          -a   (Update all)"
 	echo "          -c   (ClearCache of PokemonGo)"
 }
@@ -94,13 +101,17 @@ do
 			UpdateRGC=1
 			UpdatePoGo=1
 			UpdatePogoDroid=1
+			UpdateInit=1
 			;;
 		-c)
 			ClearCache=1
 			;;
+		-i)
+			UpdateInit=1
+			;;
 		*)
 			print_help
-			exit
+			exit 1
 			;;
 	esac
 done
@@ -110,6 +121,7 @@ done
 (($UpdatePogoDroid)) && update_pogodroid
 (($UpdatePoGo))      && update_pokemon
 (($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
-((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
+(($UpdateInit))      && update_init
+((($UpdateRGC)) || (($UpdateInit)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
 
 exit
