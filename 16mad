@@ -2,6 +2,9 @@
 
 pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
 
+# This is for update mad version
+uver="2.1"
+
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 #if ! [[ $(pm list packages de.grennith.rgc.remotegpscontroller) ]]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
@@ -44,6 +47,8 @@ if ! [[ -f /sdcard/madversion ]] ;then
    echo "rc8" > /sdcard/madversion
    echo 1 > /data/NFS/mode.txt && chmod 666 /data/NFS/mode.txt && chown shell:shell /data/NFS/mode.txt
 fi
+
+! grep -q "version $uver" /system/bin/update_mad.sh && /system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh && chmod +x /system/bin/update_mad.sh
 
 # Fix for a95xf1 eth0 mac address issue. Also a tool for people who wish to control their MAC
 # To fix a95xf1 we will save our random mac in /sdcard/madmac and if the user wants to change it they may
