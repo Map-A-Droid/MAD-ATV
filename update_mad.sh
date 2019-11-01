@@ -59,6 +59,12 @@ function update_scripts(){
 	echo ""
 }
 
+function update_init(){
+	echo "updating init scripts..."
+	/etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
+	echo ""
+}
+
 function print_help(){
 	echo "install:"
 	echo "su"
@@ -100,6 +106,9 @@ do
 			;;
 		-s)
 			UpdateScripts=1
+			;;
+		-i)
+			UpdateInit=1
 			;;			
 		*)
 			print_help
@@ -115,5 +124,6 @@ done
 (($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
 ((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
 (($UpdateScripts))      && update_scripts
+(($UpdateInit))      && update_init
 
 exit
