@@ -31,4 +31,5 @@
 See [madBeavis/PimpMyAtv](https://github.com/madBeavis/PimpMyAtv/) for helpful tips and more information.
 
 ## Question #9) GPS signal not found
-If you got `GPS signal not found` and this is brand new install there is a chance that you *disabled* Location while connecting your Google Account. First make sure that RGC is set as MGo to Android Settings and enable Location.
+If you got `GPS signal not found` on a brand new MAD-ROM install (and RGC is running) there is a chance that you *disabled* Location while connecting your Google Account. Go to Android Settings and make sure that ***Location*** is *ON* and set to *Device Only*. ![Location](https://i.imgur.com/RxEbdRQ.png). 
+If this is still not working then make sure that you have ***RemoteGpsController*** set in Android Developer options in *Select mock location app* and you installed *Smali Patcher* - it should show up in *Magisk Manager* -> *Modules* - if not go back to *TWRP* and install *smali.zip*
