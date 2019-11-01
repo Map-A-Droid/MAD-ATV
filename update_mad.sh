@@ -61,7 +61,7 @@ function update_scripts(){
 
 function update_init(){
 	echo "updating init scripts..."
-	/etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
+	/system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
 	echo ""
 }
 
