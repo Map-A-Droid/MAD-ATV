@@ -52,7 +52,6 @@ function update_pokemon(){
 	/system/bin/rm -f /sdcard/Download/pogo.apk
 	echo "Download APK PokemonGo"
 	cd /sdcard/Download/
-
 	/system/bin/curl -L -o pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"
 	echo "Install APK PokemonGo"
 	/system/bin/pm install -r /sdcard/Download/pogo.apk
