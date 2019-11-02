@@ -1,4 +1,5 @@
 #!/system/bin/sh
+#version 1.0
 
 [[ -f /sdcard/pingreboot ]] || exit
 c=0
