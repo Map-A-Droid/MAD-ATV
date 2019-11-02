@@ -79,6 +79,8 @@ if [[ -e /sdcard/madmac2 ]] ;then
  ifconfig wlan0 up
 fi
 
+! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
+
 update_pogo(){
 [[ -f /sdcard/disableautopogoupdate ]] && return 0
 newver="$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download/'|grep 'mon GO v'|awk -F'"' '{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk '/Download Pok/{print $5}'|head -n1|sed 's,v,,')"
