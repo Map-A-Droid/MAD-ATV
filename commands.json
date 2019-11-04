@@ -42,5 +42,19 @@
                         "TYPE": "jobType.PASSTHROUGH",
                         "SYNTAX": "su -c 'touch /sdcard/pingreboot'"
                 }
-        ]
+        ],
+            "CUSTOM - Readout IP Adress of device":
+        [
+                {
+                        "TYPE": "jobType.PASSTHROUGH",
+                        "SYNTAX": "ifconfig wlan0 |grep 'inet addr' |cut -d ':' -f2 |cut -d ' ' -f1 && ifconfig eth0 |grep 'inet addr' |cut -d ':' -f2 |cut -d ' ' -f1"
+                }
+        ],
+	"CUSTOM - REBOOT by Mad Jobs": 
+        [
+                {
+                        "TYPE": "jobType.REBOOT",
+                        "SYNTAX": "su -c reboot"
+                }
+        ]        
 }
