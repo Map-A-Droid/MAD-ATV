@@ -1,0 +1,10 @@
+{
+        "CUSTOM - show MAD-ATV rom version":
+        [
+                {
+                        "TYPE": "jobType.PASSTHROUGH",
+                        "SYNTAX": "cat /sdcard/madversion",
+                        "FIELDNAME": "MADROM_Version"
+               }
+        ]
+}
