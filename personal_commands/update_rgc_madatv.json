@@ -1,0 +1,9 @@
+{
+        "CUSTOM - MAD-ATV update RGC":
+        [
+                {
+                        "TYPE": "jobType.PASSTHROUGH",
+                        "SYNTAX": "su -c '/system/bin/update_mad.sh -r'"
+                }
+        ]
+}
