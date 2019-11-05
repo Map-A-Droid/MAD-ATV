@@ -21,16 +21,16 @@
 * Answer: There's a possibility that it came with the wrong motherboard, so check the markings on-board. There's been multiple instances of this happening since there's no QA on these.
   * For example, when purchasing a S905X, you might get a S905W, even when the outer casing is what you bought.
 
-## Question #6) Not Flashable X96 Mini Version
+## Question #6) <br> Not Flashable X96 Mini Version
 * There is one new Versoin of X96 mini that you can not flash. Please don't try to flash over USB, you will brick your device. To identify the wrong version, you will have a look into it. THe Board Version is Q9M V1.8 2D    18 11 21, with the Flash Chip: PFF62 - IOAL 1840.
 
-## Question #7) `adb shell` gives `Access Denied`
+## Question #7) <br> `adb shell` gives `Access Denied`
 *If you get `Access Denied` from the `su` command, you have to go into Magisk (in the UI) and allow root for `Shell`, then you should be able to `su` and succeed.
 
-## Question #8) How do I maintain my ATV / What are my powering options?
+## Question #8) <br> How do I maintain my ATV / What are my powering options?
 See [madBeavis/PimpMyAtv](https://github.com/madBeavis/PimpMyAtv/) for helpful tips and more information.
 
-## Question #9) GPS signal not found
+## Question #9) <br> GPS signal not found
 If you got `GPS signal not found` on a brand new MAD-ROM install (and RGC is running) there is a chance that you *disabled* Location while connecting your Google Account. Go to Android Settings and make sure that [***Location*** is *ON* and set to *Device Only*](https://i.imgur.com/RxEbdRQ.png).
 If this is still not working then make sure that you have ***RemoteGpsController*** set in Android Developer options in *Select mock location app* and you installed *Smali Patcher* - it should show up in *Magisk Manager* -> *Modules* - if not go back to *TWRP* and install *smali.zip*
 
