@@ -1,0 +1,9 @@
+    {
+            "CUSTOM - Rehide Magisk":
+        [
+                {
+                        "TYPE": "jobType.PASSTHROUGH",
+                        "SYNTAX": "su -c 'magiskhide --rm com.nianticlabs.pokemongo'; su -c 'magiskhide --add com.nianticlabs.pokemongo"
+                }
+        ]
+}
