@@ -76,7 +76,7 @@ if [[ -e /sdcard/madmac2 ]] ;then
  ifconfig wlan0 up
 fi
 
-! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
+# ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
 
 update_pogo(){
 [[ -f /sdcard/disableautopogoupdate ]] && return 0
