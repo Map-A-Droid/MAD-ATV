@@ -1,9 +1,7 @@
 #!/system/bin/sh
 #version 2.0
 
-CONF_FILE=/sdcard/pingreboot
-
-[ -f $CONF_FILE ] || exit
+[ -f /sdcard/pingreboot ] || exit
 
 log -t ProtoWifi "pingreboot: started"
 
@@ -16,11 +14,11 @@ RUN_EVERY=30
 REENABLE_EVERY=1
 REBOOT_AFTER=10
 
-[ -z $CONF_FILE ] || source $CONF_FILE
+source /sdcard/pingreboot
 
 c=0
 while true; do
-  if ping -c 1 $PING_HOST > /dev/null; then
+  if ping -c 1 "$PING_HOST" > /dev/null; then
     c=0
   else
     c=$((c+1))
