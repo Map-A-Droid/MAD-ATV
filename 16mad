@@ -10,7 +10,7 @@ pver="2.0"
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
    until [[ $(pm list packages com.mad.pogodroid) ]]; do
-    /system/bin/curl -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
+    /system/bin/curl -L -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
     /system/bin/chmod 644 /sdcard/pogodroid.apk
     /system/bin/pm install /sdcard/pogodroid.apk
     /system/bin/rm /sdcard/pogodroid.apk
@@ -25,7 +25,7 @@ until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
     sleep 1
    done
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed PokémonGo successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
-   /system/bin/curl -o /system/priv-app/RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
+   /system/bin/curl -L -o /system/priv-app/RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
    /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
    /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed RGC successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
