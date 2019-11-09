@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.1
+# version 2.2
 # created by GhostTalker
 #
 # adb connect %1:5555
@@ -28,7 +28,7 @@ function update_pogodroid(){
 	/system/bin/rm -f /sdcard/Download/PogoDroid.apk
 	echo "Download APK PogoDroid"
 	cd /sdcard/Download/
-	/system/bin/curl -o PogoDroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
+	/system/bin/curl -L -o PogoDroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
 	echo "Install APK PogoDroid"
 	/system/bin/pm install -r /sdcard/Download/PogoDroid.apk
 	echo
@@ -40,7 +40,7 @@ function update_rgc(){
 	/system/bin/rm -f /sdcard/Download/RemoteGpsController.apk
 	echo "Download APK RGC"
 	cd /sdcard/Download/
-	/system/bin/curl -o RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
+	/system/bin/curl -L -o RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
 	echo "Install APK RGC"
 	/system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
 	echo
