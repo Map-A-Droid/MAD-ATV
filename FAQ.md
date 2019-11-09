@@ -39,3 +39,6 @@ If this is still not working then make sure that you have ***RemoteGpsController
 
 ## Question #11) <br> Why does the rom update job always show result: failed / faulty?
 * Answer: This job ends with a reboot. When the reboot happens it does not supply an exit status to the process which called it. This makes MAD decide the job ended faulty, when in fact it was successful. The other possibility is if you have a REALLY old version like rc2 or something, you might not have the curl binary. This would result in a real error, and not just a faulty / no response.
+
+## Question #12) <br> How do I use MAD-ATV madmin jobs?
+* Answer: Just place the files in [personal_commands](https://github.com/Map-A-Droid/MAD-ATV/tree/master/personal_commands) into your MAD/personal_commands/ on your mad server. Then go to madmin, jobs, reload existing jobs. Now you can run any of the jobs such as show rom version, update rom, update pogodroid, etc.
