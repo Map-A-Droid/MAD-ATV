@@ -5,7 +5,7 @@ pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
 #This is for update_mad version
 uver="2.1"
 #This is for pingreboot version
-pver="1.0"
+pver="2.0"
 
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
