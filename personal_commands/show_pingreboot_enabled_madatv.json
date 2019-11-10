@@ -1,0 +1,10 @@
+{
+        "CUSTOM - show MAD-ATV pingreboot enabled":
+        [
+                {
+                        "TYPE": "jobType.PASSTHROUGH",
+                        "SYNTAX": " [[ -f /sdcard/pingreboot ]] && echo enabled || echo disabled",
+                        "FIELDNAME": "pingreboot_status"
+               }
+        ]
+}
