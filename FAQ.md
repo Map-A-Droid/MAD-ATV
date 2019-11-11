@@ -36,6 +36,7 @@ If this is still not working then make sure that you have ***RemoteGpsController
 
 ## Question #10) <br> How does the auto-update system for pogo work in MAD-ATV?
 * Answer: As of mad rom version 1.0.0 when you boot it compares your installed pogo version with the latest 32bit version on apkpure. If the installed version is not the latest, then it checks if that version is in your addresses.json on your server. If it is then it downloads and updates pogo and reboots. If you wish to disable this, just `touch /sdcard/disableautopogoupdate`
+You maty choose to disable this feature in case pogodroid one day cannot support the latest pogo version. Or you could just not update your mappings.json until it has been confirmed that the new version of pogo works with pogodroid.
 
 ## Question #11) <br> Why does the rom update job always show result: failed / faulty?
 * Answer: This job ends with a reboot. When the reboot happens it does not supply an exit status to the process which called it. This makes MAD decide the job ended faulty, when in fact it was successful. The other possibility is if you have a REALLY old version like rc2 or something, you might not have the curl binary. This would result in a real error, and not just a faulty / no response.
