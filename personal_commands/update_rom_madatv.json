@@ -2,7 +2,7 @@
         "CUSTOM - MAD-ATV update rom":
         [
                 {
-                        "TYPE": "jobType.PASSTHROUGH",
+                        "TYPE": "jobType.REBOOT",
                         "SYNTAX": "su -c 'mount -o remount,rw /system && /system/bin/curl -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh >/system/bin/update_mad.sh && chmod +x /system/bin/update_mad.sh && /system/bin/update_mad.sh -i'"
                 }
         ]
