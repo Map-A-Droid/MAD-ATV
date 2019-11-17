@@ -5,7 +5,7 @@ Use the file with x in its name for the R95S 2gb/16gb (s905x) (and probably some
 <br>
 <br>After you flashed the rom:
 <br>* Let the system fully boot.
-<br>* Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC.
+<br>* Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC. SAY YES TO ENABLING GPS!!!
 <br>* After it finishes this it will boot in to TWRP. (WARNING: The TWRP-screen may potentially trigger seizures for people with photosensitive epilepsy.)
 <br>* In TWRP slide to allow system mods, then choose install and select Magisk-v18.1.zip, then add more zips and select smali.zip,then add more zips and select the NFS module zip.
 <br>* Install the zips and then wipe cache/dalvik cache.
