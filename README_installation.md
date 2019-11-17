@@ -1,7 +1,7 @@
-For the X96 mini 2gb/16gb (s905w) and the a95x f1
-<br>(and probably some other s905w boxes)
+Use the file with w in its name for the X96 mini 2gb/16gb (s905w) and the a95x f1 (and probably some other s905w boxes)
 <br>
-<br>INSTALLATION:
+Use the file with x in its name for the R95S 2gb/16gb (s905x) (and probably some other s905x boxes)
+<br><br>INSTALLATION:
 <br>
 <br>After you flashed the rom:
 <br>* Let the system fully boot.
@@ -21,3 +21,4 @@ For the X96 mini 2gb/16gb (s905w) and the a95x f1
 <br>You will need to use scrcpy or something similar (teamviewer or whatever?) in order to interact with pokemon go. This ROM comes with adb over tcp enabled. `adb connect <ip>` to connect to it. To use scrcpy in portrait mode, be sure you use the adb.exe which is in the scrcpy dir, and then start scrcpy from cmd via `scrcpy.exe -b2M -m1024` (many people have sent many suggestions for settings for this command, feel free to set bitrate and res to whatever makes you happy :) )
 <br>
 <br> If you have problems getting in to your recovery after the apps install and the box reboots itself, see [FAQ 1](https://github.com/Map-A-Droid/MAD-ATV/blob/master/FAQ.md#question-1--after-i-flash-the-rom-and-it-installs-the-apps-and-then-reboots-itself-it-does-not-boot-to-the-recovery-can-you-help)
+<br> After you install the rom you are already outdated. Run the upgrade rom madmin job to get up to date. See the FAQ for more information.
