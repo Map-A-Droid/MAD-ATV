@@ -1,9 +1,0 @@
-{
-        "CUSTOM - MAD-ATV update pogodroid":
-        [
-                {
-                        "TYPE": "jobType.REBOOT",
-                        "SYNTAX": "su -c '/system/bin/update_mad.sh -d'"
-                }
-        ]
-}
