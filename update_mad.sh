@@ -6,8 +6,8 @@
 # adb connect %1:5555
 # adb -s %1:5555 push update_mad.sh sdcard
 # adb -s %1:5555 shell su -c "mount -o rw,remount /system"
-# adb -s %1:5555 shell su -c "cp /sdcard/update_mad.sh /system/bin/update_mad"
-# adb -s %1:5555 shell su -c "chmod 555 /system/bin/update_mad"
+# adb -s %1:5555 shell su -c "cp /sdcard/update_mad.sh /system/bin/update_mad.sh"
+# adb -s %1:5555 shell su -c "chmod 555 /system/bin/update_mad.sh"
 # adb -s %1:5555 shell su -c "mount -o ro,remount /system"
 
 function stop_mad(){
@@ -68,11 +68,11 @@ function print_help(){
 	echo "install:"
 	echo "su"
 	echo "mount -o rw,remount /system"
-	echo "cp /<SCRIPTPATH>/update_mad.sh /system/bin/update_mad"
-	echo "chmod 555 /system/bin/update_mad"
+	echo "cp /<SCRIPTPATH>/update_mad.sh /system/bin/update_mad.sh"
+	echo "chmod 555 /system/bin/update_mad.sh"
 	echo "mount -o ro,remount /system"
 	echo ""
-	echo "just run: /usr/bin/adb -s <DEVICEIP>:5555 shell su -c \"update_mad <options>\""
+	echo "just run: /usr/bin/adb -s <DEVICEIP>:5555 shell su -c \"update_mad.sh <options>\""
 	echo ""
 	echo "Options:"
 	echo "          -r   (Update RemoteGPSController)"
