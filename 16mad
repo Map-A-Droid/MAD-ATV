@@ -3,7 +3,7 @@
 pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
 
 #This is for update_mad version
-uver="2.2"
+uver="2.3"
 #This is for pingreboot version
 pver="2.0"
 
@@ -18,7 +18,7 @@ until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
    done
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed Pogodroid successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
    until [[ $(pm list packages com.nianticlabs.pokemongo) ]]; do
-    /system/bin/curl -L -o /sdcard/pogo.apk -k -s "$(curl -k -s "https://m.apkpure.com$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk -F'"' '/Download Pokémon GO v/{print $4}'|head -n1)"|awk -F'"' '/click here/{print $12}')"
+    /system/bin/curl -s -k -L -o /sdcard/pogo.apk "https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=$(curl -s -k -L 'https://www.apkmirror.com/apk/niantic-inc/pokemon-go/variant-%7B%22arches_slug%22%3A%5B%22armeabi-v7a%22%5D%7D/'| grep data-postid|head -n1|awk -F'"' '{print $14}')"
     /system/bin/chmod 644 /sdcard/pogo.apk
     /system/bin/pm install /sdcard/pogo.apk
     /system/bin/rm /sdcard/pogo.apk
@@ -45,7 +45,7 @@ if [ -f /sbin/magiskhide ]; then
    chmod +x /system/bin/pingreboot.sh
 fi
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
-echo "1.0.2" > /sdcard/madversion
+echo "1.0.3" > /sdcard/madversion
 ! grep -q "version $uver" /system/bin/update_mad.sh && /system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh && chmod +x /system/bin/update_mad.sh
 ! grep -q "version $pver" /system/bin/pingreboot.sh && /system/bin/curl -o /system/bin/pingreboot.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh && chmod +x /system/bin/pingreboot.sh
 
@@ -80,10 +80,10 @@ fi
 
 update_pogo(){
 [[ -f /sdcard/disableautopogoupdate ]] && return 0
-newver="$(curl -k -s "https://m.apkpure.com$(curl -k -s 'https://m.apkpure.com/pokemon-go/com.nianticlabs.pokemongo/versions'|awk -F'"' '/Download/'|grep 'mon GO v'|awk -F'"' '{print $4}'|head -n1)"|grep -A10 armeabi-v7a|awk '/Download Pok/{print $5}'|head -n1|sed 's,v,,')"
+newver="$(curl -s -k -L 'https://www.apkmirror.com/apk/niantic-inc/pokemon-go/variant-%7B%22arches_slug%22%3A%5B%22armeabi-v7a%22%5D%7D/'  |grep "arm-v7a"|grep "pokemon-go-"|head -n1|awk -F'"' '{print $4}'|awk -F'/' '{print $5}'|awk -F'-' '{print $3 "." $4 "." $5}')"
 installedver="$(dumpsys package com.nianticlabs.pokemongo|grep versionName|awk -F'=' '{print $2}')"
 [[ "$newver" == "$installedver" ]] && return 0
-[[ "$newver" == "" ]] && return 0
+[[ "$newver" == "" ]] && return 1
 
 pserver=$(grep post_destination /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|grep -v raw|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
 user=$(grep auth_username /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
