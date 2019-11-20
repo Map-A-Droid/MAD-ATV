@@ -40,7 +40,7 @@ If this is still not working then make sure that you have ***RemoteGpsController
 You may choose to disable this feature in case pogodroid one day cannot support the latest pogo version. Or you could just not update your addresses.json until it has been confirmed that the new version of pogo works with pogodroid.
 
 ## Question #11) <br> Why does the rom update job always show result: failed / faulty?
-* Answer: This was my fault with the old job files using jobtype passthrough instead of jobtype reboot. Just update and it should report success.<br>The other possibility is if you have a REALLY old version like rc2 or something, you might not have the curl binary. This would result in a real error, and not just a faulty / no response.
+* Answer: The madmin job uses jobtype.PASSTHROUGH but instead of finishing and reporting success it reboots the ATV. This leads to no output from the job and the job reports fauly even though it worked.<br>The other possibility is if you have a REALLY old version like rc2 or something, you might not have the curl binary. This would result in a real error, and not just a faulty / no response.
 
 ## Question #12) <br> How do I use MAD-ATV madmin jobs?
 * Answer: Just place the files in [personal_commands](https://github.com/Map-A-Droid/MAD-ATV/tree/master/personal_commands) into your MAD/personal_commands/ on your mad server. Then go to madmin, jobs, reload existing jobs. Now you can run any of the jobs such as show rom version, update rom, etc.
