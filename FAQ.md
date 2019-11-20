@@ -43,3 +43,6 @@ You maty choose to disable this feature in case pogodroid one day cannot support
 
 ## Question #12) <br> How do I use MAD-ATV madmin jobs?
 * Answer: Just place the files in [personal_commands](https://github.com/Map-A-Droid/MAD-ATV/tree/master/personal_commands) into your MAD/personal_commands/ on your mad server. Then go to madmin, jobs, reload existing jobs. Now you can run any of the jobs such as show rom version, update rom, etc.
+
+## Question #12) <br> Should I use a usb-a cable or sdcard to flash the rom?
+You should use a usb-a cable. You want a short cable, and it needs to support data. I paid about $5 on amazon for mine and it works well. You can try the sdcard method, and it will work until it doesnt. If something goes wrong (problem flashing, wrong board, etc) you will probably not be able to try again without the USB method.
