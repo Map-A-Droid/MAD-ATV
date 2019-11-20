@@ -22,7 +22,8 @@
   * For example, when purchasing a S905X, you might get a S905W, even when the outer casing is what you bought.
 
 ## Question #6) <br> Not Flashable X96 Mini Version
-* There is one new Versoin of X96 mini that you can not flash. Please don't try to flash over USB, you will brick your device. To identify the wrong version, you will have a look into it. THe Board Version is Q9M V1.8 2D    18 11 21, with the Flash Chip: PFF62 - IOAL 1840.
+* There is one new Versoin of X96 mini that you can not flash. Please don't try to flash over USB, you will brick your device. To identify the wrong version, you will have a look into it. The Board Version is Q9M V1.8 2D    18 11 21, with the Flash Chip: PFF62 - IOAL 1840.
+* A known working board version is Q6X v2.3 18186.  Kindly ask the seller to verify prior to purchasing.
 
 ## Question #7) <br> `adb shell` gives `Access Denied`
 *If you get `Access Denied` from the `su` command, you have to go into Magisk (in the UI) and allow root for `Shell`, then you should be able to `su` and succeed.
@@ -36,7 +37,7 @@ If this is still not working then make sure that you have ***RemoteGpsController
 
 ## Question #10) <br> How does the auto-update system for pogo work in MAD-ATV?
 * Answer: As of mad rom version 1.0.0 when you boot it compares your installed pogo version with the latest 32bit version on apkpure. If the installed version is not the latest, then it checks if that version is in your addresses.json on your server. If it is then it downloads and updates pogo and reboots. If you wish to disable this, just `touch /sdcard/disableautopogoupdate`
-You maty choose to disable this feature in case pogodroid one day cannot support the latest pogo version. Or you could just not update your addresses.json until it has been confirmed that the new version of pogo works with pogodroid.
+You may choose to disable this feature in case pogodroid one day cannot support the latest pogo version. Or you could just not update your addresses.json until it has been confirmed that the new version of pogo works with pogodroid.
 
 ## Question #11) <br> Why does the rom update job always show result: failed / faulty?
 * Answer: This was my fault with the old job files using jobtype passthrough instead of jobtype reboot. Just update and it should report success.<br>The other possibility is if you have a REALLY old version like rc2 or something, you might not have the curl binary. This would result in a real error, and not just a faulty / no response.
