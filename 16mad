@@ -3,7 +3,7 @@
 pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
 
 #This is for update_mad version
-uver="2.3"
+uver="2.4"
 #This is for pingreboot version
 pver="2.0"
 
