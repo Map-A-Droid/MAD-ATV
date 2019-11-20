@@ -22,7 +22,7 @@
   * For example, when purchasing a S905X, you might get a S905W, even when the outer casing is what you bought.
 
 ## Question #6) <br> Not Flashable X96 Mini Version
-* There is one new Versoin of X96 mini that you can not flash. Please don't try to flash over USB, you will brick your device. To identify the wrong version, you will have a look into it. The Board Version is Q9M V1.8 2D    18 11 21, with the Flash Chip: PFF62 - IOAL 1840.
+* There is one new version of X96 mini that you can not flash. Please don't try to flash over USB, you will brick your device. To identify the wrong version, you will have a look into it. The Board Version is Q9M V1.8 2D    18 11 21, with the Flash Chip: PFF62 - IOAL 1840.
 * A known working board version is Q6X v2.3 18186.  Kindly ask the seller to verify prior to purchasing.
 
 ## Question #7) <br> `adb shell` gives `Access Denied`
