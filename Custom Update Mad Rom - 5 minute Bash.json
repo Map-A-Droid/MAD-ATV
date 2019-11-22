@@ -1,0 +1,21 @@
+{
+    "Custom Update Mad Rom - 5 minute Bash":
+    [
+		{
+			"TYPE": "jobType.PASSTHROUGH",
+			"SYNTAX": "cat  /sdcard/madversion",
+			"FIELDNAME":  "MADROM_Version - Start Operation"
+		},
+        {
+            "TYPE": "jobType.PASSTHROUGH",
+            "SYNTAX": "su -c 'mount -o remount,rw /system && /system/bin/curl -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh >/system/bin/update_mad.sh && chmod +x /system/bin/update_mad.sh && /system/bin/update_mad.sh -i'",
+            "WAITTIME": 0
+        },
+		{
+			"TYPE": "jobType.PASSTHROUGH",
+			"SYNTAX": "cat  /sdcard/madversion",
+			"FIELDNAME":  "MADROM_Version - END Operation",
+			"WAITTIME": 4
+		}		
+    ]
+}
