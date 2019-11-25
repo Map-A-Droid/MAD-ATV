@@ -1,21 +1,26 @@
 {
-    "Custom Update Mad Rom - 5 minute Bash":
+    "Custom Update Mad Rom - 5 minute Bash - V1.2":
     [
 		{
 			"TYPE": "jobType.PASSTHROUGH",
-			"SYNTAX": "cat  /sdcard/madversion",
+			"SYNTAX": "print 'Starting Versions \n ' && print 'MAD Rom Version:' && cat  /sdcard/madversion && print '16MAD Version:'&& grep uver= /etc/init.d/16mad",
 			"FIELDNAME":  "MADROM_Version - Start Operation"
 		},
         {
             "TYPE": "jobType.PASSTHROUGH",
-            "SYNTAX": "su -c 'mount -o remount,rw /system && /system/bin/curl -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh >/system/bin/update_mad.sh && chmod +x /system/bin/update_mad.sh && /system/bin/update_mad.sh -i'",
-            "WAITTIME": 0
+            "SYNTAX": "su -c 'mount -o remount,rw /system && /system/bin/curl -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh >/system/bin/update_mad.sh && chmod +x /system/bin/update_mad.sh && print update_mad-Script_Updated'",
+            "WAITTIME": 1
         },
-		{
-			"TYPE": "jobType.PASSTHROUGH",
-			"SYNTAX": "cat  /sdcard/madversion",
-			"FIELDNAME":  "MADROM_Version - END Operation",
-			"WAITTIME": 4
-		}		
+        {
+            "TYPE": "jobType.PASSTHROUGH",
+            "SYNTAX": "su  -c '/system/bin/update_mad.sh -i && reboot && print EXPECT_FAULTY_RESULT_RUNNING_THIS_JOB-NOTE_PRINT_COMMAND_IS_WISHFULL_THINKING_HERE'",
+            "WAITTIME": 1
+        },
+	{
+	"TYPE": "jobType.PASSTHROUGH",
+	"SYNTAX": "print 'End Versions \n ' && print 'MAD Rom Version:' && cat  /sdcard/madversion && print '16MAD Version:'&& grep uver= /etc/init.d/16mad",
+	"FIELDNAME":  "MADROM_Version - END Operation",
+	"WAITTIME": 4
+	}	
     ]
 }
