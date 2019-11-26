@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.4
+# version 2.5
 # created by GhostTalker
 #
 # adb connect %1:5555
@@ -18,8 +18,10 @@ function stop_mad(){
 }
 
 function reboot_device(){
-	echo "Rebooting Device"
-	/system/bin/reboot
+	if [[ "$USER" == "shell" ]] ;then
+		echo "Rebooting Device"
+		/system/bin/reboot
+	fi
 }
 
 function update_pogodroid(){
