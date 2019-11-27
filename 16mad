@@ -7,8 +7,6 @@ uver="2.5"
 #This is for pingreboot version
 pver="2.0"
 
-# [[ ! -x /system/bin/curl ]] && # download curl using wget without ssl (local copy of wget has no ssl_helper)
-
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
    until [[ $(pm list packages com.mad.pogodroid) ]]; do
