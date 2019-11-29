@@ -10,12 +10,10 @@ Below is the link to the XDA page to get more information which includes instruc
 
 https://forum.xda-developers.com/apps/magisk/module-nfs-injectorv1-t3857231
 
-To install via Magisk Manager:
-Open up the side options in the top left corner of the app and choose Downloads.
-Find the module NFS-Injector and choose install, wait for it to flash and then choose Reboot.
+Do not install via magisk manager. Install via TWRP.
 
 To manually install the module:
-Visit the above XDA thread and download the zip and flash from either recovery or by installing the zip through Magisk Manager.
+Visit the above XDA thread and download the zip and flash from recovery.
 
 
 Congratulations on a slightly more reliable device!
