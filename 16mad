@@ -48,20 +48,20 @@ fi
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
 if ! dumpsys package com.nianticlabs.pokemongo|grep ACCESS_FINE_LOCATION|grep granted|grep -q 'granted=true' ;then
- pm grant com.nianticlabs.pokemongo android.permission.ACCESS_FINE_LOCATION'
- pm grant com.nianticlabs.pokemongo android.permission.ACCESS_COARSE_LOCATION'
- pm grant com.nianticlabs.pokemongo android.permission.CAMERA'
- pm grant com.nianticlabs.pokemongo android.permission.GET_ACCOUNTS'
+ pm grant com.nianticlabs.pokemongo android.permission.ACCESS_FINE_LOCATION
+ pm grant com.nianticlabs.pokemongo android.permission.ACCESS_COARSE_LOCATION
+ pm grant com.nianticlabs.pokemongo android.permission.CAMERA
+ pm grant com.nianticlabs.pokemongo android.permission.GET_ACCOUNTS
 fi
 if ! dumpsys package com.mad.pogodroid |grep READ_EXTERNAL_STORAGE|grep granted|grep -q 'granted=true' ;then
- pm grant com.mad.pogodroid android.permission.READ_EXTERNAL_STORAGE'
- pm grant com.mad.pogodroid android.permission.WRITE_EXTERNAL_STORAGE'
+ pm grant com.mad.pogodroid android.permission.READ_EXTERNAL_STORAGE
+ pm grant com.mad.pogodroid android.permission.WRITE_EXTERNAL_STORAGE
 fi
 if ! dumpsys package de.grennith.rgc.remotegpscontroller|grep ACCESS_FINE_LOCATION|grep granted|grep -q 'granted=true' ;then
- pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_FINE_LOCATION'
- pm grant de.grennith.rgc.remotegpscontroller android.permission.READ_EXTERNAL_STORAGE'
- pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_COARSE_LOCATION'
- pm grant de.grennith.rgc.remotegpscontroller android.permission.WRITE_EXTERNAL_STORAGE'
+ pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_FINE_LOCATION
+ pm grant de.grennith.rgc.remotegpscontroller android.permission.READ_EXTERNAL_STORAGE
+ pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_COARSE_LOCATION
+ pm grant de.grennith.rgc.remotegpscontroller android.permission.WRITE_EXTERNAL_STORAGE
 fi
 echo "1.0.8" > /sdcard/madversion
 ! grep -q "version $uver" /system/bin/update_mad.sh && /system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh && chmod +x /system/bin/update_mad.sh
