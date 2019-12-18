@@ -6,6 +6,8 @@ pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
 uver="2.5"
 #This is for pingreboot version
 pver="2.0"
+#This is for nfs install script
+nver="1.0"
 
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
@@ -71,7 +73,7 @@ fi
 echo "1.1.0" > /sdcard/madversion
 ! grep -q "version $uver" /system/bin/update_mad.sh && /system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh && chmod +x /system/bin/update_mad.sh
 ! grep -q "version $pver" /system/bin/pingreboot.sh && /system/bin/curl -o /system/bin/pingreboot.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh && chmod +x /system/bin/pingreboot.sh
-
+! grep -q "version $nver" /system/bin/nfs_install.sh && /system/bin/curl -o /system/bin/nfs_install.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh && chmod +x /system/bin/nfs_install.sh
 # Fix for a95xf1 eth0 mac address issue. Also a tool for people who wish to control their MAC
 # To fix a95xf1 we will save our random mac in /sdcard/madmac and if the user wants to change it they may
 if [[ -e /sdcard/madmac ]] ;then
