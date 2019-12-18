@@ -35,6 +35,11 @@ if [ -f /system/smali.zip ]; then
    /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
    /system/bin/mv /system/smali.zip /sdcard/smali.zip
    /system/bin/mv /system/NFS-INJECTOR-v7.8.FLASHPOINT.zip /sdcard/NFS-INJECTOR.zip
+   mkdir -p /cache/recovery
+   touch /cache/recovery/command
+   echo '--update_package=/sdcard/Magisk-v18.1.zip' >> /cache/recovery/command
+   echo '--update_package=/sdcard/smali.zip' >> /cache/recovery/command
+   echo '--wipe_cache' >> /cache/recovery/command
    reboot recovery
 fi
 if [ -f /sbin/magiskhide ]; then
@@ -63,7 +68,7 @@ if ! dumpsys package de.grennith.rgc.remotegpscontroller|grep ACCESS_FINE_LOCATI
  pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_COARSE_LOCATION
  pm grant de.grennith.rgc.remotegpscontroller android.permission.WRITE_EXTERNAL_STORAGE
 fi
-echo "1.0.8" > /sdcard/madversion
+echo "1.1.0" > /sdcard/madversion
 ! grep -q "version $uver" /system/bin/update_mad.sh && /system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh && chmod +x /system/bin/update_mad.sh
 ! grep -q "version $pver" /system/bin/pingreboot.sh && /system/bin/curl -o /system/bin/pingreboot.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh && chmod +x /system/bin/pingreboot.sh
 
