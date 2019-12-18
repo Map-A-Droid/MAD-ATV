@@ -10,12 +10,15 @@ Below is the link to the XDA page to get more information which includes instruc
 
 https://forum.xda-developers.com/apps/magisk/module-nfs-injectorv1-t3857231
 
-Do not install via magisk manager. Install via TWRP.
+**Do not install via magisk manager**. Install via TWRP. 
+Since ROM version 1.1.0 manual instalation of the NFS module is no longer required, instead instalation will run automatically provided you execute the file **/system/bin/nfs_install.sh**
 
-To manually install the module:
+If you choose to manually install the modul instead of using the above script:
 Visit the above XDA thread and download the zip and flash from recovery.
 
 
 Congratulations on a slightly more reliable device!
 
 One thing to note is, if you are using scrcpy to install the module, there's a chance that the scrcpy screen might crash with the error "Could not send video packet/ could not process frame. This is fine and won't mess anything up with installing, it just means you can't see it happening without reloading scrcpy.
+
+*The /system/bin/nfs_install.sh script contained in the rom was included to reduce the chance of problems, so that is the recomended install method as of version 1.1.0*
