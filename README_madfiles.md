@@ -9,3 +9,4 @@ The following is a list of files which you can use to change how your MAD ATV be
   * REBOOT_AFTER - reboot after this many consecutive failures  (default: 10)
 * **/sdcard/madversion** - contains the version of mad rom being used
 * **/sdcard/disableautopogoupdate** - disables pogo autoupdate
+* **/system/bin/nfs_install.sh** - Installs NFS module (optional). Includes auto reboot and install by TWRP recovery. See https://github.com/Map-A-Droid/MAD-ATV/pull/11 for aditional notes on NFS module.
