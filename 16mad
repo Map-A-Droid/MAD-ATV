@@ -50,6 +50,7 @@ if [ -f /sbin/magiskhide ]; then
    echo 1 > /data/NFS/mode.txt && chmod 666 /data/NFS/mode.txt && chown shell:shell /data/NFS/mode.txt
    chmod +x /system/bin/update_mad.sh
    chmod +x /system/bin/pingreboot.sh
+   chmod +x /system/bin/nfs_install.sh
 fi
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
