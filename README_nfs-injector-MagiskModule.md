@@ -16,9 +16,6 @@ Since ROM version 1.1.0 manual instalation of the NFS module is no longer requir
 If you choose to manually install the modul instead of using the above script:
 Visit the above XDA thread and download the zip and flash from recovery.
 
-
-Congratulations on a slightly more reliable device!
-
-One thing to note is, if you are using scrcpy to install the module, there's a chance that the scrcpy screen might crash with the error "Could not send video packet/ could not process frame. This is fine and won't mess anything up with installing, it just means you can't see it happening without reloading scrcpy.
+Congratulations on a slightly more reliable device! (we hope!)
 
 *The /system/bin/nfs_install.sh script contained in the rom was included to reduce the chance of problems, so that is the recomended install method as of version 1.1.0*
