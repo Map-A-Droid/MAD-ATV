@@ -4,21 +4,17 @@ Use the file with x in its name for the R95S 2gb/16gb (s905x) (and probably some
 <br><br>INSTALLATION:
 <br>
 <br>After you flashed the rom:
+<br> If you want to use [RGC/pogodroid autoconfig](https://github.com/Map-A-Droid/MAD-ATV/blob/master/README_autoconfig.md) then plug in the configured USB stick.
 <br>* Let the system fully boot.
 <br>* Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC. SAY YES TO ENABLING GPS!!!
-<br>* After it finishes this it will boot in to TWRP. (WARNING: The TWRP-screen may potentially trigger seizures for people with photosensitive epilepsy.)
-<br>* In TWRP slide to allow system mods, then choose install and select Magisk-v18.1.zip, then add more zips and select smali.zip. Now, I dont think most people need or want NFS, but if you do then add more zips and select the [NFS](https://github.com/Map-A-Droid/MAD-ATV/blob/master/README_nfs-injector-MagiskModule.md) module zip. Order matters!
-<br> If you add NFS, add it from TWRP not from the magisk store. You may break updates and other things if you do. Some people report NFS helps them, some people have had problems from installing NFS. I recommend trying without it, and if you seem to have stability issues from low memory, then give it a shot.
-<br>* Install the zips and then wipe cache/dalvik cache.
-<br>* Now is the time to plug in your USB stick if you want to use [RGC/pogodroid autoconfig](https://github.com/Map-A-Droid/MAD-ATV/blob/master/README_autoconfig.md) (available since RC5). If you do that when you reboot they should configure themselves from your USB.
-<br>* Reboot the system and let Android load. You must not reboot again for at least 5 minutes according to the NFS module docs.
+<br>* After it finishes this it will boot in to TWRP. TWRP will install magisk and smali for you (as of ROM 1.1.0) and then reboot.
 <br>* Now go to magisk and double check that you pass safetynet.
-<br>* In magisk settings repackage magisk.
+<br>* In magisk settings repackage magisk and optionally enter settings again after and enable auto superuser response = grant.
 <br>* Go open RGC and Pogodroid and give them the permissions they need.
 <br>* Now go to pokemon go and sign in. You will need to use scrcpy or teamviewer to enter data in to the pokemon go app.
-<br>* If you did not use RGC/pogodroid autoconfig then go configure RGC and Pogodroid (I give them 10 seconds delay to start and I leave pogodroid at 120 seconds before injection.
+<br>* If you did not use RGC/pogodroid autoconfig then go configure RGC and Pogodroid (I give them 10 seconds delay to start and I leave pogodroid at 120 seconds before injection)
 <br>
 <br>You will need to use scrcpy or something similar (teamviewer or whatever?) in order to interact with pokemon go. This ROM comes with adb over tcp enabled. `adb connect <ip>` to connect to it. To use scrcpy in portrait mode, be sure you use the adb.exe which is in the scrcpy dir, and then start scrcpy from cmd via `scrcpy.exe -b2M -m1024` (many people have sent many suggestions for settings for this command, feel free to set bitrate and res to whatever makes you happy :) )
 <br>
 <br> If you have problems getting in to your recovery after the apps install and the box reboots itself, see [FAQ 1](https://github.com/Map-A-Droid/MAD-ATV/blob/master/FAQ.md#question-1--after-i-flash-the-rom-and-it-installs-the-apps-and-then-reboots-itself-it-does-not-boot-to-the-recovery-can-you-help)
-<br><br> After you install the rom you are already outdated. Run the upgrade rom madmin job to get up to date. See [FAQ 12](https://github.com/Map-A-Droid/MAD-ATV/blob/master/FAQ.md#question-12--how-do-i-use-mad-atv-madmin-jobs) for more information.
+<br><br> After you install the rom you are probably already outdated. Run the upgrade rom madmin job to get up to date. See [FAQ 12](https://github.com/Map-A-Droid/MAD-ATV/blob/master/FAQ.md#question-12--how-do-i-use-mad-atv-madmin-jobs) for more information.
