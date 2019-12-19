@@ -10,7 +10,7 @@ Use the file with x in its name for the R95S 2gb/16gb (s905x) (and probably some
 <br>* After it finishes this it will boot in to TWRP. TWRP will install magisk and smali for you (as of ROM 1.1.0) and then reboot.
 <br>* Now go to magisk and double check that you pass safetynet.
 <br>* In magisk settings repackage magisk and optionally enter settings again after and enable auto superuser response = grant.
-<br>* Go open RGC and Pogodroid and give them the permissions they need.
+<br>* Go open RGC and Pogodroid and make sure they are properly configured.
 <br>* Now go to pokemon go and sign in. You will need to use scrcpy or teamviewer to enter data in to the pokemon go app.
 <br>* If you did not use RGC/pogodroid autoconfig then go configure RGC and Pogodroid (I give them 10 seconds delay to start and I leave pogodroid at 120 seconds before injection)
 <br>
