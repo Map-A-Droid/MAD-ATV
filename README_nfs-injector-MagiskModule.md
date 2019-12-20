@@ -13,7 +13,7 @@ https://forum.xda-developers.com/apps/magisk/module-nfs-injectorv1-t3857231
 **Do not install via magisk manager**. Install via TWRP. 
 Since ROM version 1.1.0 manual instalation of the NFS module is no longer required, instead instalation will run automatically provided you execute the file **/system/bin/nfs_install.sh**
 
-If you choose to manually install the modul instead of using the above script:
+If you choose to manually install the NFS module instead of using the above script:
 Visit the above XDA thread and download the zip and flash from recovery.
 
 Congratulations on a slightly more reliable device! (we hope!)
