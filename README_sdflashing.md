@@ -5,10 +5,9 @@
 <strong>Image: </strong><strong>MAD ROM</strong><br>
 <strong>Attention:<br>
 We don't force you to use this way. It's stable and can be used as daily driver. Make sure youre read this how to carefully, if you miss a step it could cause to a bricked ATV. <br><br>- Read careful -</strong></h6><br><br>
-<em>* We (MAD Team) are not responsible for bricked devices, dead SD cards,<br>
- * thermonuclear war, or you getting fired because you work too hard on this project. <br> * Please do some research before flashing<br>
+<em>* We (MAD Team) are not responsible for bricked devices, dead SD cards, thermonuclear war, or you getting fired because you work too hard on this project. <br> * Please do some research before flashing<br>
  * Please do some research for resizing and reformating SD cards to FAT <a href="https://www.instructables.com/id/Format-USB-Flash-Drive-to-FATFAT16-not-FAT32/"> -> [ read this ]</a> <br>
- * YOU are choosing to make these modifications, and if you point the finger at us for messing up your device, We will laugh at you.<br>
+ * YOU are choosing to make these modifications, and if you point the finger at us for messing up your device, We will laugh at you.<br> * This method uses the stock recovery, so it can only be used once after that you need to go back to stock recovery or use the USB method to flash again. <br> * This method does not check that the rom is ok for your board, the USB method does check. If you use this method you may brick your box if the board does not work with the MAD rom.
  </em>
 <hr />
 </ul>
@@ -25,7 +24,7 @@ We don't force you to use this way. It's stable and can be used as daily driver.
  	<li><b>Needed downloads:</b></li>
 	<ul>
  	<li>MAD ROM [ <a href="https://github.com/Map-A-Droid/MAD-ATV/releases"> direct link</a> ] </li>
- 	<li>Burn_Card_Maker.exe [ <a href="https://share108.com/06r0pntu2p6h/Burn_Card_Maker%E5%B7%A5%E5%85%B7.rar">direct link</a> ], [ <a href="https://www.mediafire.com/?v28g81wjx25dyk3">direct link</a> ] or [ <a href="http://www.filefactory.com/file/7d4u08th9qpn/Burn_Card_Maker%E5%B7%A5%E5%85%B7.rar">direct link</a> ]</li>
+ 	<li>Burn_Card_Maker.exe [ <a href="https://github.com/Map-A-Droid/MAD-ATV/releases/download/tools/Burn_Card_Maker_V2.0.3.zip">direct link</a> ]</li>
  	</ul></ul><p>
  
 <hr />
