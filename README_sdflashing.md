@@ -69,47 +69,4 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
  	<li>X96 should boot directly into <strong>Flashingmode</strong></li>
  	<li><strong>release</strong> <strong>toothpick</strong></li>
  	<li>let the <strong>flash</strong> process end</li>
- 	<li>X96 Mini should reboot</li>
-</ul>
-<strong>Let the system fully boot.</strong>
-<hr />
-<h3>Setup box & configuring magisk/smali and NFS:</h3>
-<ul>
-<li>Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC.</li>
-<li>After it finishes this it will boot in to TWRP. <b>(WARNING: The TWRP-screen may potentially trigger seizures for people with photosensitive epilepsy.)</b></li>
-<ul>
-<li>In TWRP slide to allow system mods, then choose <b>install</b> and select <b>Magisk-v18.1.zip</b>, then <b>add more zips</b> and select <b>smali.zip</b>, then add more zips and select the <b>NFS module zip.</b></li>
-<li>Install the zips and then wipe cache/dalvik cache.</li></ul>
-<li>Now is the time to plug in your USB stick if you want to use <a href="https://github.com/Map-A-Droid/MAD-ATV/blob/master/README_autoconfig.md">RGC/pogodroid autoconfig</a> (available since RC5). If you do that when you reboot they should configure themselves from your USB.</li>
-<li>Reboot the system and let Android load. You must not reboot again for at least 5 minutes according to the NFS module docs.</li>
-<li>Go to Android settings, about, scroll down and click build until it says you are a developer. Then go to Android settings - developer settings - turn on "stay awake"</li>
-<li>Now go to magisk and double check that you pass safetynet.</li>
-<li>In magisk settings repackage magisk.</li>
-<li>Go open RGC and Pogodroid and give them the permissions they need.</li></ul>
-<li>Now go to pokemon go and sign in. You will need to use scrcpy or teamviewer to enter data in to the pokemon go app.</li>
-</ul>
-<strong>Have fun!</strong>
-<hr />
-<h3>Hint:</h3>
-<ul>
- 	<li>RJ45 connection is recommend</li>
- 	<li>You can switch to 480p res if you're ready to go (Settings/Display/Screen Resolution/Display Mode)</li>
- 	<li>You can use Teamviewer.apk to remote control your games (Some games don't reacting on keyboards) or use <strong>scrcpy</strong>!</li>
-</ul>
 
-<hr />
-<h3>Suggested ATV settings:</h3>
-<ul>
- 	<strong><li>RGC</li></strong>
-	<ul>
-	<li>Autostart services after 5 seconds.
-	</ul>
-	<strong><li>PogoDroid</li></strong>
-	<ul>
-	<li>Autostart services after 35 seconds.</li>
-	<li>Injection after 120 seconds.</li>
-	</ul>
-</ul>
-<hr />
-# Contribute
-If you know it better, feel free to PR your wisdom
