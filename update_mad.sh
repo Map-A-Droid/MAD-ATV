@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.5
+# version 2.6
 # created by GhostTalker
 #
 # adb connect %1:5555
@@ -54,7 +54,7 @@ function update_pokemon(){
 	/system/bin/rm -f /sdcard/Download/pogo.apk
 	echo "Download APK PokemonGo"
 	cd /sdcard/Download/
-	/system/bin/curl -s -k -L -o /sdcard/Download/pogo.apk "https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=$(curl -s -k -L 'https://www.apkmirror.com/apk/niantic-inc/pokemon-go/variant-%7B%22arches_slug%22%3A%5B%22armeabi-v7a%22%5D%7D/'| grep data-postid|head -n1|awk -F'"' '{print $14}')"
+	/system/bin/curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L -o /sdcard/Download/pogo.apk "https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=$(curl -s -k -L 'https://www.apkmirror.com/apk/niantic-inc/pokemon-go/variant-%7B%22arches_slug%22%3A%5B%22armeabi-v7a%22%5D%7D/'| grep data-postid|head -n1|awk -F'"' '{print $14}')"
 	echo "Install APK PokemonGo"
 	/system/bin/pm install -r /sdcard/Download/pogo.apk
 	echo
