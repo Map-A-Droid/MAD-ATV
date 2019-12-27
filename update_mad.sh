@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.6
+# version 2.7
 # created by GhostTalker
 #
 # adb connect %1:5555
@@ -110,7 +110,7 @@ do
 		-d)
 			UpdatePogoDroid=1
 			;;
-		-n
+		-n)
 			UpdateDHCP=1
 			;;
 		-a)
