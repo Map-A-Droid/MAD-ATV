@@ -66,6 +66,17 @@ function update_init(){
 	echo
 }
 
+function update_dhcp(){
+	grep -q net.hostname /system/build.prop && unset UpdateDHCP && return 1
+	origin="$(awk -F'>' '/post_origin/{print $2}' /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|cut -d'<' -f1)"
+	if grep -q 'net.hostname' /system/build.prop ;then
+	    sed -i -e "s/^net.hostname=.*/net.hostname=${origin}/g" /system/build.prop 
+	else
+	    echo "net.hostname=${origin}" >> /system/build.prop
+	fi
+
+}
+
 function print_help(){
 	echo "install:"
 	echo "su"
@@ -80,6 +91,7 @@ function print_help(){
 	echo "          -r   (Update RemoteGPSController)"
 	echo "          -p   (Update PokemonGO)"
 	echo "          -d   (Update PogoDroid)"
+	echo "          -n   (update name in DHCP)"
         echo "          -i   (Update MAD ROM init script)"
 	echo "          -a   (Update all)"
 	echo "          -c   (ClearCache of PokemonGo)"
@@ -97,6 +109,9 @@ do
 			;;
 		-d)
 			UpdatePogoDroid=1
+			;;
+		-n
+			UpdateDHCP=1
 			;;
 		-a)
 			UpdateRGC=1
@@ -120,9 +135,10 @@ done
 ((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && stop_mad
 (($UpdateRGC))       && update_rgc
 (($UpdatePogoDroid)) && update_pogodroid
+(($UpdateDHCP))      && update_dhcp
 (($UpdatePoGo))      && update_pokemon
 (($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
 (($UpdateInit))      && update_init
-((($UpdateRGC)) || (($UpdateInit)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
+((($UpdateRGC)) || (($UpdateInit)) || (($UpdateDHCP)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
 
 exit
