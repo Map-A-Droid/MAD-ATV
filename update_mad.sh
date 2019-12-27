@@ -110,7 +110,7 @@ do
 		-d)
 			UpdatePogoDroid=1
 			;;
-		-n
+		-n)
 			UpdateDHCP=1
 			;;
 		-a)
