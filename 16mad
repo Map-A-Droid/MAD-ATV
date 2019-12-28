@@ -37,6 +37,7 @@ if [ -f /system/smali.zip ]; then
    /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
    /system/bin/mv /system/smali.zip /sdcard/smali.zip
    /system/bin/mv /system/NFS-INJECTOR-v7.8.FLASHPOINT.zip /sdcard/NFS-INJECTOR.zip
+	/system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
    mkdir -p /cache/recovery
    touch /cache/recovery/command
    echo '--update_package=/sdcard/Magisk-v18.1.zip' >> /cache/recovery/command
