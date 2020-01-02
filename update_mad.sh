@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.7
+# version 2.8
 # created by GhostTalker
 #
 # adb connect %1:5555
@@ -9,13 +9,6 @@
 # adb -s %1:5555 shell su -c "cp /sdcard/update_mad.sh /system/bin/update_mad.sh"
 # adb -s %1:5555 shell su -c "chmod 555 /system/bin/update_mad.sh"
 # adb -s %1:5555 shell su -c "mount -o ro,remount /system"
-
-function stop_mad(){
-	echo "stopping MAD processes"
-	/system/bin/killall com.mad.pogodroid
-	/system/bin/am force-stop de.grennith.rgc.remotegpscontroller
-	echo
-}
 
 function reboot_device(){
 	if [[ "$USER" == "shell" ]] ;then
@@ -132,7 +125,6 @@ do
 	esac
 done
 
-((($UpdateRGC)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && stop_mad
 (($UpdateRGC))       && update_rgc
 (($UpdatePogoDroid)) && update_pogodroid
 (($UpdateDHCP))      && update_dhcp
