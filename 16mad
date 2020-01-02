@@ -3,7 +3,7 @@
 pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
 
 #This is for update_mad version
-uver="2.7"
+uver="2.8"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
@@ -72,7 +72,7 @@ if ! dumpsys package de.grennith.rgc.remotegpscontroller|grep ACCESS_FINE_LOCATI
  pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_COARSE_LOCATION
  pm grant de.grennith.rgc.remotegpscontroller android.permission.WRITE_EXTERNAL_STORAGE
 fi
-echo "1.1.2" > /sdcard/madversion
+echo "1.1.3" > /sdcard/madversion
 ! grep -q "version $uver" /system/bin/update_mad.sh && /system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh && chmod +x /system/bin/update_mad.sh
 ! grep -q "version $pver" /system/bin/pingreboot.sh && /system/bin/curl -o /system/bin/pingreboot.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh && chmod +x /system/bin/pingreboot.sh
 ! grep -q "version $nver" /system/bin/nfs_install.sh && /system/bin/curl -o /system/bin/nfs_install.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh && chmod +x /system/bin/nfs_install.sh
