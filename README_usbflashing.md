@@ -1,4 +1,4 @@
-Note: this tool is known to not work on some computers with an AMD processors.
+Note: this tool is known to not work on some computers with AMD processors.
 
 How to flash a ROM using a USB-a to USB-a cable.
 <br> Avoid the $1 cables because you need a data cable, not just a charging cable. People often have problems with longer cables. I got a $5 1.5' cable from [amazon](https://www.amazon.com/gp/product/B00P0E3954/) and it has been working perfectly for me.
