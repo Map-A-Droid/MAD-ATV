@@ -7,7 +7,7 @@ uver="2.8"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
-nver="1.0"
+nver="1.1"
 
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
