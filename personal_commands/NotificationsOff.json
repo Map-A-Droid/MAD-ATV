@@ -1,0 +1,9 @@
+{     
+    "Notifications Off":
+        [
+                {
+                        "TYPE": "jobType.PASSTHROUGH",
+                        "SYNTAX": "su -c 'settings put global heads_up_notifications_enabled 0';"
+                }
+        ]
+}
