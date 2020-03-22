@@ -1,0 +1,12 @@
+#!/system/bin/sh
+
+# this is only needed on some weird systems (this was a t95s1 i saw) that have /system/bin/ mounted as tmpfs for some reason
+# the box in question was installed via rc1, so who knows what bugs were in it lol
+# anyways, you should not need this, but if you cant add files to /system/bin without them going away, add this to /system/etc/init.d/
+
+mount -o remount,rw /system
+cp /sdcard/curl /system/bin/curl
+chmod +x /system/bin/curl
+/system/bin/curl -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh > /sdcard/update_mad.sh
+mv /sdcard/update_mad.sh /system/bin/update_mad.sh
+chmod +x /system/bin/update_mad.sh
