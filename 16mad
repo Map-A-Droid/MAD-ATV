@@ -78,6 +78,7 @@ if grep 'switch_enable_mock_location_patch' $pdconf|grep -q false ;then
    chmod 660 "$pdconf"
    puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
    chown "$puser":"$puser" "$pdconf"
+   reboot
 fi
    
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
