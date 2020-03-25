@@ -51,6 +51,14 @@ if [ -f /system/magisk.zip ]; then
    echo '--wipe_cache' >> /cache/recovery/command
    reboot recovery
 fi
+# Screw smali, lets make sure your pogodroid has mocking enabled!
+pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
+if grep 'switch_enable_mock_location_patch' $pdconf|grep -q false ;then
+   sed -i 's,"switch_enable_mock_location_patch" value="false","switch_enable_mock_location_patch" value="true",g' "$pdconf"
+   chmod 660 "$pdconf"
+   puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
+   chown "$puser":"$puser" "$pdconf"
+fi
 if [ -f /sbin/magiskhide ]; then
    /sbin/magiskhide --add com.nianticlabs.pokemongo
    [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
@@ -69,16 +77,6 @@ if [ -f /sbin/magiskhide ]; then
       pm uninstall com.topjohnwu.magisk
       rm /sdcard/madupdating
    fi
-fi
-
-# Screw smali, lets make sure your pogodroid has mocking enabled!
-pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
-if grep 'switch_enable_mock_location_patch' $pdconf|grep -q false ;then
-   sed -i 's,"switch_enable_mock_location_patch" value="false","switch_enable_mock_location_patch" value="true",g' "$pdconf"
-   chmod 660 "$pdconf"
-   puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
-   chown "$puser":"$puser" "$pdconf"
-   reboot
 fi
    
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
