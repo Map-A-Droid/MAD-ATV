@@ -69,8 +69,9 @@ if [ -f /sbin/magiskhide ]; then
    if ! magisk -c|grep -q "$mver" ;then
       touch /sdcard/madupdating
       if which md5sum >/dev/null 2>/dev/null ;then
-        while [ $(md5sum /sdcard/magisk.zip|awk '{print $1}') != "$msum" ] ;do
+        while [ ! -f /sdcard/magisk.zip ] ;do
           /system/bin/curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L -o /sdcard/magisk.zip "$murl"
+         [[ "$(md5sum /sdcard/magisk.zip|awk '{print $1}')" != "$msum" ]] && rm /sdcard/magisk.zip
         done
       else
         /system/bin/curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L -o /sdcard/magisk.zip "$murl"
