@@ -14,9 +14,9 @@ madver="1.1.6"
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
 
-
-if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
+#we aint doing anything til we're online.
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
+if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
    until [[ $(pm list packages com.mad.pogodroid) ]]; do
     /system/bin/curl -L -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
     /system/bin/chmod 644 /sdcard/pogodroid.apk
