@@ -8,6 +8,12 @@ uver="2.8"
 pver="2.0"
 #This is for nfs install script
 nver="1.1"
+# mad rom version
+madver="1.1.6"
+#magisk version / url
+mver="20.3"
+murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
+
 
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
@@ -33,27 +39,47 @@ until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed RGC successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
 rm -rf /sdcard/TWRP
-if [ -f /system/smali.zip ]; then
+if [ -f /system/magisk.zip ]; then
    /system/bin/setprop persist.sys.app.rotation middle_port
-   /system/bin/mv /system/Magisk-v18.1.zip /sdcard/Magisk-v18.1.zip
-   /system/bin/mv /system/smali.zip /sdcard/smali.zip
+   echo 1 > /data/NFS/mode.txt && chmod 666 /data/NFS/mode.txt && chown shell:shell /data/NFS/mode.txt
+   /system/bin/mv /system/magisk.zip /sdcard/magisk.zip
    /system/bin/mv /system/NFS-INJECTOR-v7.8.FLASHPOINT.zip /sdcard/NFS-INJECTOR.zip
-	/system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
+   /system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
    mkdir -p /cache/recovery
    touch /cache/recovery/command
-   echo '--update_package=/sdcard/Magisk-v18.1.zip' >> /cache/recovery/command
-   echo '--update_package=/sdcard/smali.zip' >> /cache/recovery/command
+   echo '--update_package=/sdcard/magisk.zip' >> /cache/recovery/command
    echo '--wipe_cache' >> /cache/recovery/command
    reboot recovery
 fi
 if [ -f /sbin/magiskhide ]; then
    /sbin/magiskhide --add com.nianticlabs.pokemongo
-   [[ -f /sdcard/Magisk-v18.1.zip ]] && rm /sdcard/Magisk-v18.1.zip
-   echo 1 > /data/NFS/mode.txt && chmod 666 /data/NFS/mode.txt && chown shell:shell /data/NFS/mode.txt
+   [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
    chmod +x /system/bin/update_mad.sh
    chmod +x /system/bin/pingreboot.sh
    chmod +x /system/bin/nfs_install.sh
+   if ! magisk -c|grep -q "$mver" ;then
+      touch /sdcard/madupdating
+      /system/bin/curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L -o /sdcard/magisk.zip "$murl"
+      mkdir -p /cache/recovery
+      touch /cache/recovery/command
+      echo '--update_package=/sdcard/magisk.zip' >> /cache/recovery/command
+      echo '--wipe_cache' >> /cache/recovery/command
+      reboot recovery
+   elif [ -f /sdcard/madupdating ] ;then
+      pm uninstall com.topjohnwu.magisk
+      rm /sdcard/madupdating
+   fi
 fi
+
+# Screw smali, lets make sure your pogodroid has mocking enabled!
+if grep 'switch_enable_mock_location_patch' $pdconf|grep -q false ;then
+   pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
+   sed -i 's,"switch_enable_mock_location_patch" value="false","switch_enable_mock_location_patch" value="true",g' "$pdconf"
+   chmod 660 "$pdconf"
+   puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
+   chown "$puser":"$puser" "$pdconf"
+fi
+   
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
@@ -73,7 +99,7 @@ if ! dumpsys package de.grennith.rgc.remotegpscontroller|grep ACCESS_FINE_LOCATI
  pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_COARSE_LOCATION
  pm grant de.grennith.rgc.remotegpscontroller android.permission.WRITE_EXTERNAL_STORAGE
 fi
-echo "1.1.5" > /sdcard/madversion
+echo "$madver" > /sdcard/madversion
 ! grep -q "version $uver" /system/bin/update_mad.sh && /system/bin/curl -o /system/bin/update_mad.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh && chmod +x /system/bin/update_mad.sh
 ! grep -q "version $pver" /system/bin/pingreboot.sh && /system/bin/curl -o /system/bin/pingreboot.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh && chmod +x /system/bin/pingreboot.sh
 ! grep -q "version $nver" /system/bin/nfs_install.sh && /system/bin/curl -o /system/bin/nfs_install.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh && chmod +x /system/bin/nfs_install.sh
