@@ -72,8 +72,8 @@ if [ -f /sbin/magiskhide ]; then
 fi
 
 # Screw smali, lets make sure your pogodroid has mocking enabled!
+pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
 if grep 'switch_enable_mock_location_patch' $pdconf|grep -q false ;then
-   pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
    sed -i 's,"switch_enable_mock_location_patch" value="false","switch_enable_mock_location_patch" value="true",g' "$pdconf"
    chmod 660 "$pdconf"
    puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
