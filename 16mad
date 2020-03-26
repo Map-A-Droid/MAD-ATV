@@ -9,7 +9,7 @@ pver="2.0"
 #This is for nfs install script
 nver="1.1"
 # mad rom version
-madver="1.1.6"
+madver="1.1.7"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
@@ -66,6 +66,22 @@ if [ -f /sbin/magiskhide ]; then
    chmod +x /system/bin/update_mad.sh
    chmod +x /system/bin/pingreboot.sh
    chmod +x /system/bin/nfs_install.sh
+   #make sure rgc and pogodroid and shell have su root
+   pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='de.grennith.rgc.remotegpscontroller'")
+   if [[ "$pol" != 2 ]] ;then
+    sqlite3 /data/adb/magisk.db "DELETE from policies WHERE package_name='de.grennith.rgc.remotegpscontroller'"
+    sqlite3 /data/adb/magisk.db "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($ruid,'de.grennith.rgc.remotegpscontroller',2,0,1,1)"
+   fi
+   pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.mad.pogodroid'")
+   if [[ "$pol" != 2 ]] ;then
+    sqlite3 /data/adb/magisk.db "DELETE from policies WHERE package_name='com.mad.pogodroid'"
+    sqlite3 /data/adb/magisk.db "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($puid,'com.mad.pogodroid',2,0,1,1)"
+   fi
+   pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.android.shell'")
+   if [[ "$pol" != 2 ]] ;then
+    sqlite3 /data/adb/magisk.db "DELETE from policies WHERE package_name='com.android.shell'"
+    sqlite3 /data/adb/magisk.db "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($suid,'com.android.shell',2,0,1,1)"
+   fi
    if ! magisk -c|grep -q "$mver" ;then
       touch /sdcard/madupdating
       if which md5sum >/dev/null 2>/dev/null ;then
