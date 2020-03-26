@@ -67,6 +67,11 @@ if [ -f /sbin/magiskhide ]; then
    chmod +x /system/bin/pingreboot.sh
    chmod +x /system/bin/nfs_install.sh
    #make sure rgc and pogodroid and shell have su root
+   puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
+   puid=$(id -u "$puser")
+   ruser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
+   ruid=$(id -u "$ruser")
+   suid=$(id -u shell)
    pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='de.grennith.rgc.remotegpscontroller'")
    if [[ "$pol" != 2 ]] ;then
     sqlite3 /data/adb/magisk.db "DELETE from policies WHERE package_name='de.grennith.rgc.remotegpscontroller'"
