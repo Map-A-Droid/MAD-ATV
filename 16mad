@@ -9,7 +9,7 @@ pver="2.0"
 #This is for nfs install script
 nver="1.1"
 # mad rom version
-madver="1.1.7"
+madver="1.1.8"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
