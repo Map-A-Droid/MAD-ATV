@@ -9,15 +9,14 @@ pver="2.0"
 #This is for nfs install script
 nver="1.1"
 # mad rom version
-madver="1.1.8"
+madver="1.1.9"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
 
-#we aint doing anything til we're online.
-until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
+until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
    until [[ $(pm list packages com.mad.pogodroid) ]]; do
     /system/bin/curl -L -o /sdcard/pogodroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
     /system/bin/chmod 644 /sdcard/pogodroid.apk
@@ -39,6 +38,28 @@ if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
    /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
    am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed RGC successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
+download_smali(){
+model="$(grep ro.product.board /system/build.prop |awk -F'=' '{print $2}'|tr '[:upper:]' '[:lower:]')"
+if [[ "$model" == s905w ]] ;then 
+   if grep ro.build.description /system/build.prop |grep -q p281; then
+      model="s905w"
+   else
+      return 1
+   fi
+elif [[ "$model" == s905x ]] ;then
+   if grep ro.build.description /system/build.prop |grep -q q201; then
+      model="s912"
+   elif grep ro.build.description /system/build.prop |grep -q p212 ;then
+      model="s905x"
+   else
+      return 1
+   fi
+else
+   return 1 #an attempt to only put smali on the boxes using my roms
+fi
+curl -k -s -L -o /sdcard/smali.zip "https://github.com/Map-A-Droid/MAD-ATV/raw/master/smali/smali-${model}.zip"
+}
+
 rm -rf /sdcard/TWRP
 if [ -f /system/magisk.zip ]; then
    /system/bin/setprop persist.sys.app.rotation middle_port
@@ -49,13 +70,15 @@ if [ -f /system/magisk.zip ]; then
    mkdir -p /cache/recovery
    touch /cache/recovery/command
    echo '--update_package=/sdcard/magisk.zip' >> /cache/recovery/command
+   download_smali && echo '--update_package=/sdcard/smali.zip' >> /cache/recovery/command
    echo '--wipe_cache' >> /cache/recovery/command
    reboot recovery
 fi
-# Screw smali, lets make sure your pogodroid has mocking enabled!
+
+# Back to smali, lets disable mocking.
 pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
-if grep 'switch_enable_mock_location_patch' $pdconf|grep -q false ;then
-   sed -i 's,"switch_enable_mock_location_patch" value="false","switch_enable_mock_location_patch" value="true",g' "$pdconf"
+if grep 'switch_enable_mock_location_patch' "$pdconf"|grep -q true ;then
+   sed -i 's,"switch_enable_mock_location_patch" value="true","switch_enable_mock_location_patch" value="false",g' "$pdconf"
    chmod 660 "$pdconf"
    puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
    chown "$puser":"$puser" "$pdconf"
@@ -63,6 +86,7 @@ fi
 if [ -f /sbin/magiskhide ]; then
    /sbin/magiskhide --add com.nianticlabs.pokemongo
    [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
+   [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip 
    chmod +x /system/bin/update_mad.sh
    chmod +x /system/bin/pingreboot.sh
    chmod +x /system/bin/nfs_install.sh
@@ -106,6 +130,16 @@ if [ -f /sbin/magiskhide ]; then
       pm uninstall com.topjohnwu.magisk
       rm /sdcard/madupdating
    fi
+fi
+
+# install smali if its not installed and download_smali exits success
+if ! ls -lL /sbin/.magisk/img | grep -q smali ;then
+ if download_smali ;then
+  mkdir -p /cache/recovery/
+  echo '--update_package=/sdcard/smali.zip' > /cache/recovery/command
+  echo '--wipe_cache' >> /cache/recovery/command
+  reboot recovery
+ fi
 fi
    
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
