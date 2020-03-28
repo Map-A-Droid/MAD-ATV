@@ -43,7 +43,8 @@ model="$(grep ro.product.board /system/build.prop |awk -F'=' '{print $2}'|tr '[:
 if [[ "$model" == s905w ]] ;then 
    if grep ro.build.description /system/build.prop |grep -q p281; then
       if grep ro.build.display.id /system/build.prop |grep -q v2H ;then
-         model="t95s1"
+         #model="t95s1"
+         unset model
       elif grep ro.build.display.id /system/build.prop |grep -q v2FF ;then
          model="s905w"
       else
