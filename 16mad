@@ -42,7 +42,13 @@ download_smali(){
 model="$(grep ro.product.board /system/build.prop |awk -F'=' '{print $2}'|tr '[:upper:]' '[:lower:]')"
 if [[ "$model" == s905w ]] ;then 
    if grep ro.build.description /system/build.prop |grep -q p281; then
-      model="s905w"
+      if grep ro.build.display.id /system/build.prop |grep -q v2H ;then
+         model="t95s1"
+      elif grep ro.build.display.id /system/build.prop |grep -q v2FF ;then
+         model="s905w"
+      else
+         return 1
+      if
    else
       return 1
    fi
