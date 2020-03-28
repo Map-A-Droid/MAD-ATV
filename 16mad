@@ -48,7 +48,7 @@ if [[ "$model" == s905w ]] ;then
          model="s905w"
       else
          return 1
-      if
+      fi
    else
       return 1
    fi
