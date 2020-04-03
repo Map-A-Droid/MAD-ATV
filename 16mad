@@ -31,7 +31,7 @@ done
 
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
    until [[ $(pm list packages com.mad.pogodroid) ]]; do
-#     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad /etc/init.d/16mad && chmod +x /etc/init.d/16mad
+     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad /etc/init.d/16mad && chmod +x /etc/init.d/16mad
      download "https://www.maddev.de/apk/PogoDroid.apk" "/sdcard/pogodroid.apk"
      /system/bin/chmod 644 /sdcard/pogodroid.apk
      /system/bin/pm install /sdcard/pogodroid.apk
