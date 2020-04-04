@@ -10,12 +10,13 @@
 <br>After you flashed the rom:
 <br> * Put TWRP311.zip which you have from the ROM zip on to a usb disk.
 <br> * Let the system fully boot.
-<br> * Fill in the setup menu fast if you can, once the box has internet it will download and install the latest pogodroid and RGC.
-<br> * After it finishes this it will boot in to the stock recovery. now you need to put your usb disk in the box and select "apply update from EXT" then select usb and choose TWRP311.zip.
-<br> * Now TWRP starts. Remove your usb disk, add your usb mouse. (WARNING: The TWRP-screen may potentially trigger seizures for people with photosensitive epilepsy.)
-<br> * In TWRP slide to allow system mods, then choose install and select magisk.zip, then add more zips and select SafetyPatch-v3.zip then add more zips and select smali.zip. Slide to install the zips and then wipe cache/dalvik cache. Reboot the system and select to not install twrp app. let Android load.
-<br> * Go to Android settings, about, scroll down and click build until it says you are a developer.
+<br> * Fill in the setup menu, once the box has internet it will download and install the latest pogodroid and RGC.
+<br> * Go to Android settings, turn off system root, then go down to about, scroll down and click build until it says you are a developer.
 <br> * In Android settings - developer settings - turn on "stay awake" and turn on USB debugging. (this will enable adb over tcp)
+<br> * now connect to it using adb, which requires clicking allow in the box. adb shell ls /sdcard and after you see smali.zip has downloaded you can adb reboot recovery. Make sure you have a keyboard plugged in to the box before it enters the recovery.
+<br> * This will boot in to the stock recovery. now you need to put your usb disk in the box and select "apply update from EXT" then select usb and choose TWRP311.zip.
+<br> * Now TWRP starts. Remove your usb disk, add your usb mouse. (WARNING: The TWRP-screen may potentially trigger seizures for people with photosensitive epilepsy.)
+<br> * In TWRP slide to allow system mods, then choose install and select magisk.zip, then add more zips and select smali.zip. Slide to install the zips and then wipe cache/dalvik cache. Reboot the system and select to not install twrp app. let Android load.
 <br> * Now go to magisk and double check that you pass safetynet.
 <br> * In magisk settings repackage magisk.
 <br> * Now go to pokemon go and sign in. You will need to use scrcpy or teamviewer to enter data in to the pokemon go app.
