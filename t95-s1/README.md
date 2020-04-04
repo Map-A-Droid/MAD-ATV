@@ -10,7 +10,7 @@
 <br>After you flashed the rom:
 <br> * Put TWRP311.zip which you have from the ROM zip on to a usb disk.
 <br> * Let the system fully boot.
-<br> * Fill in the setup menu, once the box has internet it will download and install the latest pogodroid and RGC.
+<br> * Fill in the setup menu, once the box has internet it will download and install the latest pogodroid and pogo and RGC. You wont see RGC installed until after a reboot.
 <br> * Go to Android settings, turn off system root, then go down to about, scroll down and click build until it says you are a developer.
 <br> * In Android settings - developer settings - turn on "stay awake" and turn on USB debugging. (this will enable adb over tcp)
 <br> * now connect to it using adb, which requires clicking allow in the box. adb shell ls /sdcard and after you see smali.zip has downloaded you can adb reboot recovery. Make sure you have a keyboard plugged in to the box before it enters the recovery.
