@@ -9,7 +9,7 @@ pver="2.0"
 #This is for nfs install script
 nver="1.1"
 # mad rom version
-madver="1.2.0"
+madver="1.2.1"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
@@ -95,7 +95,6 @@ if [[ "$madrom" ]] ;then
    reboot recovery
 elif [[ "$madmodel" == "t95s1" ]]; then
    download "$murl" /sdcard/magisk.zip
-   download "https://github.com/Map-A-Droid/MAD-ATV/raw/master/t95-s1/SafetyPatch-v3.zip" /sdcard/SafetyPatch-v3.zip
    download_smali
 fi
 }
