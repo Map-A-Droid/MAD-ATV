@@ -9,7 +9,7 @@ pver="2.0"
 #This is for nfs install script
 nver="1.1"
 # mad rom version
-madver="1.2.1"
+madver="1.2.2"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
@@ -152,6 +152,9 @@ if [[ "$madmodel" ]] && ! ls -lL /sbin/.magisk/img | grep -q smali && download_s
    echo '--wipe_cache' >> /cache/recovery/command
    reboot recovery
 fi
+
+#cec says that turning off cec helps... i guess he was too turned on?
+! [[ $(settings get global hdmi_control_enabled) == "0" ]] && settings put global hdmi_control_enabled 0
 
 [[ "$(/system/bin/getprop persist.sys.app.rotation)" != "middle_port" ]] && /system/bin/setprop persist.sys.app.rotation middle_port
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
