@@ -1,0 +1,8 @@
+{
+  "ATV - Readout hardware infos": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "echo \"CPU $( (grep -q '^Hardware' /proc/cpuinfo && grep '^Processor' /proc/cpuinfo || grep '^model name' /proc/cpuinfo) | head -n1 | sed -r -e 's/.*: *//' -e 's/(processor *|cpu)//gi' -e 's/ *\\(.*//g') | RAM $(awk '/MemTotal/{printf \"%1.0f\", $2 / 1000000}' /proc/meminfo) GB | ABI $(getprop ro.product.cpu.abi) | IP $(awk '/32 host/ {print f} {f=$2}' /proc/net/fib_trie | grep -v 127.0.0.1) | Pingreboot $([ -f /sdcard/pingreboot ] && echo enabled || echo disabled) | Temperature $(awk '{print substr($0,1,length()-3)}' /sys/class/thermal/thermal_zone0/temp || echo ?)°C\""
+    }
+  ]
+}

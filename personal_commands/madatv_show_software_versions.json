@@ -1,0 +1,9 @@
+{
+  "ATV - Readout software versions": [
+    {
+	    "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "echo \"RGC $(dumpsys package de.grennith.rgc.remotegpscontroller | grep versionName | head -n1 | sed 's/ *versionName=//') | PD $(dumpsys package com.mad.pogodroid | grep versionName | head -n1 | sed 's/ *versionName=//') | PoGo $(dumpsys package com.nianticlabs.pokemongo | grep versionName | head -n1 | sed 's/ *versionName=//') | Autoupdate $([ -f /sdcard/disableautopogoupdate ] && echo enabled || echo disabled) | Magisk $(magisk -c | sed 's/:.*//') $(ls -1 /sbin/.magisk/img 2>/dev/null) | ROM $(cat /sdcard/madversion 2>/dev/null || echo unknown)\"",
+	    "FIELDNAME": "Versions"
+    }
+  ]
+}

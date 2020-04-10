@@ -1,0 +1,21 @@
+{
+  "ATV - Pingreboot: enable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "su -c 'touch /sdcard/pingreboot'"
+    }
+  ],
+  "ATV - Pingreboot: disable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "su -c 'rm /sdcard/pingreboot'"
+    }
+  ],
+  "ATV - Pingreboot: status": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "[ -f /sdcard/pingreboot ] && echo enabled || echo disabled",
+      "FIELDNAME": "pingreboot_status"
+    }
+  ]
+}

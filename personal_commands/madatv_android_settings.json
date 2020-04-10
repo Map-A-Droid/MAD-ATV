@@ -1,0 +1,26 @@
+{
+  "ATV - Heads-up notifications: enable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "su -c 'settings put global heads_up_notifications_enabled 1'"
+    }
+  ],
+  "ATV - Heads-up notifications: disable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "su -c 'settings put global heads_up_notifications_enabled 0'"
+    }
+  ],
+  "ATV - HDMI control: enable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "su -c 'settings put global hdmi_control_enabled 1'"
+    }
+  ],
+  "ATV - HDMI control: disable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "su -c 'settings put global hdmi_control_enabled 0'"
+    }
+  ]
+}
