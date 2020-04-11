@@ -1,5 +1,5 @@
 {
-  "CUSTOM - MAD-ATV enable pingreboot": [
+  "ATV - Pingreboot: enable": [
     {
       "TYPE": "jobType.PASSTHROUGH",
       "SYNTAX": "su -c 'touch /sdcard/pingreboot'"

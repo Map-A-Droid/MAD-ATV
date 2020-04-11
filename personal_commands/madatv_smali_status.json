@@ -1,5 +1,5 @@
 {
-  "CUSTOM - check if smali is installed": [
+  "ATV - Smali: status": [
     {
       "TYPE": "jobType.PASSTHROUGH",
       "SYNTAX": "echo \"Module $(ls -lL /sbin/.magisk/img | grep -q smali && ls -lL /sbin/.magisk/img | grep smali | awk {'print $8'} || echo Not installed)\""

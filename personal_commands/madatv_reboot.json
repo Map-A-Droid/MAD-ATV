@@ -1,5 +1,5 @@
 {
-  "CUSTOM - REBOOT by Mad Jobs": [
+  "ATV - Reboot": [
     {
       "TYPE": "jobType.REBOOT",
       "SYNTAX": "su -c reboot"

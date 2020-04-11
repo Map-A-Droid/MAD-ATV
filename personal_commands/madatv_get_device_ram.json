@@ -1,5 +1,5 @@
 {
-  "CUSTOM - show total ram": [
+  "ATV - Get device total RAM": [
     {
       "TYPE": "jobType.PASSTHROUGH",
       "SYNTAX": "cat /proc/meminfo|awk '/MemTotal/{print $2}'",
