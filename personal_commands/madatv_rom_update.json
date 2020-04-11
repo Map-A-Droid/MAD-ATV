@@ -1,0 +1,14 @@
+{
+  "ATV - Update ROM": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "print 'Step 1 of 2' && su -c 'mount -o remount,rw /system && /system/bin/curl -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh >/system/bin/update_mad.sh && chmod +x /system/bin/update_mad.sh && /system/bin/update_mad.sh -i'",
+      "WAITTIME": 0
+    },
+    {
+      "TYPE": "jobType.REBOOT",
+      "SYNTAX": "Step 2 of 2 - REBOOT DEVICE",
+      "WAITTIME": 0
+    }
+  ]
+}

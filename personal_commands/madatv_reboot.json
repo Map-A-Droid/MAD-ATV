@@ -1,0 +1,8 @@
+{
+  "ATV - Reboot": [
+    {
+      "TYPE": "jobType.REBOOT",
+      "SYNTAX": "su -c reboot"
+    }
+  ]
+}

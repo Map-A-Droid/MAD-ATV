@@ -1,0 +1,14 @@
+{
+  "ATV - PoGo auto-update: enable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "rm /sdcard/disableautopogoupdate && exit 0"
+    }
+  ],
+  "ATV - PoGo auto-update: disable": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "touch /sdcard/disableautopogoupdate"
+    }
+  ]
+}

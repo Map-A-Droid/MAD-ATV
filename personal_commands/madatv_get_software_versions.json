@@ -1,0 +1,9 @@
+{
+  "ATV - Get software versions": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "echo \"RGC $(dumpsys package de.grennith.rgc.remotegpscontroller | grep versionName | head -n1 | sed 's/ *versionName=//') | PD $(dumpsys package com.mad.pogodroid | grep versionName | head -n1 | sed 's/ *versionName=//') | PoGo $(dumpsys package com.nianticlabs.pokemongo | grep versionName | head -n1 | sed 's/ *versionName=//') | Magisk $(magisk -c) | Magisk Modules $(ls /sbin/.magisk/img 2>/dev/null|tr -s ' '|tr '\n' ' ') | $([[ -f /sdcard/pingreboot ]] && echo 'Pingreboot enabled |') ROM $(cat /sdcard/madversion 2>/dev/null || echo unknown)\"",
+      "FIELDNAME": "Versions"
+    }
+  ]
+}
