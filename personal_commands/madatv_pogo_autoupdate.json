@@ -1,16 +1,14 @@
 {
-    "CUSTOM - disable pogo autoupdate on MAD-ATV":
-    [
-            {
-                    "TYPE": "jobType.PASSTHROUGH",
-                    "SYNTAX": "touch /sdcard/disableautopogoupdate"
-           }
-    ],
-    "CUSTOM - enable pogo autoupdate on MAD-ATV":
-    [
-            {
-                    "TYPE": "jobType.PASSTHROUGH",
-                    "SYNTAX": "rm /sdcard/disableautopogoupdate && exit 0"
-           }
-    ]
+  "CUSTOM - disable pogo autoupdate on MAD-ATV": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "touch /sdcard/disableautopogoupdate"
+    }
+  ],
+  "CUSTOM - enable pogo autoupdate on MAD-ATV": [
+    {
+      "TYPE": "jobType.PASSTHROUGH",
+      "SYNTAX": "rm /sdcard/disableautopogoupdate && exit 0"
+    }
+  ]
 }

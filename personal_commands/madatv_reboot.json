@@ -1,9 +1,8 @@
 {
-        "CUSTOM - REBOOT by Mad Jobs": 
-        [
-                {
-                        "TYPE": "jobType.REBOOT",
-                        "SYNTAX": "su -c reboot"
-                }
-        ]        
+  "CUSTOM - REBOOT by Mad Jobs": [
+    {
+      "TYPE": "jobType.REBOOT",
+      "SYNTAX": "su -c reboot"
+    }
+  ]
 }
