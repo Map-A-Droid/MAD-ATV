@@ -1,8 +1,0 @@
-{
-  "ATV - Rehide Magisk": [
-    {
-      "TYPE": "jobType.PASSTHROUGH",
-      "SYNTAX": "su -c 'magiskhide disable && sleep 1 && magiskhide enable && magiskhide --rm com.nianticlabs.pokemongo && sleep 1 && magiskhide --add com.nianticlabs.pokemongo'"
-    }
-  ]
-}

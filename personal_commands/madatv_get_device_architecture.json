@@ -1,8 +1,0 @@
-{
-  "ATV - Get device architecture (32 or 64bit)": [
-    {
-      "TYPE": "jobType.PASSTHROUGH",
-      "SYNTAX": "getprop ro.product.cpu.abi"
-    }
-  ]
-}

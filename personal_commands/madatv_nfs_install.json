@@ -1,8 +1,0 @@
-{
-  "ATV - NFS: install": [
-    {
-      "TYPE": "jobType.PASSTHROUGH",
-      "SYNTAX": "su -c 'mount -o remount,rw /system &&/system/bin/curl -o /system/bin/nfs_install.sh -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh && chmod +x /system/bin/nfs_install.sh && /system/bin/nfs_install.sh'"
-    }
-  ]
-}

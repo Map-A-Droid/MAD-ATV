@@ -1,8 +1,0 @@
-{
-  "ATV - NFS: status": [
-    {
-      "TYPE": "jobType.PASSTHROUGH",
-      "SYNTAX": "echo \"Module $(ls -lL /sbin/.magisk/img | grep -q nfs && ls -lL /sbin/.magisk/img | grep nfs | awk {'print $8'} || echo Not installed) | Mode $(cat /data/NFS/mode.txt 2>/dev/null || echo NFS not installed)\""
-    }
-  ]
-}

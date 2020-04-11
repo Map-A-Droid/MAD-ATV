@@ -1,9 +1,0 @@
-{
-  "ATV - Blink x96w LED": [
-    {
-      "TYPE": "jobType.PASSTHROUGH",
-      "SYNTAX": "F=/sys/class/leds/led-sys/brightness su -c 'echo 0 > $F && sleep 0.5 && echo 1 > $F && sleep 0.5 && echo 0 > $F && sleep 0.5 && echo 1 > $F && sleep 0.5 && echo 0 > $F && sleep 0.5 && echo 1 > $F && sleep 0.5 && echo 0 > $F && sleep 0.5 && echo 1 > $F'",
-      "WAITTIME": 0
-    }
-  ]
-}
