@@ -53,6 +53,24 @@ function update_pokemon(){
 	echo
 }
 
+# Uninstalls current PoGo version and instals version available on MADmin apk
+# Hardcoded for armeabi-v7a version, no server online, data received or version number checks are programed into the function.
+# Assumes the APK has previously been uploaded into your server.
+function API_update_pokemon(){
+	echo "updating PokemonGo..."
+	echo "Delete old APK PokemonGo"
+	/system/bin/rm -f /sdcard/Download/pogo.apk
+	echo "Download APK PokemonGo"
+	pserver=$(grep post_destination /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|grep -v raw|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
+	user=$(grep auth_username /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
+	pass=$(grep auth_password /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
+	cd /sdcard/Download/
+	/system/bin/curl -s -k -u $user:$pass -o pogo.apk $pserver/api/mad_apk/pogo/armeabi-v7a/download
+	echo "Install APK PokemonGo"
+	/system/bin/pm install -r /sdcard/Download/pogo.apk
+	echo
+}
+
 function update_init(){
 	echo "updating init scripts..."
 	/system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
@@ -83,6 +101,7 @@ function print_help(){
 	echo "Options:"
 	echo "          -r   (Update RemoteGPSController)"
 	echo "          -p   (Update PokemonGO)"
+	echo "          -pp   (Update PokemonGO - MADmin apk)"	
 	echo "          -d   (Update PogoDroid)"
 	echo "          -n   (update name in DHCP)"
         echo "          -i   (Update MAD ROM init script)"
@@ -100,6 +119,9 @@ do
 		-p)
 			UpdatePoGo=1
 			;;
+		-pp)
+			UpdatePoGoMADmin=1
+			;;			
 		-d)
 			UpdatePogoDroid=1
 			;;
@@ -125,12 +147,13 @@ do
 	esac
 done
 
-(($UpdateRGC))       && update_rgc
-(($UpdatePogoDroid)) && update_pogodroid
-(($UpdateDHCP))      && update_dhcp
-(($UpdatePoGo))      && update_pokemon
+(($UpdateRGC))           && update_rgc
+(($UpdatePogoDroid))     && update_pogodroid
+(($UpdateDHCP))          && update_dhcp
+(($UpdatePoGo))          && update_pokemon
+(($UpdatePoGoMADmin))    && API_update_pokemon
 (($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
 (($UpdateInit))      && update_init
-((($UpdateRGC)) || (($UpdateInit)) || (($UpdateDHCP)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
+((($UpdateRGC)) || (($UpdateInit)) || (($UpdateDHCP)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) || (($UpdatePoGoMADmin))) && reboot_device
 
 exit
