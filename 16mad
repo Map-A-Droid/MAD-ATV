@@ -74,6 +74,12 @@ elif [[ "$madmodel" == s905x ]] ;then
    else
       unset madmodel
    fi
+elif [[ "$madmodel" == s912lp ]] ;then
+   if grep ro.build.description /system/build.prop |grep -q q201; then
+      madmodel="s912lp"
+   else
+      unset madmodel
+   fi
 else
    unset madmodel
 fi
