@@ -1,7 +1,5 @@
 #!/system/bin/sh
 
-pm hide com.hal9k.notify4scripts >/dev/null 2>/dev/null
-
 #This is for update_mad version
 uver="2.8"
 #This is for pingreboot version
@@ -38,7 +36,6 @@ if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
      /system/bin/rm /sdcard/pogodroid.apk
      sleep 1
    done
-   am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed Pogodroid successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
    until [[ $(pm list packages com.nianticlabs.pokemongo) ]]; do
      /system/bin/curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L -o /sdcard/pogo.apk "https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=$(curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L 'https://www.apkmirror.com/apk/niantic-inc/pokemon-go/variant-%7B%22arches_slug%22%3A%5B%22armeabi-v7a%22%5D%7D/'| grep data-postid|head -n1|awk -F'"' '{print $14}')"
      /system/bin/chmod 644 /sdcard/pogo.apk
@@ -46,11 +43,9 @@ if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
      /system/bin/rm /sdcard/pogo.apk
      sleep 1
    done
-     am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed PokémonGo successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
      download "https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk" "/system/priv-app/RemoteGpsController.apk"
      /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
      /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
-     am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Installed RGC successfully!" -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
 
 madmodel="$(grep ro.product.board /system/build.prop |awk -F'=' '{print $2}'|tr '[:upper:]' '[:lower:]')"
@@ -201,7 +196,6 @@ elif [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;t
    done
    ifconfig eth0 up
    echo "$newmac" > /sdcard/madmac
-   am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "a95xf1 eth0 mac bug detected and fixed. eth0 MAC updated." -n com.hal9k.notify4scripts/.NotifyServiceCV
 fi
 #In case you want to set mac on wifi interface
 if [[ -e /sdcard/madmac2 ]] ;then
@@ -263,7 +257,6 @@ if [[ "$usbfile" != "" ]] && [ -d /data/data/com.mad.pogodroid ] ;then
       ! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
       sed -e "s,$oldserial,$newserial,g" -e "s,$sessionid,,g" -e "s,$injtime,,g" -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$pdconf"
       chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
-      am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Found USB stick with autoconfig files, attempted to autoconfig pogodroid." -n com.hal9k.notify4scripts/.NotifyServiceCV
    fi
 fi
 rgcconf="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml"
@@ -277,7 +270,6 @@ if [[ "$usbfile" != "" ]] && [ -d /data/data/de.grennith.rgc.remotegpscontroller
       ! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
       sed -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$rgcconf"
       chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
-      am startservice -e b_noicon 1 -e b_notime 1 -e float_tsize 20 -e str_title "MAD installation" -e str_content "Found USB stick with autoconfig files, attempted to autoconfig RGC." -n com.hal9k.notify4scripts/.NotifyServiceCV
    fi
 fi
 exit 0
