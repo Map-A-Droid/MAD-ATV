@@ -14,8 +14,8 @@ until /system/bin/curl -s -k -L -A "$useragent" -o "$2" "$1" ;do
 done
 }
 
-rm /sdcard/smali.zip
-download "$NFS_url" /sdcard/smali.zip
+rm /sdcard/NFS-INJECTOR.zip
+download "$NFS_url" /sdcard/NFS-INJECTOR.zip
 mkdir -p /cache/recovery
 touch /cache/recovery/command
 echo '--update_package=/sdcard/NFS-INJECTOR.zip' >> /cache/recovery/command
