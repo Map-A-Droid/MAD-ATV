@@ -157,7 +157,9 @@ fi
 #cec says that turning off cec helps... i guess he was too turned on?
 ! [[ $(settings get global hdmi_control_enabled) == "0" ]] && settings put global hdmi_control_enabled 0
 
-[[ "$(/system/bin/getprop persist.sys.app.rotation)" != "middle_port" ]] && /system/bin/setprop persist.sys.app.rotation middle_port
+if [ ! -f /sdcard/stoptouchingmyscreen]; then
+ [[ "$(/system/bin/getprop persist.sys.app.rotation)" != "middle_port" ]] && /system/bin/setprop persist.sys.app.rotation middle_port
+fi
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
