@@ -5,9 +5,9 @@ uver="2.8"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
-nver="1.1"
+nver="1.2"
 # mad rom version
-madver="1.2.2"
+madver="1.2.3"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
