@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.8
+# version 2.9
 # created by GhostTalker
 #
 # adb connect %1:5555
@@ -9,6 +9,8 @@
 # adb -s %1:5555 shell su -c "cp /sdcard/update_mad.sh /system/bin/update_mad.sh"
 # adb -s %1:5555 shell su -c "chmod 555 /system/bin/update_mad.sh"
 # adb -s %1:5555 shell su -c "mount -o ro,remount /system"
+
+pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
 
 function reboot_device(){
 	if [[ "$USER" == "shell" ]] ;then
@@ -41,16 +43,37 @@ function update_rgc(){
 	echo
 }
 
+function get_pd_user(){
+	user=$(awk -F'>' '/auth_username/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
+        pass=$(awk -F'>' '/auth_password/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
+	if [[ "$user" ]] ;then
+		printf "-u $user:$pass"
+	fi
+}
+
 function update_pokemon(){
+	pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
+	origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
+	newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/armeabi-v7a")"
+	installedver="$(dumpsys package com.nianticlabs.pokemongo|awk -F'=' '/versionName/{print $2}')"
+	[[ "$newver" == "$installedver" ]] && unset UpdatePoGo && echo "The madmin wizard has version $newver and so do we, doing nothing." && return 0
+	[[ "$newver" == "" ]] && unset UpdatePoGo && echo "The madmin wizard has no pogo in its system apks, or your pogodroid is not configured" && return 1
 	echo "updating PokemonGo..."
-	echo "Delete old APK PokemonGo"
-	/system/bin/rm -f /sdcard/Download/pogo.apk
+	mkdir -p /sdcard/Download/pogo
+	/system/bin/rm -f /sdcard/Download/pogo/*
 	echo "Download APK PokemonGo"
-	cd /sdcard/Download/
-	/system/bin/curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L -o /sdcard/Download/pogo.apk "https://www.apkmirror.com/wp-content/themes/APKMirror/download.php?id=$(curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L 'https://www.apkmirror.com/apk/niantic-inc/pokemon-go/variant-%7B%22arches_slug%22%3A%5B%22armeabi-v7a%22%5D%7D/'| grep data-postid|head -n1|awk -F'"' '{print $14}')"
+	(cd /sdcard/Download/pogo
+	until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/armeabi-v7a/download" && unzip pogo.zip && rm pogo.zip ;do
+		/system/bin/rm -f /sdcard/Download/pogo/*
+		sleep 2
+	done
 	echo "Install APK PokemonGo"
-	/system/bin/pm install -r /sdcard/Download/pogo.apk
-	echo
+	session=$(pm install-create -r | cut -d [ -f2 | cut -d ] -f1)
+	for a in * ;do
+		pm install-write -S $(stat -c %s $a) $session $a $a
+	done
+	pm install-commit $session
+	)
 }
 
 function update_init(){
@@ -67,7 +90,6 @@ function update_dhcp(){
 	else
 	    echo "net.hostname=${origin}" >> /system/build.prop
 	fi
-
 }
 
 function print_help(){
