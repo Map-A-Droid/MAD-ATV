@@ -1,13 +1,13 @@
 #!/system/bin/sh
 
 #This is for update_mad version
-uver="2.8"
+uver="2.9"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="1.2.3"
+madver="1.2.4"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
@@ -205,33 +205,9 @@ if [[ -e /sdcard/madmac2 ]] ;then
    ifconfig wlan0 up
 fi
 
-update_pogo(){
-[[ -f /sdcard/disableautopogoupdate ]] && return 0
-newver="$(curl -s -k -A "Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.2.3) Gecko/20100401 Firefox/3.6.3" -L 'https://www.apkmirror.com/apk/niantic-inc/pokemon-go/variant-%7B%22arches_slug%22%3A%5B%22armeabi-v7a%22%5D%7D/'  |grep "arm-v7a"|grep "pokemon-go-"|head -n1|awk -F'"' '{print $4}'|awk -F'/' '{print $5}'|awk -F'-' '{print $3 "." $4 "." $5}')"
-installedver="$(dumpsys package com.nianticlabs.pokemongo|grep versionName|awk -F'=' '{print $2}')"
-[[ "$newver" == "$installedver" ]] && return 0
-[[ "$newver" == "" ]] && return 1
-
-pserver=$(grep post_destination /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|grep -v raw|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
-user=$(grep auth_username /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
-pass=$(grep auth_password /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
-origin=$(grep post_origin /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|awk -F'>' '{print $2}'|awk -F'<' '{print $1}')
-
-if [[ "$user" == "" ]] ;then
- if curl -k -H "origin: $origin" "$pserver/get_addresses/"| grep -q "${newver}_32" ;then
-   /system/bin/update_mad.sh -p
- fi
-else
- if curl -k -H "origin: $origin" -u "$user:$pass" "$pserver/get_addresses/"| grep -q "${newver}_32" ;then
-  /system/bin/update_mad.sh -p
- fi
-fi
-}
-
 #enable autoupdates of pogo:
-# This checks if installed version is different than latest version. If it is then it checks if the local
-# server configured in pogodroid supports the latest addresses.json file. If it does then it updates pogo.
-update_pogo
+# This checks if your madmin wizard has an updated version of pogo. If it does then it updates pogo.
+! [[ -f /sdcard/disableautopogoupdate ]] && /system/bin/update_mad.sh -p
 
 # this stuff should check for a USB stick and if there is one it looks for:
 # madorigin.txt - put nothing in this file except the origin to configure for pogo/rgc
