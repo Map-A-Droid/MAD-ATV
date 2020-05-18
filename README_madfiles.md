@@ -9,3 +9,5 @@ The following is a list of files which you can use to change how your MAD ATV be
   * REBOOT_AFTER - reboot after this many consecutive failures  (default: 10)
 * **/sdcard/madversion** - contains the version of mad rom being used
 * **/sdcard/disableautopogoupdate** - disables pogo autoupdate
+* **/sdcard/disableautopogodroidupdate** - disables pogodroid autoupdate
+* **/sdcard/disableautorgcupdate** - disables RGC autoupdate
