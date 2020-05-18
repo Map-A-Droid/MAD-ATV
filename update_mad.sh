@@ -73,7 +73,7 @@ cast_alohomora(){
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/rgc/noarch")"
-installedver="$(dumpsys package de.grennith.rgc.remotegpscontroller|awk -F'=' '/versionName/{print $2}'|head -n1)"
+installedver="$(dumpsys package de.grennith.rgc.remotegpscontroller 2>/dev/null|awk -F'=' '/versionName/{print $2}'|head -n1)"
 if checkupdate "$newver" "$installedver" ;then
  echo "updating RGC..."
  rm -f /sdcard/Download/RemoteGpsController.apk
