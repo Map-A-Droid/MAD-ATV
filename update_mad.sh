@@ -56,12 +56,14 @@ checkupdate(){
 # $2 = installed version
 IFS='.' read -r -a nver <<< "$1"
 IFS='.' read -r -a iver <<< "$2"
-for ((i = 0 ; i < "${#nver[@]}" ; i++)) ;do
+i=0
+while (( $i < "${#nver[@]}" )) ;do
  case "$((${nver[i]}-${iver[i]}))" in
   -*) return 1 ;;
    0) ;;
    *) return 0 ;;
  esac
+ i=$((i+1))
  false
 done
 }
