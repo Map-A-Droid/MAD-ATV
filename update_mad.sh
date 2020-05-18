@@ -66,7 +66,8 @@ for ((i = 0 ; i < "${#nver[@]}" ; i++)) ;do
 done
 }
 
-wizard_rgc(){
+cast_alohomora(){
+#update rgc using the wizard
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/rgc/noarch")"
@@ -83,7 +84,8 @@ fi
 reboot=1
 }
 
-wizard_pogodroid(){
+cast_imperius(){
+#update pogodroid using the wizard
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogodroid/noarch")"
@@ -164,12 +166,12 @@ for i in "$@" ;do
  case "$i" in
  -r) update_rgc ;;
  -d) update_pogodroid ;;
- -wr) wizard_rgc ;;
- -wd) wizard_pogodroid ;;
+ -wr) cast_alohomora ;;
+ -wd) cast_imperius ;;
  -p) update_pokemon ;;
  -n) update_dhcp ;;
  -a) update_rgc; update_pokemon; update_pogodroid; update_init ;;
- -wa) wizard_rgc; update_pokemon; wizard_pogodroid; update_init ;;
+ -wa) cast_alohomora; update_pokemon; cast_imperius; update_init ;;
  -c) echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo ;;
  -i) update_init ;;
   *) print_help ; exit 1 ;;
