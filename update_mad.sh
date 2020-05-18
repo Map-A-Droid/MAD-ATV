@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.0
+# version 3.1
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -54,11 +54,14 @@ fi
 checkupdate(){
 # $1 = new version
 # $2 = installed version
-IFS='.' read -r -a nver <<< "$1"
-IFS='.' read -r -a iver <<< "$2"
-i=0
-while (( $i < "${#nver[@]}" )) ;do
- case "$((${nver[i]}-${iver[i]}))" in
+
+i=1
+#we start at 1 and go until number of . so we can use our counter as awk position
+places=$(awk -F. '{print NF+1}' <<< "$1")
+while (( "$i" < "$places" )) ;do
+ npos=$(awk -v pos=$i -F. '{print $pos}' <<< "$1")
+ ipos=$(awk -v pos=$i -F. '{print $pos}' <<< "$2")
+ case "$(( $npos - $ipos ))" in
   -*) return 1 ;;
    0) ;;
    *) return 0 ;;
@@ -77,7 +80,7 @@ installedver="$(dumpsys package de.grennith.rgc.remotegpscontroller 2>/dev/null|
 if checkupdate "$newver" "$installedver" ;then
  echo "updating RGC..."
  rm -f /sdcard/Download/RemoteGpsController.apk
- until curl -o /sdcard/Download/RemoteGpsController.apk  -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/rgc/download" ;do
+ until curl -o /sdcard/Download/RemoteGpsController.apk  -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/rgc/download" ;do
   rm -f /sdcard/Download/RemoteGpsController.apk
   sleep
  done
@@ -95,7 +98,7 @@ installedver="$(dumpsys package com.mad.pogodroid|awk -F'=' '/versionName/{print
 if checkupdate "$newver" "$installedver" ;then
  echo "updating pogodroid..."
  rm -f /sdcard/Download/PogoDroid.apk
- until curl -o /sdcard/Download/PogoDroid.apk -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/pogodroid/download" ;do
+ until curl -o /sdcard/Download/PogoDroid.apk -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogodroid/download" ;do
   rm -f /sdcard/Download/PogoDroid.apk
   sleep
  done
