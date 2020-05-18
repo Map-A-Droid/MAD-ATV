@@ -1,13 +1,13 @@
 #!/system/bin/sh
 
 #This is for update_mad version
-uver="2.9"
+uver="3.0"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="1.2.5"
+madver="1.2.6"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
@@ -207,9 +207,11 @@ fi
 
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do sleep 10 ;done
 
-#enable autoupdates of pogo:
+#enable autoupdates of pogo, pogodroid, and rgc:
 # This checks if your madmin wizard has an updated version of pogo. If it does then it updates pogo.
 ! [[ -f /sdcard/disableautopogoupdate ]] && /system/bin/update_mad.sh -p
+! [[ -f /sdcard/disableautopogodroidupdate ]] && /system/bin/update_mad.sh -wd
+! [[ -f /sdcard/disableautorgcupdate ]] && /system/bin/update_mad.sh -wr
 
 # this stuff should check for a USB stick and if there is one it looks for:
 # madorigin.txt - put nothing in this file except the origin to configure for pogo/rgc
