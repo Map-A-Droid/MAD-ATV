@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 2.9
+# version 3.0
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -28,6 +28,7 @@ cd /sdcard/Download/
 /system/bin/curl -L -o PogoDroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
 echo "Install APK PogoDroid"
 /system/bin/pm install -r /sdcard/Download/PogoDroid.apk
+reboot=1
 }
 
 update_rgc(){
@@ -39,6 +40,7 @@ cd /sdcard/Download/
 /system/bin/curl -L -o RemoteGpsController.apk -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk
 echo "Install APK RGC"
 /system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
+reboot=1
 }
 
 get_pd_user(){
@@ -47,6 +49,55 @@ pass=$(awk -F'>' '/auth_password/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 if [[ "$user" ]] ;then
  printf "-u $user:$pass"
 fi
+}
+
+checkupdate(){
+# $1 = new version
+# $2 = installed version
+IFS='.' read -r -a nver <<< "$1"
+IFS='.' read -r -a iver <<< "$2"
+for ((i = 0 ; i < "${#nver[@]}" ; i++)) ;do
+ case "$((${nver[i]}-${iver[i]}))" in
+  -*) return 1 ;;
+   0) ;;
+   *) return 0 ;;
+ esac
+ false
+done
+}
+
+wizard_rgc(){
+pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
+origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
+newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/rgc/noarch")"
+installedver="$(dumpsys package de.grennith.rgc.remotegpscontroller|awk -F'=' '/versionName/{print $2}'|head -n1)"
+if checkupdate "$newver" "$installedver" ;then
+ echo "updating RGC..."
+ rm -f /sdcard/Download/RemoteGpsController.apk
+ until curl -o /sdcard/Download/RemoteGpsController.apk  -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/rgc/download" ;do
+  rm -f /sdcard/Download/RemoteGpsController.apk
+  sleep
+ done
+ /system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
+fi
+reboot=1
+}
+
+wizard_pogodroid(){
+pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
+origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
+newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogodroid/noarch")"
+installedver="$(dumpsys package com.mad.pogodroid|awk -F'=' '/versionName/{print $2}'|head -n1)"
+if checkupdate "$newver" "$installedver" ;then
+ echo "updating pogodroid..."
+ rm -f /sdcard/Download/PogoDroid.apk
+ until curl -o /sdcard/Download/PogoDroid.apk -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/pogodroid/download" ;do
+  rm -f /sdcard/Download/PogoDroid.apk
+  sleep
+ done
+ /system/bin/pm install -r /sdcard/Download/PogoDroid.apk
+fi
+reboot=1
 }
 
 update_pokemon(){
@@ -72,11 +123,13 @@ for a in * ;do
 done
 pm install-commit $session
 )
+reboot=1
 }
 
 update_init(){
 echo "updating init scripts..."
 /system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
+reboot=1
 }
 
 update_dhcp(){
@@ -87,6 +140,7 @@ if grep -q 'net.hostname' /system/build.prop ;then
 else
  echo "net.hostname=${origin}" >> /system/build.prop
 fi
+reboot=1
 }
 
 print_help(){
@@ -94,9 +148,11 @@ cat << EOF
 just run: /usr/bin/adb -s <DEVICEIP>:5555 shell su -c "update_mad.sh <options>"
 
 Options:
-          -r   (Update RemoteGPSController)
+          -r   (Update RemoteGPSController from web)
+          -wr   (Update RemoteGPSController from madmin wizard)
+          -d   (Update PogoDroid from web)
+          -wd   (Update PogoDroid from madmin wizard)
           -p   (Update PokemonGO)
-          -d   (Update PogoDroid)
           -n   (update name in DHCP)
           -i   (Update MAD ROM init script)
           -a   (Update all)
@@ -106,23 +162,19 @@ EOF
 
 for i in "$@" ;do
  case "$i" in
- -r) UpdateRGC=1 ;;
- -p) UpdatePoGo=1 ;;
- -d) UpdatePogoDroid=1 ;;
- -n) UpdateDHCP=1 ;;
- -a) UpdateRGC=1 UpdatePoGo=1 UpdatePogoDroid=1 UpdateInit=1 ;;
- -c) ClearCache=1 ;;
- -i) UpdateInit=1 ;;
+ -r) update_rgc ;;
+ -d) update_pogodroid ;;
+ -wr) wizard_rgc ;;
+ -wd) wizard_pogodroid ;;
+ -p) update_pokemon ;;
+ -n) update_dhcp ;;
+ -a) update_rgc; update_pokemon; update_pogodroid; update_init ;;
+ -wa) wizard_rgc; update_pokemon; wizard_pogodroid; update_init ;;
+ -c) echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo ;;
+ -i) update_init ;;
   *) print_help ; exit 1 ;;
  esac
 done
 
-(($UpdateRGC))       && update_rgc
-(($UpdatePogoDroid)) && update_pogodroid
-(($UpdateDHCP))      && update_dhcp
-(($UpdatePoGo))      && update_pokemon
-(($ClearCache)) && echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo
-(($UpdateInit))      && update_init
-((($UpdateRGC)) || (($UpdateInit)) || (($UpdateDHCP)) || (($UpdatePogoDroid)) || (($UpdatePoGo))) && reboot_device
-
+(( $reboot )) && reboot_device
 exit
