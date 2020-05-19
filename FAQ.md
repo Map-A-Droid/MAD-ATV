@@ -35,9 +35,12 @@ See [madBeavis/PimpMyAtv](https://github.com/madBeavis/PimpMyAtv/) for helpful t
 If you got `GPS signal not found` on a brand new MAD-ROM install (and RGC is running) there is a chance that you *disabled* Location while connecting your Google Account. Go to Android Settings and make sure that [***Location*** is *ON* and set to *Device Only*](https://i.imgur.com/RxEbdRQ.png).
 If this is still not working then make sure that you have ***RemoteGpsController*** set in Android Developer options in *Select mock location app* and you installed *Smali Patcher* - it should show up in *Magisk Manager* -> *Modules* - if not go back to *TWRP* and install *smali.zip*
 
-## Question #10) <br> How does the auto-update system for pogo work in MAD-ATV?
-* Answer: As of mad rom version 1.0.0 when you boot it compares your installed pogo version with the latest 32bit version on apkpure. If the installed version is not the latest, then it checks if that version is in your addresses.json on your server. If it is then it downloads and updates pogo and reboots. If you wish to disable this, just `touch /sdcard/disableautopogoupdate`
-You may choose to disable this feature in case pogodroid one day cannot support the latest pogo version. Or you could just not update your addresses.json until it has been confirmed that the new version of pogo works with pogodroid. You should not attempt to update many boxes in this manner at the same time, as each box will attempt to download pogo at the same time and apkmirror may not appreciate it. Remember you can also download pogo and upload it to madmin and updating to it will become a job. I made the autoupdate system just so when boxes naturally reboot (maybe pingreboot, maybe mad reboots it, maybe it froze and you pulled the cable) they will update and theres less (or mayyyyybe nothing!?) to do when the force happens.
+## Question #10) <br> How does the auto-update system work in MAD-ATV?
+* Answer: As of mad rom version 1.2.7 when your atv boots it will check through your pogodroid endpoint to see if you have updated install files for pogodroid, RGC, and/or pokemon go in your madmin wizard. To update the files in your madmin wizard go to madmin and click "system" - "madmin apks" and then click the wizard hat. Once those files are updated in madmin they will be installed on your ATV after its next reboot. <br>
+To disable autoupdates for pokemon go you can `touch /sdcard/disableautopogoupdate` <br>
+To disable autoupdates for pogodroid you can `touch /sdcard/disableautopogodroidupdate` <br>
+To disable autoupdates for rgc go you can `touch /sdcard/disableautorgcupdate` <br>
+See the [madfiles README](https://github.com/Map-A-Droid/MAD-ATV/blob/master/README_madfiles.md) for more info.
 
 ## Question #11) <br> Why does the rom update job always show result: failed / faulty?
 * Answer: This was my fault with the old job files using jobtype passthrough instead of jobtype reboot. Just update and it should report success. The other possibility is if you have a REALLY old version like rc2 or something, you might not have the curl binary. This would result in a real error, and not just a faulty / no response.
