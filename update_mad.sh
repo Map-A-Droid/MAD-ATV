@@ -75,7 +75,7 @@ cast_alohomora(){
 #update rgc using the wizard
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
-newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/rgc/noarch")"
+newver="$(curl -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/rgc/noarch")"
 installedver="$(dumpsys package de.grennith.rgc.remotegpscontroller 2>/dev/null|awk -F'=' '/versionName/{print $2}'|head -n1)"
 if checkupdate "$newver" "$installedver" ;then
  echo "updating RGC..."
@@ -93,7 +93,7 @@ cast_imperius(){
 #update pogodroid using the wizard
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
-newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogodroid/noarch")"
+newver="$(curl -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogodroid/noarch")"
 installedver="$(dumpsys package com.mad.pogodroid|awk -F'=' '/versionName/{print $2}'|head -n1)"
 if checkupdate "$newver" "$installedver" ;then
  echo "updating pogodroid..."
@@ -110,7 +110,7 @@ reboot=1
 update_pokemon(){
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
-newver="$(curl -s -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/armeabi-v7a")"
+newver="$(curl -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/armeabi-v7a")"
 installedver="$(dumpsys package com.nianticlabs.pokemongo|awk -F'=' '/versionName/{print $2}')"
 [[ "$newver" == "$installedver" ]] && unset UpdatePoGo && echo "The madmin wizard has version $newver and so do we, doing nothing." && return 0
 [[ "$newver" == "" ]] && unset UpdatePoGo && echo "The madmin wizard has no pogo in its system apks, or your pogodroid is not configured" && return 1
