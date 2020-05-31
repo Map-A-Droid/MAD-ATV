@@ -47,7 +47,17 @@ get_pd_user(){
 user=$(awk -F'>' '/auth_username/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 pass=$(awk -F'>' '/auth_password/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 if [[ "$user" ]] ;then
- printf "-u $user:$pass"
+  # decode xml entities in pass (thx to WinEunuuchs2Unix: https://stackoverflow.com/a/43058947)
+  pass="${pass//&nbsp;/ }"
+  pass="${pass//&amp;/&}"
+  pass="${pass//&lt;/<}"
+  pass="${pass//&gt;/>}"
+  pass="${pass//&quot;/'"'}"
+  pass="${pass//&#39;/"'"}"
+  pass="${pass//&ldquo;/'"'}" # TODO: ASCII/ISO for opening quote
+  pass="${pass//&rdquo;/'"'}" # TODO: ASCII/ISO for closing quote
+
+  printf %s "-u $user:$pass"
 fi
 }
 
