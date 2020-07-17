@@ -13,8 +13,8 @@
 pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
 
 case "$(uname -a)" in
- aarch64) arch="arm64_v8a"
- armv8l)  arch="armeabi-v7a"
+ aarch64) arch="arm64_v8a";;
+ armv8l)  arch="armeabi-v7a";;
 esac
 
 reboot_device(){
