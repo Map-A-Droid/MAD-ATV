@@ -87,6 +87,7 @@ fi
 
 init_installation() {
 echo "Core Packages being installed"
+cachereboot=0
 if [ ! -f /sbin/magisk ] || ! magisk -c|grep -q "$mver"  ; then
     [ -f /sbin/magisk ] && ! magisk -c|grep -q "$mver" && touch /sdcard/madupdating
     echo "Installing Magisk ${mver}"
@@ -94,7 +95,7 @@ if [ ! -f /sbin/magisk ] || ! magisk -c|grep -q "$mver"  ; then
     mkdir -p /cache/recovery
     touch /cache/recovery/command
     echo '--update_package=/sdcard/magisk.zip' >> /cache/recovery/command
-    reboot recovery
+    cachereboot=1
 elif [ -f /sdcard/madupdating ]; then
     pm uninstall com.topjohnwu.magisk
     rm /sdcard/madupdating
@@ -103,7 +104,11 @@ if [ ! $(pm list packages android.vending) ]; then
     echo "Installing GApps"
     download "https://netcologne.dl.sourceforge.net/project/opengapps/arm64/20200715/open_gapps-arm64-7.1-pico-20200715.zip" /sdcard/gapps.zip
     mkdir -p /cache/recovery
+    touch /cache/recovery/command
     echo '--update_package=/sdcard/gapps.zip' >> /cache/recovery/command
+    cachereboot=1
+fi
+if (( $cachereboot )) ;then
     echo '--wipe_cache' >> /cache/recovery/command
     reboot recovery
 fi
