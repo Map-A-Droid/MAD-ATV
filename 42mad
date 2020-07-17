@@ -23,7 +23,7 @@ pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.
 usbfile="$(find /mnt/media_rw/ -name com.mad.pogodroid_preferences.xml|head -n1)"
 usbofile="$(find /mnt/media_rw/ -name madorigin.txt|head -n1)"
 if [[ "$usbfile" != "" ]] && [ -d /data/data/com.mad.pogodroid ] ;then
-    if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdconf"|cut -d'<' -f1) == "" ]] ;then    
+    if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdconf"|cut -d'<' -f1) == "" ]] ;then
         newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
         [[ "$newserial" == "" ]] && newserial="$(ifconfig wlan0|grep -q inet && ifconfig wlan0|awk '/HWaddr/{print $5}')"
         [[ "$newserial" == "" ]] && newserial="$(ifconfig eth0|grep -q inet && ifconfig eth0|awk '/HWaddr/{print $5}')"
