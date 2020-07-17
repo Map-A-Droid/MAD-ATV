@@ -1,13 +1,13 @@
 #!/system/bin/sh
 
 #This is for update_mad version
-uver="3.2"
+uver="3.3"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="1.2.8"
+madver="1.2.9"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
@@ -49,7 +49,7 @@ if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 fi
 
 madmodel="$(grep ro.product.board /system/build.prop |awk -F'=' '{print $2}'|tr '[:upper:]' '[:lower:]')"
-if [[ "$madmodel" == s905w ]] ;then 
+if [[ "$madmodel" == s905w ]] ;then
    if grep ro.build.description /system/build.prop |grep -q p281; then
       if grep ro.build.display.id /system/build.prop |grep -q v2H ;then
          madmodel="t95s1"
@@ -103,7 +103,7 @@ fi
 if [ -f /sbin/magiskhide ]; then
    /sbin/magiskhide --add com.nianticlabs.pokemongo
    [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
-   [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip 
+   [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
    #make sure rgc and pogodroid and shell have su root
    puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
    puid=$(id -u "$puser")
@@ -223,7 +223,7 @@ pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.
 usbfile="$(find /mnt/media_rw/ -name com.mad.pogodroid_preferences.xml|head -n1)"
 usbofile="$(find /mnt/media_rw/ -name madorigin.txt|head -n1)"
 if [[ "$usbfile" != "" ]] && [ -d /data/data/com.mad.pogodroid ] ;then
-   if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdconf"|cut -d'<' -f1) == "" ]] ;then    
+   if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdconf"|cut -d'<' -f1) == "" ]] ;then
       newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
       [[ "$newserial" == "" ]] && newserial="$(ifconfig wlan0|grep -q inet && ifconfig wlan0|awk '/HWaddr/{print $5}')"
       [[ "$newserial" == "" ]] && newserial="$(ifconfig eth0|grep -q inet && ifconfig eth0|awk '/HWaddr/{print $5}')"
