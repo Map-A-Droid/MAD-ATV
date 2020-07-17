@@ -12,6 +12,7 @@ mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
 
+set -x
 exec 2> /sdcard/maddev.log
 
 autoconfigure_mad() {
@@ -86,8 +87,8 @@ fi
 
 init_installation() {
 echo "Core Packages being installed"
-if [ ! -f /sbin/magiskhide ] || ! magisk -c|grep -q "$mver"  ; then
-    ! magisk -c|grep -q "$mver" && touch /sdcard/madupdating
+if [ ! -f /sbin/magisk ] || ! magisk -c|grep -q "$mver"  ; then
+    [ -f /sbin/magisk ] && ! magisk -c|grep -q "$mver" && touch /sdcard/madupdating
     echo "Installing Magisk ${mver}"
     download "$murl" /sdcard/magisk.zip
     mkdir -p /cache/recovery
