@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.2
+# version 3.3
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -11,6 +11,11 @@
 # adb -s %1:5555 shell su -c "mount -o ro,remount /system"
 
 pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
+
+case "$(uname -a)" in
+ aarch64) arch="arm64_v8a"
+ armv8l)  arch="armeabi-v7a"
+esac
 
 reboot_device(){
 if [[ "$USER" == "shell" ]] ;then
@@ -113,7 +118,7 @@ update_pokemon(){
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 ! [[ "$pserver" ]] && echo "pogodroid endpoint not configured yet, cannot contact the wizard" && return 1
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
-newver="$(curl -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/armeabi-v7a")"
+newver="$(curl -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch")"
 installedver="$(dumpsys package com.nianticlabs.pokemongo|awk -F'=' '/versionName/{print $2}')"
 [[ "$newver" == "$installedver" ]] && unset UpdatePoGo && echo "The madmin wizard has version $newver and so do we, doing nothing." && return 0
 [[ "$newver" == "" ]] && unset UpdatePoGo && echo "The madmin wizard has no pogo in its system apks, or your pogodroid is not configured" && return 1
@@ -122,7 +127,7 @@ mkdir -p /sdcard/Download/pogo
 /system/bin/rm -f /sdcard/Download/pogo/*
 echo "Download APK PokemonGo"
 (cd /sdcard/Download/pogo
-until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/armeabi-v7a/download" && unzip pogo.zip && rm pogo.zip ;do
+until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" && unzip pogo.zip && rm pogo.zip ;do
  /system/bin/rm -f /sdcard/Download/pogo/*
  sleep 2
 done
