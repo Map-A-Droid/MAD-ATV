@@ -257,6 +257,6 @@ echo "$madver" > /sdcard/madversion
 execute_autoupdates
 set_mac_address
 wait_for_network
-execute_apk_autoupdates
 autoconfigure_mad
+execute_apk_autoupdates
 exit 0
