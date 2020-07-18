@@ -12,9 +12,6 @@ mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
 
-set -x
-exec 2> /sdcard/maddev.log
-
 autoconfigure_mad() {
 # this stuff should check for a USB stick and if there is one it looks for:
 # madorigin.txt - put nothing in this file except the origin to configure for pogo/rgc
@@ -260,3 +257,4 @@ wait_for_network
 autoconfigure_mad
 execute_apk_autoupdates
 exit 0
+# initdebug
