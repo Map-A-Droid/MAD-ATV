@@ -184,6 +184,23 @@ echo "Setting android settings for workers"
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
 echo "Successfully set the settings for workers"
 }
+#Not tested yet
+set_mac_unify(){
+echo "Setting Mac in unifykey"
+
+if [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;then
+   newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+   ifconfig eth0 down
+   until ifconfig eth0 hw ether "$newmac" 2>/dev/null; do
+     newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+   done
+   echo 1 > /sys/class/unifykeys/lock
+   echo mac > /sys/class/unifykeys/name
+   echo "$newmac" >/sys/class/unifykeys/write
+   cat /sys/class/unifykeys/read
+   echo 0 > /sys/class/unifykeys/lock
+   ifconfig eth0 up
+}
 
 set_mac_address(){
 echo "Setting MAC address (if required)"
@@ -252,7 +269,7 @@ set_android_settings
 set_permissions
 echo "$madver" > /sdcard/madversion
 execute_autoupdates
-set_mac_address
+set_mac_unify
 wait_for_network
 autoconfigure_mad
 execute_apk_autoupdates
