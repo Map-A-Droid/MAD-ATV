@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.3
+# version 3.4
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -12,7 +12,7 @@
 
 pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
 
-case "$(uname -a)" in
+case "$(uname -m)" in
  aarch64) arch="arm64_v8a";;
  armv8l)  arch="armeabi-v7a";;
 esac
