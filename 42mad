@@ -1,6 +1,6 @@
 #!/system/bin/sh
 #This is for update_mad version
-uver="3.3"
+uver="3.4"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
@@ -152,9 +152,9 @@ done
 }
 
 execute_apk_autoupdates(){
-! [[ -f /sdcard/disableautopogoupdate ]] && /system/bin/update_mad.sh -p
-! [[ -f /sdcard/disableautopogodroidupdate ]] && /system/bin/update_mad.sh -wd
-! [[ -f /sdcard/disableautorgcupdate ]] && /system/bin/update_mad.sh -wr
+! [[ -f /sdcard/disableautopogoupdate ]] && sh -x /system/bin/update_mad.sh -p
+! [[ -f /sdcard/disableautopogodroidupdate ]] && sh -x /system/bin/update_mad.sh -wd
+! [[ -f /sdcard/disableautorgcupdate ]] && sh -x /system/bin/update_mad.sh -wr
 }
 
 execute_autoupdates(){
@@ -163,6 +163,7 @@ if ! grep -q "version $uver" /system/bin/update_mad.sh; then
     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
     chmod +x /system/bin/update_mad.sh
 fi
+#we'll see if these end up included
 #if ! grep -q "version $pver" /system/bin/pingreboot.sh; then
 #    echo "Downloading pingreboot.sh"
 #    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh /system/bin/pingreboot.sh
@@ -186,6 +187,7 @@ echo "Successfully set the settings for workers"
 }
 
 set_mac_address(){
+#This will get changed, thanks banana and aco
 echo "Setting MAC address (if required)"
 if [[ -e /sdcard/madmac ]] ;then
    newmac=$(cat /sdcard/madmac)
@@ -252,9 +254,10 @@ set_android_settings
 set_permissions
 echo "$madver" > /sdcard/madversion
 execute_autoupdates
-set_mac_address
+#set_mac_address
 wait_for_network
 autoconfigure_mad
 execute_apk_autoupdates
-exit 0
+mount -o remount,ro /system
+
 # initdebug
