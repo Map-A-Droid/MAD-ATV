@@ -17,6 +17,13 @@ case "$(uname -m)" in
  armv8l)  arch="armeabi-v7a";;
 esac
 
+checkpdconf(){
+if ! [[ -s "$pdconf" ]] ;then
+ echo "pogodroid not configured yet"
+ return 1
+fi
+}
+
 reboot_device(){
 if [[ "$USER" == "shell" ]] ;then
  echo "Rebooting Device"
@@ -49,6 +56,7 @@ reboot=1
 }
 
 get_pd_user(){
+checkpdconf || return 1
 user=$(awk -F'>' '/auth_username/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 pass=$(awk -F'>' '/auth_password/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 if [[ "$user" ]] ;then
@@ -78,6 +86,7 @@ done
 
 cast_alohomora(){
 #update rgc using the wizard
+checkpdconf || return 1
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 ! [[ "$pserver" ]] && echo "pogodroid endpoint not configured yet, cannot contact the wizard" && return 1
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
@@ -97,6 +106,7 @@ reboot=1
 
 cast_imperius(){
 #update pogodroid using the wizard
+checkpdconf || return 1
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 ! [[ "$pserver" ]] && echo "pogodroid endpoint not configured yet, cannot contact the wizard" && return 1
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
@@ -115,6 +125,7 @@ reboot=1
 }
 
 update_pokemon(){
+checkpdconf || return 1
 pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
 ! [[ "$pserver" ]] && echo "pogodroid endpoint not configured yet, cannot contact the wizard" && return 1
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
