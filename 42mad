@@ -1,6 +1,6 @@
 #!/system/bin/sh
 #This is for update_mad version
-uver="3.3"
+uver="3.5"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
@@ -163,11 +163,11 @@ if ! grep -q "version $uver" /system/bin/update_mad.sh; then
     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
     chmod +x /system/bin/update_mad.sh
 fi
-#if ! grep -q "version $pver" /system/bin/pingreboot.sh; then
-#    echo "Downloading pingreboot.sh"
-#    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh /system/bin/pingreboot.sh
-#    chmod +x /system/bin/pingreboot.sh
-#fi
+if ! grep -q "version $pver" /system/bin/pingreboot.sh; then
+     echo "Downloading pingreboot.sh"
+     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh /system/bin/pingreboot.sh
+     chmod +x /system/bin/pingreboot.sh
+fi
 #if ! grep -q "version $nver" /system/bin/nfs_install.sh; then
 #    echo "Downloading nfs_install.sh"
 #    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh /system/bin/nfs_install.sh
@@ -268,7 +268,6 @@ core_installation
 set_android_settings
 set_permissions
 echo "$madver" > /sdcard/madversion
-execute_autoupdates
 set_mac_unify
 wait_for_network
 autoconfigure_mad
