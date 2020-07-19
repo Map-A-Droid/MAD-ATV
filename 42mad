@@ -152,22 +152,24 @@ done
 }
 
 execute_apk_autoupdates(){
-! [[ -f /sdcard/disableautopogoupdate ]] && /system/bin/update_mad.sh -p
-! [[ -f /sdcard/disableautopogodroidupdate ]] && /system/bin/update_mad.sh -wd
-! [[ -f /sdcard/disableautorgcupdate ]] && /system/bin/update_mad.sh -wr
+! [[ -f /sdcard/disableautopogoupdate ]] && sh -x /system/bin/update_mad.sh -p
+! [[ -f /sdcard/disableautopogodroidupdate ]] && sh -x /system/bin/update_mad.sh -wd
+! [[ -f /sdcard/disableautorgcupdate ]] && sh -x /system/bin/update_mad.sh -wr
 }
 
 execute_autoupdates(){
 if ! grep -q "version $uver" /system/bin/update_mad.sh; then
     echo "Downloading update_mad.sh"
-    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
+    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad64.sh /system/bin/update_mad.sh
     chmod +x /system/bin/update_mad.sh
 fi
+
 if ! grep -q "version $pver" /system/bin/pingreboot.sh; then
      echo "Downloading pingreboot.sh"
      download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh /system/bin/pingreboot.sh
      chmod +x /system/bin/pingreboot.sh
 fi
+
 #if ! grep -q "version $nver" /system/bin/nfs_install.sh; then
 #    echo "Downloading nfs_install.sh"
 #    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh /system/bin/nfs_install.sh
@@ -203,6 +205,7 @@ if [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;the
 }
 
 set_mac_address(){
+#This will get changed, thanks banana and aco
 echo "Setting MAC address (if required)"
 if [[ -e /sdcard/madmac ]] ;then
    newmac=$(cat /sdcard/madmac)
@@ -268,9 +271,11 @@ core_installation
 set_android_settings
 set_permissions
 echo "$madver" > /sdcard/madversion
-set_mac_unify
+execute_autoupdates
+#set_mac_address
 wait_for_network
 autoconfigure_mad
 execute_apk_autoupdates
-exit 0
+mount -o remount,ro /system
+
 # initdebug
