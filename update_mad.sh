@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.4
+# version 3.5
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
