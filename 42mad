@@ -265,6 +265,21 @@ done
 echo "Network connection detected"
 }
 
+repack_magisk(){
+echo "repacking magisk"
+monkey -p com.topjohnwu.magisk 1
+sleep 5
+input tap 39 42
+sleep 5
+input tap 150 537
+sleep 5
+input tap 315 552
+sleep 5
+input tap 881 277
+echo "done"
+
+}
+
 wait_for_network
 mount -o remount,rw /system
 core_installation
@@ -276,6 +291,7 @@ execute_autoupdates
 wait_for_network
 autoconfigure_mad
 execute_apk_autoupdates
+repack_magisk
 mount -o remount,ro /system
 
 # initdebug
