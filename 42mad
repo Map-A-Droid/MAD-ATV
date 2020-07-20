@@ -1,6 +1,6 @@
 #!/system/bin/sh
 #This is for update_mad version
-uver="3.4"
+uver="3.5"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
@@ -163,12 +163,13 @@ if ! grep -q "version $uver" /system/bin/update_mad.sh; then
     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
     chmod +x /system/bin/update_mad.sh
 fi
-#we'll see if these end up included
-#if ! grep -q "version $pver" /system/bin/pingreboot.sh; then
-#    echo "Downloading pingreboot.sh"
-#    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh /system/bin/pingreboot.sh
-#    chmod +x /system/bin/pingreboot.sh
-#fi
+
+if ! grep -q "version $pver" /system/bin/pingreboot.sh; then
+     echo "Downloading pingreboot.sh"
+     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh /system/bin/pingreboot.sh
+     chmod +x /system/bin/pingreboot.sh
+fi
+
 #if ! grep -q "version $nver" /system/bin/nfs_install.sh; then
 #    echo "Downloading nfs_install.sh"
 #    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh /system/bin/nfs_install.sh
@@ -184,6 +185,23 @@ echo "Setting android settings for workers"
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
 echo "Successfully set the settings for workers"
+}
+#Not tested yet
+set_mac_unify(){
+echo "Setting Mac in unifykey"
+
+if [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;then
+   newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+   ifconfig eth0 down
+   until ifconfig eth0 hw ether "$newmac" 2>/dev/null; do
+     newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+   done
+   echo 1 > /sys/class/unifykeys/lock
+   echo mac > /sys/class/unifykeys/name
+   echo "$newmac" >/sys/class/unifykeys/write
+   cat /sys/class/unifykeys/read
+   echo 0 > /sys/class/unifykeys/lock
+   ifconfig eth0 up
 }
 
 set_mac_address(){
@@ -247,6 +265,22 @@ done
 echo "Network connection detected"
 }
 
+repack_magisk(){
+if [ $(pm list packages com.topjohnwu.magisk) ]; then
+echo "repacking magisk"
+monkey -p com.topjohnwu.magisk 1
+sleep 5
+input tap 39 42
+sleep 5
+input tap 150 537
+sleep 5
+input tap 315 552
+sleep 5
+input tap 881 277
+echo "done"
+fi
+}
+
 wait_for_network
 mount -o remount,rw /system
 core_installation
@@ -258,6 +292,7 @@ execute_autoupdates
 wait_for_network
 autoconfigure_mad
 execute_apk_autoupdates
+repack_magisk
 mount -o remount,ro /system
 
 # initdebug
