@@ -154,8 +154,12 @@ reboot=1
 
 update_init(){
 echo "updating init scripts..."
-/system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
+if [$arch == "armeabi-v7a"]
+ /system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
 reboot=1
+else
+ /system/bin/curl -o /etc/init.d/42mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/42mad && chmod +x /etc/init.d/42mad
+ reboot=1
 }
 
 update_dhcp(){
