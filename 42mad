@@ -160,7 +160,7 @@ execute_apk_autoupdates(){
 execute_autoupdates(){
 if ! grep -q "version $uver" /system/bin/update_mad.sh; then
     echo "Downloading update_mad.sh"
-    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad64.sh /system/bin/update_mad.sh
+    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
     chmod +x /system/bin/update_mad.sh
 fi
 
