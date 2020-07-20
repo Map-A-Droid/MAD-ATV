@@ -184,6 +184,11 @@ echo "Setting android settings for workers"
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
+! [[ $(getprop persist.sys.locale) == "en-US" ]] 
+if ! [[ $(getprop persist.sys.locale) == "en-US" ]]; then
+ setprop persist.sys.locale en-US; setprop ctl.restart zygote
+ echo "setting en-US"
+fi
 echo "Successfully set the settings for workers"
 }
 #Not tested yet
