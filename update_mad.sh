@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.4
+# version 3.5
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -154,11 +154,12 @@ reboot=1
 
 update_init(){
 echo "updating init scripts..."
-if [[ "$arch" == "arm64_v8a" ]]
+if [[ "$arch" == "arm64_v8a" ]] ;then
  /system/bin/curl -o /etc/init.d/42mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/42mad && chmod +x /etc/init.d/42mad
 else
  /system/bin/curl -o /etc/init.d/16mad -k -s https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/16mad && chmod +x /etc/init.d/16mad
  reboot=1
+fi
 }
 
 update_dhcp(){

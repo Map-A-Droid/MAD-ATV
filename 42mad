@@ -206,6 +206,7 @@ if [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;the
    cat /sys/class/unifykeys/read
    echo 0 > /sys/class/unifykeys/lock
    ifconfig eth0 up
+fi
 }
 
 set_mac_address(){
@@ -233,6 +234,45 @@ if [[ -e /sdcard/madmac2 ]] ;then
    ifconfig wlan0 up
 fi
 echo "MAC successfully set"
+}
+
+setup_google_account(){
+# only do this if no account is configured:
+[[ "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]] && echo "google account already setup" && return 2
+# this info will come from mad
+if [ -f /sdcard/google-account ]; then
+    am start -a android.settings.ADD_ACCOUNT_SETTINGS
+    sleep 40
+    input keyevent 20
+    input keyevent 20
+    sleep 5
+    input text $(sed -n 1p /sdcard/google-account)
+    sleep 5
+    input keyevent 66
+    sleep 5
+    input keyevent 20
+    sleep 5
+    input text $(sed -n 2p /sdcard/google-account)
+    sleep 5
+    input keyevent 66
+    sleep 5
+    i=0
+    while [ "$i" -le 9 ]; do
+        input keyevent 20
+        let i=$i+1
+        sleep 1
+    done
+    input keyevent 66
+    sleep 5
+    i=0
+    while [ "$i" -le 3 ]; do
+        input keyevent 20
+        let i=$i+1
+        sleep 1
+    done
+    input keyevent 66
+    echo "done setting up google account"
+fi
 }
 
 set_permissions() {
