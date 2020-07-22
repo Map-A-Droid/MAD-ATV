@@ -8,9 +8,10 @@ nver="1.2"
 # mad rom version
 madver="0.1"
 #magisk version / url
-mver="20.3"
-murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
+magisk_ver="20.3"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
+url_magisk="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
+url_gapps="https://netcologne.dl.sourceforge.net/project/opengapps/arm64/20200715/open_gapps-arm64-7.1-pico-20200715.zip"
 
 autoconfigure_mad() {
 # this stuff should check for a USB stick and if there is one it looks for:
@@ -54,8 +55,8 @@ if [[ "$usbfile" != "" ]] && [ -d /data/data/de.grennith.rgc.remotegpscontroller
 fi
 }
 
-init_config(){
-echo "Configuring device"
+init_magisk_config(){
+echo "Configuring Magisk"
 /sbin/magiskhide --add com.nianticlabs.pokemongo
 [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
 [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
@@ -67,39 +68,51 @@ ruid=$(id -u "$ruser")
 suid=$(id -u shell)
 pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='de.grennith.rgc.remotegpscontroller'")
 if [[ "$pol" != 2 ]]; then
-    sqlite3 /data/adb/magisk.db "DELETE from policies WHERE package_name='de.grennith.rgc.remotegpscontroller'"
-    sqlite3 /data/adb/magisk.db "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($ruid,'de.grennith.rgc.remotegpscontroller',2,0,1,1)"
+    magisk --sqlite "DELETE from policies WHERE package_name='de.grennith.rgc.remotegpscontroller'"
+    magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($ruid,'de.grennith.rgc.remotegpscontroller',2,0,1,0)"
 fi
 pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.mad.pogodroid'")
 if [[ "$pol" != 2 ]] ;then
-    sqlite3 /data/adb/magisk.db "DELETE from policies WHERE package_name='com.mad.pogodroid'"
-    sqlite3 /data/adb/magisk.db "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($puid,'com.mad.pogodroid',2,0,1,1)"
+    magisk --sqlite "DELETE from policies WHERE package_name='com.mad.pogodroid'"
+    magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($puid,'com.mad.pogodroid',2,0,1,0)"
 fi
 pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.android.shell'")
 if [[ "$pol" != 2 ]] ;then
-    sqlite3 /data/adb/magisk.db "DELETE from policies WHERE package_name='com.android.shell'"
-    sqlite3 /data/adb/magisk.db "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($suid,'com.android.shell',2,0,1,1)"
+    magisk --sqlite "DELETE from policies WHERE package_name='com.android.shell'"
+    magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($suid,'com.android.shell',2,0,1,1)"
 fi
 }
 
 init_installation() {
 echo "Core Packages being installed"
 cachereboot=0
-if [ ! -f /sbin/magisk ] || ! magisk -c|grep -q "$mver"  ; then
-    [ -f /sbin/magisk ] && ! magisk -c|grep -q "$mver" && touch /sdcard/madupdating
-    echo "Installing Magisk ${mver}"
-    download "$murl" /sdcard/magisk.zip
-    mkdir -p /cache/recovery
-    touch /cache/recovery/command
-    echo '--update_package=/sdcard/magisk.zip' >> /cache/recovery/command
-    cachereboot=1
-elif [ -f /sdcard/madupdating ]; then
+# Install magisk.  If it already exists, check for an update
+if [ ! -f /sbin/magisk ]; then
+    echo "Magisk not installed"
+    install_magisk
+elif [ -f /sbin/magisk ] && ! magisk -c|grep -q "$magisk_ver"; then
+    echo "Magisk requires an upgrade"
     pm uninstall com.topjohnwu.magisk
-    rm /sdcard/madupdating
+    install_magisk
+elif [[ $(pm list packages com.topjohnwu.magisk) || -f /sdcard/magisk_repackage ]]; then
+    echo "Magisk needs to be repackaged"
+    # After installation the manager may not be fully installed.  Wait for it to show then repackage
+    until [[ $(pm list packages com.topjohnwu.magisk) ]]; do
+        sleep 1
+    done;
+    repack_magisk
+    until [[ ! $(pm list packages com.topjohnwu.magisk) ]]; do
+        sleep 1
+    done;
+    rm /sdcard/magisk_repackage
+    echo "Magisk has been repackaged"
+else
+    echo "No changes required to Magisk"
 fi
+# Install gapps
 if [ ! $(pm list packages android.vending) ]; then
     echo "Installing GApps"
-    download "https://netcologne.dl.sourceforge.net/project/opengapps/arm64/20200715/open_gapps-arm64-7.1-pico-20200715.zip" /sdcard/gapps.zip
+    download "$url_gapps" /sdcard/gapps.zip
     mkdir -p /cache/recovery
     touch /cache/recovery/command
     echo '--update_package=/sdcard/gapps.zip' >> /cache/recovery/command
@@ -131,6 +144,18 @@ if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
 fi;
 echo "Required APKs (minus PoGo) successfully installed"
 }
+
+
+install_magisk() {
+echo "Installing Magisk ${magisk_ver}"
+download "$url_magisk" /sdcard/magisk.zip
+mkdir -p /cache/recovery
+touch /cache/recovery/command
+echo '--update_package=/sdcard/magisk.zip' >> /cache/recovery/command
+touch /sdcard/magisk_repackage
+cachereboot=1
+}
+
 
 core_installation(){
 echo "Starting core installation"
@@ -177,6 +202,15 @@ fi
 #fi
 }
 
+
+#don't add it for execution as long as no one else is having issues with wrong language
+set_android_language() {
+if ! [[ "$(getprop persist.sys.locale)" == "en-US" ]]; then
+ setprop persist.sys.locale en-US; setprop ctl.restart zygote
+ echo "setting en-US"
+fi
+}
+
 set_android_settings() {
 echo "Setting android settings for workers"
 ! [[ $(settings get global hdmi_control_enabled) == "0" ]] && settings put global hdmi_control_enabled 0
@@ -184,12 +218,10 @@ echo "Setting android settings for workers"
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
-if ! [[ $(getprop persist.sys.locale) == "en-US" ]]; then
- setprop persist.sys.locale en-US; setprop ctl.restart zygote
- echo "setting en-US"
-fi
 echo "Successfully set the settings for workers"
 }
+
+
 #Not tested yet
 set_mac_unify(){
 echo "Setting Mac in unifykey"
@@ -313,7 +345,7 @@ repack_magisk(){
 if [ $(pm list packages com.topjohnwu.magisk) ]; then
 echo "repacking magisk"
 monkey -p com.topjohnwu.magisk 1
-sleep 5
+sleep 30
 input tap 39 42
 sleep 5
 input tap 150 537
