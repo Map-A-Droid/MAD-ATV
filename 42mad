@@ -369,7 +369,6 @@ execute_autoupdates
 wait_for_network
 autoconfigure_mad
 execute_apk_autoupdates
-repack_magisk
 mount -o remount,ro /system
 
 # initdebug
