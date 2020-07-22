@@ -163,7 +163,7 @@ echo "Starting core installation"
 init_premagisk
 # Install Core components (Magisk, GApps, etc)
 init_installation
-init_config
+init_magisk_config
 [[ -f /sdcard/TWRP ]] && rm -rf /sdcard/TWRP
 }
 
