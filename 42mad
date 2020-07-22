@@ -189,7 +189,7 @@ echo "Successfully set the settings for workers"
 }
 
 set_android_language() {
-if ! [[ $(getprop persist.sys.locale) == "en-US" ]]; then
+if ! [[ "$(getprop persist.sys.locale)" == "en-US" ]]; then
  setprop persist.sys.locale en-US; setprop ctl.restart zygote
  echo "setting en-US"
 fi
@@ -314,6 +314,7 @@ echo "Network connection detected"
 }
 
 repack_magisk(){
+sleep 60
 if [ $(pm list packages com.topjohnwu.magisk) ]; then
 echo "repacking magisk"
 monkey -p com.topjohnwu.magisk 1
