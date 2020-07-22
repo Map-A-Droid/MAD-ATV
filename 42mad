@@ -315,8 +315,9 @@ echo "Network connection detected"
 }
 
 repack_magisk(){
-sleep 60
-if [ $(pm list packages com.topjohnwu.magisk) ]; then
+until [[ $(pm list packages com.topjohnwu.magisk) ]]; do
+sleep 1
+done;
 echo "repacking magisk"
 monkey -p com.topjohnwu.magisk 1
 sleep 30
@@ -328,7 +329,6 @@ input tap 315 552
 sleep 5
 input tap 881 277
 echo "done"
-fi
 }
 
 wait_for_network
