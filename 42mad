@@ -188,6 +188,7 @@ echo "Setting android settings for workers"
 echo "Successfully set the settings for workers"
 }
 
+#don't add it for execution as long as no one else is having issues with wrong language
 set_android_language() {
 if ! [[ "$(getprop persist.sys.locale)" == "en-US" ]]; then
  setprop persist.sys.locale en-US; setprop ctl.restart zygote
