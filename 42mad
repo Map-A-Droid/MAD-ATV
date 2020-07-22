@@ -94,6 +94,7 @@ if [ ! -f /sbin/magisk ] || ! magisk -c|grep -q "$mver"  ; then
     echo '--update_package=/sdcard/magisk.zip' >> /cache/recovery/command
     cachereboot=1
 elif [ -f /sdcard/madupdating ]; then
+	echo "Uninstall Magisk Manager"
     pm uninstall com.topjohnwu.magisk
     rm /sdcard/madupdating
 fi
