@@ -93,6 +93,10 @@ until curl -o "$pdconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session
 done
 chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
 reboot_required=1
+# I dunno, sleep and launch it and hope its all good
+sleep 10
+monkey -p com.mad.pogodroid 1
+sleep 30
 }
 
 autoconf_process_pogo() {
