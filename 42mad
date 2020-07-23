@@ -95,6 +95,7 @@ chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
 reboot_required=1
 # I dunno, sleep and launch it and hope its all good
 sleep 10
+set_permissions_pd
 monkey -p com.mad.pogodroid 1
 sleep 30
 }
@@ -126,6 +127,7 @@ for a in *.apk ;do
 done
 pm install-commit $session
 )
+set_permissions_pogo
 }
 
 autoconf_process_rgc() {
@@ -153,6 +155,7 @@ until curl -o "$rgcconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${sessio
     sleep 2
 done
 chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
+
 reboot_required=1
 }
 
@@ -442,6 +445,20 @@ echo 0 > /sys/class/unifykeys/lock
 
 set_permissions() {
 echo "Setting app permissions"
+set_permissions_pd
+set_permissions_rgc
+set_permissions_pogo
+echo "App permissions set"
+}
+
+set_permissions_pd() {
+if ! dumpsys package com.mad.pogodroid |grep READ_EXTERNAL_STORAGE|grep granted|grep -q 'granted=true'; then
+    pm grant com.mad.pogodroid android.permission.READ_EXTERNAL_STORAGE
+    pm grant com.mad.pogodroid android.permission.WRITE_EXTERNAL_STORAGE
+fi
+}
+
+set_permissions_pogo() {
 if [[ $(pm list packages com.nianticlabs.pokemongo) ]]; then
     if ! dumpsys package com.nianticlabs.pokemongo|grep ACCESS_FINE_LOCATION|grep granted|grep -q 'granted=true'; then
         pm grant com.nianticlabs.pokemongo android.permission.ACCESS_FINE_LOCATION
@@ -452,17 +469,15 @@ if [[ $(pm list packages com.nianticlabs.pokemongo) ]]; then
 else
     echo "PokemonGo is not installed.  Skipping permissions"
 fi
-if ! dumpsys package com.mad.pogodroid |grep READ_EXTERNAL_STORAGE|grep granted|grep -q 'granted=true'; then
-    pm grant com.mad.pogodroid android.permission.READ_EXTERNAL_STORAGE
-    pm grant com.mad.pogodroid android.permission.WRITE_EXTERNAL_STORAGE
-fi
+}
+
+set_permissions_rgc() {
 if ! dumpsys package de.grennith.rgc.remotegpscontroller|grep ACCESS_FINE_LOCATION|grep granted|grep -q 'granted=true'; then
     pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_FINE_LOCATION
     pm grant de.grennith.rgc.remotegpscontroller android.permission.READ_EXTERNAL_STORAGE
     pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_COARSE_LOCATION
     pm grant de.grennith.rgc.remotegpscontroller android.permission.WRITE_EXTERNAL_STORAGE
 fi
-echo "App permissions set"
 }
 
 wait_for_network(){
