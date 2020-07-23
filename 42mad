@@ -524,5 +524,6 @@ if [[ "$reboot_required" -eq 1 ]]; then
 fi
 execute_autoupdates
 execute_apk_autoupdates
+mount -o remount,ro /system
 
 # initdebug
