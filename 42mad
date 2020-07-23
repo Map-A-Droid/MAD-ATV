@@ -30,7 +30,7 @@ done
 
 
 autoconf_process_google() {
-until curl -o /sdcard/google-account -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google" ;do
+until /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google" ;do
     rm -f /sdcard/google-account
     sleep 2
 done
@@ -73,7 +73,7 @@ autoconf_process_pd() {
 echo "Installing and configuring PD"
 if [ ! $(pm list packages com.mad.pogodroid) ]; then
     rm -f /sdcard/Download/PogoDroid.apk
-    until curl -o /sdcard/Download/PogoDroid.apk -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogodroid/download" ;do
+    until /system/bin/curl -s -k -L -o /sdcard/Download/PogoDroid.apk --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogodroid/download" ;do
         rm -f /sdcard/Download/PogoDroid.apk
         sleep 2
     done
@@ -87,7 +87,7 @@ if ! [ -d "$pdir" ]; then
     chmod 771 "$pdir"
     chown "$puser":"$puser" "$pdir"
 fi
-until curl -o "$pdconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd" ;do
+until /system/bin/curl -s -k -L -o "$pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd" ;do
     rm -f /system/priv-app/RemoteGpsController.apk
     sleep 2
 done
@@ -108,7 +108,7 @@ mkdir -p /sdcard/Download/pogo
 valid_file=false
 until $valid_file; do
  #TODO - Support zip and apk
- curl -o /sdcard/Download/pogo/pogo.zip -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogo/arm64_v8a/download"
+ /system/bin/curl -s -k -L -o /sdcard/Download/pogo/pogo.zip --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogo/arm64_v8a/download"
  if [[ $(unzip pogo.zip) ]]; then
     echo "Valid file received"
     valid_file=true
@@ -133,7 +133,7 @@ set_permissions_pogo
 autoconf_process_rgc() {
 echo "Installing and configuring RGC"
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
-    until curl -o "/system/priv-app/RemoteGpsController.apk"  -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/rgc/download" ;do
+    until /system/bin/curl -s -k -L -o "/system/priv-app/RemoteGpsController.apk" --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/rgc/download" ;do
         rm -f /system/priv-app/RemoteGpsController.apk
         sleep 2
     done
@@ -150,7 +150,7 @@ if ! [ -d "$pdir" ]; then
     chmod 771 "$pdir"
     chown "$puser":"$puser" "$pdir"
 fi
-until curl -o "$rgcconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc" ;do
+until /system/bin/curl -s -k -L -o "$rgcconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc" ;do
     rm -f /system/priv-app/RemoteGpsController.apk
     sleep 2
 done
@@ -171,7 +171,7 @@ while ! $registered; do
     if [ ! -f /sdcard/reg_session ]; then
         echo "Rejected session.  Recreating"
     else
-        origin=$(/system/bin/curl -k -L -s --user "$pdauth" "${pdserver}/autoconfig/${session_id}/origin")
+        origin=$(/system/bin/curl -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/origin")
         if [ ! $(pm list packages com.mad.pogodroid) || ! -f "$pdconf" ]; then
             autoconf_process_pd
         else
@@ -193,7 +193,7 @@ while ! $registered; do
             echo "Google account already setup"
         fi
         registered=true
-        /system/bin/curl -X DELETE -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
+        /system/bin/curl -s -k -L -X DELETE --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
         rm /sdcard/reg_session
     fi
 done
@@ -203,7 +203,7 @@ done
 autoreg_create_session() {
 has_session=false
 until $has_session; do
-    session_id=$(/system/bin/curl -X POST -s -k -L --user "$pdauth" "${pdserver}/autoconfig/register")
+    session_id=$(/system/bin/curl -s -k -L -X POST --user "$pdauth" "${pdserver}/autoconfig/register")
     if [[ $session_id == "" ]]; then
         echo "No session received.  Sleeping"
         sleep 15
@@ -233,7 +233,7 @@ fi
 autoconf_wait_for_status() {
 status_received=false
 until $status_received; do
-    status=$(/system/bin/curl -o /dev/null -w "%{http_code}" -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status")
+    status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status")
     if [ $status -eq 404 ] || [ $status -eq 201 ]; then
         if [ $status -eq 404 ]; then
             rm /sdcard/reg_session;
@@ -513,9 +513,9 @@ echo "$madver" > /sdcard/madversion
 
 load_pd_config
 if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && [ -f "$rgcconf" ] && [ -f "$rgcconf" ] && [ ! -f /sdcard/reg_session ]; then
-    status=$(/system/bin/curl -o /dev/null -w "%{http_code}" -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
+    status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
     if [ $status -eq 200 ]; then
-        all_macs=$(curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
+        all_macs=$(/system/bin/curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
         # TODO - Handle WLAN mac
         lan_mac=$(echo $all_macs | sed -n 1p)
         wlan_mac=$(echo $all_macs | sed -n 2p)
@@ -528,10 +528,11 @@ if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && 
             if [[ "$current_mac" == "00:15:18:01:81:31" ]] ;then
                 current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
                 set_mac_address "$current_mac"
-                curl -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+                /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
                 reboot
             fi
-            curl -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+            /system/bin/curl -s -k -L -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+            requires_autoconf=0
         elif [[ "$lan_mac" != "$current_mac" ]]; then
             set_mac_address "$lan_mac"
             reboot
