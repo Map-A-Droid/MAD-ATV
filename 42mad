@@ -485,7 +485,7 @@ while [[ "$usbfile" == "" ]]; do
 done
 
 load_pd_config
-if ([[ $origin != "" && $pdserver != "" && $pdauth != "" && -f "$rgcconf" && -f "$pdconf" ! -f /sdcard/reg_session ]]); then
+if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && [ -f "$rgcconf" ] && [ -f "$rgcconf" ] && [ ! -f /sdcard/reg_session ]; then
     status=$(/system/bin/curl -o /dev/null -w "%{http_code}" -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
     if [ $status -eq 200 ]; then
         all_macs=$(curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
