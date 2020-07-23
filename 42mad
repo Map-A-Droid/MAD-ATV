@@ -87,7 +87,10 @@ if ! [ -d "$pdir" ]; then
     chmod 771 "$pdir"
     chown "$puser":"$puser" "$pdir"
 fi
-curl -o "$pdconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
+until curl -o "$pdconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd" ;do
+    rm -f /system/priv-app/RemoteGpsController.apk
+    sleep 2
+done
 chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
 reboot_required=1
 }
@@ -124,7 +127,6 @@ pm install-commit $session
 autoconf_process_rgc() {
 echo "Installing and configuring RGC"
 if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
-    rm -f /sdcard/Download/RemoteGpsController.apk
     until curl -o "/system/priv-app/RemoteGpsController.apk"  -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/rgc/download" ;do
         rm -f /system/priv-app/RemoteGpsController.apk
         sleep 2
@@ -142,7 +144,10 @@ if ! [ -d "$pdir" ]; then
     chmod 771 "$pdir"
     chown "$puser":"$puser" "$pdir"
 fi
-curl -o "$rgcconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc"
+until curl -o "$rgcconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc" ;do
+    rm -f /system/priv-app/RemoteGpsController.apk
+    sleep 2
+done
 chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
 reboot_required=1
 }
@@ -181,6 +186,7 @@ while ! $registered; do
             echo "Google account already setup"
         fi
         registered=true
+        /system/bin/curl -X DELETE -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
         rm /sdcard/reg_session
     fi
 done
@@ -202,11 +208,19 @@ done
 }
 
 autoconf_set_vars() {
-usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
-if [[ "$usbfile" != "" ]]; then
-    pdserver=$(awk 'NR==1{print $1'} "$usbfile")
-    pdauth=$(awk 'NR==2{print $1'} "$usbfile")
-fi;
+if [ -f "$pdconf" ]; then
+    load_pd_config
+else
+    usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
+    while [[ "$usbfile" == "" ]]; do
+        usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
+        sleep 1
+    done
+    if [[ "$usbfile" != "" ]]; then
+        pdserver=$(awk 'NR==1{print $1'} "$usbfile")
+        pdauth=$(awk 'NR==2{print $1'} "$usbfile")
+    fi;
+fi
 }
 
 autoconf_wait_for_status() {
@@ -478,12 +492,6 @@ core_installation
 set_android_settings
 echo "$madver" > /sdcard/madversion
 
-usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
-while [[ "$usbfile" == "" ]]; do
-    usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
-    sleep 1
-done
-
 load_pd_config
 if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && [ -f "$rgcconf" ] && [ -f "$rgcconf" ] && [ ! -f /sdcard/reg_session ]; then
     status=$(/system/bin/curl -o /dev/null -w "%{http_code}" -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
@@ -513,15 +521,18 @@ if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && 
         fi
     fi
 fi
+
 if [[ "$requires_autoconf" -eq 1 ]]; then
-    autoconf_set_vars
-    autoconf_register
+autoconf_set_vars
+autoconf_register
 fi
+
 set_permissions
 if [[ "$reboot_required" -eq 1 ]]; then
-    echo "Rebooting box"
-    reboot
+echo "Rebooting box"
+reboot
 fi
+
 execute_autoupdates
 execute_apk_autoupdates
 mount -o remount,ro /system
