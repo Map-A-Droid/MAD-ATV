@@ -12,48 +12,210 @@ magisk_ver="20.3"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
 url_magisk="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
 url_gapps="https://netcologne.dl.sourceforge.net/project/opengapps/arm64/20200715/open_gapps-arm64-7.1-pico-20200715.zip"
-
-autoconfigure_mad() {
-# this stuff should check for a USB stick and if there is one it looks for:
-# madorigin.txt - put nothing in this file except the origin to configure for pogo/rgc
-# com.mad.pogodroid_preferences.xml - config file from the first working box which you setup by hand. do not edit, get it from:
-## /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml
-# de.grennith.rgc.remotegpscontroller_preferences.xml - config file from the first working box which you setup by hand. do not edit, get it from:
-## /data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml
-pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
-usbfile="$(find /mnt/media_rw/ -name com.mad.pogodroid_preferences.xml|head -n1)"
-usbofile="$(find /mnt/media_rw/ -name madorigin.txt|head -n1)"
-if [[ "$usbfile" != "" ]] && [ -d /data/data/com.mad.pogodroid ] ;then
-    if ! [ -f "$pdconf" ] || [[ $(awk -F'>' '/"post_destination"/{print $2}' "$pdconf"|cut -d'<' -f1) == "" ]] ;then
-        newserial="$(getprop|awk '/serialno/{print $2}'|head -n1|sed -e 's,\[,,' -e 's,\],,')"
-        [[ "$newserial" == "" ]] && newserial="$(ifconfig wlan0|grep -q inet && ifconfig wlan0|awk '/HWaddr/{print $5}')"
-        [[ "$newserial" == "" ]] && newserial="$(ifconfig eth0|grep -q inet && ifconfig eth0|awk '/HWaddr/{print $5}')"
-        oldserial="$(awk -F'>' '/auth_id/{print $2}' "$usbfile"|cut -d'<' -f1)"
-        oldorigin="$(awk -F'>' '/post_origin/{print $2}' "$usbfile"|cut -d'<' -f1)"
-        injtime="$(awk -F'>' '/last_time_injected/{print $2}' "$usbfile"|cut -d'<' -f1)"
-        sessionid="$(awk -F'>' '/session_id/{print $2}' "$usbfile"|cut -d'<' -f1)"
-        [ -f "$usbofile" ] && neworigin=$(sed -n -e 1p -e 's,\n,,' -e 's,\r,,' "$usbofile") || neworigin=""
-        pdir="/data/data/com.mad.pogodroid/shared_prefs"
-        puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}')
-        ! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
-        sed -e "s,$oldserial,$newserial,g" -e "s,$sessionid,,g" -e "s,$injtime,,g" -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$pdconf"
-        chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
-    fi
-fi
 rgcconf="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml"
-usbfile="$(find /mnt/media_rw/ -name de.grennith.rgc.remotegpscontroller_preferences.xml|head -n1)"
-if [[ "$usbfile" != "" ]] && [ -d /data/data/de.grennith.rgc.remotegpscontroller ];then
-    if ! [ -f "$rgcconf" ] || [[ $(awk -F'>' '/websocket_uri/{print $2}' "$rgcconf"|cut -d'<' -f1) == "ws://" ]] ;then
-        oldorigin="$(awk -F'>' '/origin/{print $2}' "$usbfile"|cut -d'<' -f1)"
-        [ -f "$usbofile" ] && neworigin=$(sed -n -e 1p -e 's,\n,,' -e 's,\r,,' "$usbofile") || neworigin=""
-        pdir="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs"
-        puser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
-        ! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
-        sed -e "s,$oldorigin,$neworigin,g" "$usbfile" > "$rgcconf"
-        chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
-    fi
+pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
+
+requires_autoconf=1
+reboot_required=0
+
+
+download(){
+# $1 = url
+# $2 = local path
+# lets see that curl exits successfully
+until /system/bin/curl -s -k -L -A "$useragent" -o "$2" "$1" ;do
+    sleep 15
+done
+}
+
+
+autoconf_process_google() {
+until curl -o /sdcard/google-account -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google" ;do
+    rm -f /sdcard/google-account
+    sleep 2
+done
+if [ -f /sdcard/google-account ]; then
+    am start -a android.settings.ADD_ACCOUNT_SETTINGS
+    sleep 40
+    input keyevent 20
+    input keyevent 20
+    sleep 5
+    input text $(sed -n 1p /sdcard/google-account)
+    sleep 5
+    input keyevent 66
+    sleep 5
+    input keyevent 20
+    sleep 5
+    input text $(sed -n 2p /sdcard/google-account)
+    sleep 5
+    input keyevent 66
+    sleep 5
+    i=0
+    while [ "$i" -le 9 ]; do
+        input keyevent 20
+        let i=$i+1
+        sleep 1
+    done
+    input keyevent 66
+    sleep 5
+    i=0
+    while [ "$i" -le 3 ]; do
+        input keyevent 20
+        let i=$i+1
+        sleep 1
+    done
+    input keyevent 66
+    echo "done setting up google account"
 fi
 }
+
+autoconf_process_pd() {
+echo "Installing and configuring PD"
+if [ ! $(pm list packages com.mad.pogodroid) ]; then
+    rm -f /sdcard/Download/PogoDroid.apk
+    until curl -o /sdcard/Download/PogoDroid.apk -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogodroid/download" ;do
+        rm -f /sdcard/Download/PogoDroid.apk
+        sleep 2
+    done
+    /system/bin/pm install -r /sdcard/Download/PogoDroid.apk
+fi
+pdir="/data/data/com.mad.pogodroid/shared_prefs"
+puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}')
+! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
+curl -o "$pdconf" -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
+chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
+reboot_required=1
+}
+
+autoconf_process_pogo() {
+echo "Installing and configuring PokemonGo"
+mkdir -p /sdcard/Download/pogo
+/system/bin/rm -f /sdcard/Download/pogo/*
+(cd /sdcard/Download/pogo
+valid_file=false
+until $valid_file; do
+ #TODO - Support zip and apk
+ curl -o /sdcard/Download/pogo/pogo.zip -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogo/arm64_v8a/download"
+ if [[ $(unzip pogo.zip) ]]; then
+    echo "Valid file received"
+    valid_file=true
+    rm pogo.zip
+ else
+    echo "Invalid package received"
+    /system/bin/rm -f /sdcard/Download/pogo/*
+    return 0
+ fi
+ sleep 2
+done
+echo "Install APK PokemonGo"
+session=$(pm install-create -r | cut -d [ -f2 | cut -d ] -f1)
+for a in *.apk ;do
+ pm install-write -S $(stat -c %s $a) $session $a $a
+done
+pm install-commit $session
+)
+reboot_required=1
+}
+
+autoconf_process_rgc() {
+echo "Installing and configuring RGC"
+if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
+    rm -f /sdcard/Download/RemoteGpsController.apk
+    until curl -o "/system/priv-app/RemoteGpsController.apk"  -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/rgc/download" ;do
+        rm -f /system/priv-app/RemoteGpsController.apk
+        sleep 2
+    done
+fi
+/system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
+/system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
+pdir="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs"
+puser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
+! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
+curl -o "$rgcconf" -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc"
+chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
+reboot_required=1
+}
+
+
+autoconf_register() {
+registered=false
+while ! $registered; do
+    if [ ! -f /sdcard/reg_session ]; then
+        autoreg_create_session
+    else
+        session_id=$(cat /sdcard/reg_session)
+    fi
+    autoconf_wait_for_status
+    if [ ! -f /sdcard/reg_session ]; then
+        echo "Rejected session.  Recreating"
+    else
+        origin=$(/system/bin/curl -k -L -s --user "$pdauth" "${pdserver}/autoconfig/${session_id}/origin")
+        if [ ! $(pm list packages com.mad.pogodroid) || ! -f "$pdconf" ]; then
+            autoconf_process_pd
+        else
+            echo "PD already installed"
+        fi
+        if [ ! -f /system/priv-app/RemoteGpsController.apk || ! -f "$rgcconf" ]; then
+            autoconf_process_rgc
+        else
+            echo "RGC already installed"
+        fi
+        if [ ! $(pm list packages com.nianticlabs.pokemongo) ]; then
+            autoconf_process_pogo
+        else
+            echo "Pogo already installed"
+        fi
+        if [[ ! "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]]; then
+            autoconf_process_google
+        else
+            echo "Google account already setup"
+        fi
+        registered=true
+        rm /sdcard/reg_session
+    fi
+done
+}
+
+
+autoreg_create_session() {
+has_session=false
+until $has_session; do
+    session_id=$(/system/bin/curl -X POST -s -k -L --user "$pdauth" "${pdserver}/autoconfig/register")
+    if [[ $session_id == "" ]]; then
+        echo "No session received.  Sleeping"
+        sleep 15
+    else
+        has_session=true
+        echo "$session_id" > /sdcard/reg_session
+    fi
+done
+}
+
+autoconf_set_vars() {
+usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
+if [[ "$usbfile" != "" ]]; then
+    pdserver=$(awk 'NR==1{print $1'} "$usbfile")
+    pdauth=$(awk 'NR==2{print $1'} "$usbfile")
+fi;
+}
+
+autoconf_wait_for_status() {
+status_received=false
+until $status_received; do
+    status=$(/system/bin/curl -o /dev/null -w "%{http_code}" -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status")
+    if [ $status -eq 404 ] || [ $status -eq 201 ]; then
+        if [ $status -eq 404 ]; then
+            rm /sdcard/reg_session;
+        fi
+        echo "Status of session successfully received: $status"
+        status_received=true
+    elif [ $status -eq 406 ]; then
+        echo "Pending in MADmin"
+        sleep 5
+    fi
+done
+}
+
 
 init_magisk_config(){
 echo "Configuring Magisk"
@@ -125,26 +287,6 @@ fi
 echo "Core packages are installed"
 }
 
-init_premagisk() {
-echo "Executing Pre-Magisk steps"
-until [[ $(pm list packages com.mad.pogodroid) ]]; do
-    echo "Downloading and Installing PD"
-    download "https://www.maddev.de/apk/PogoDroid.apk" "/sdcard/pogodroid.apk"
-    /system/bin/chmod 644 /sdcard/pogodroid.apk
-    /system/bin/pm install /sdcard/pogodroid.apk
-    /system/bin/rm /sdcard/pogodroid.apk
-    echo "PD Successfully installed"
-done;
-if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
-    echo "Downloading and Installing RGC"
-    download "https://raw.githubusercontent.com/Map-A-Droid/MAD/master/APK/RemoteGpsController.apk" "/system/priv-app/RemoteGpsController.apk"
-    /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
-    /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
-    echo "RGC Successfully installed"
-fi;
-echo "Required APKs (minus PoGo) successfully installed"
-}
-
 
 install_magisk() {
 echo "Installing Magisk ${magisk_ver}"
@@ -159,28 +301,19 @@ cachereboot=1
 
 core_installation(){
 echo "Starting core installation"
-# Install any components that need to come before Magisk and root is locked down
-init_premagisk
 # Install Core components (Magisk, GApps, etc)
 init_installation
 init_magisk_config
 [[ -f /sdcard/TWRP ]] && rm -rf /sdcard/TWRP
 }
 
-download(){
-# $1 = url
-# $2 = local path
-# lets see that curl exits successfully
-until /system/bin/curl -s -k -L -A "$useragent" -o "$2" "$1" ;do
-    sleep 15
-done
-}
 
 execute_apk_autoupdates(){
 ! [[ -f /sdcard/disableautopogoupdate ]] && sh -x /system/bin/update_mad.sh -p
 ! [[ -f /sdcard/disableautopogodroidupdate ]] && sh -x /system/bin/update_mad.sh -wd
 ! [[ -f /sdcard/disableautorgcupdate ]] && sh -x /system/bin/update_mad.sh -wr
 }
+
 
 execute_autoupdates(){
 if ! grep -q "version $uver" /system/bin/update_mad.sh; then
@@ -203,6 +336,42 @@ fi
 }
 
 
+init_magisk_config(){
+echo "Configuring Magisk"
+/sbin/magiskhide --add com.nianticlabs.pokemongo
+[[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
+[[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
+#make sure rgc and pogodroid and shell have su root
+puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
+puid=$(id -u "$puser")
+ruser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
+ruid=$(id -u "$ruser")
+suid=$(id -u shell)
+pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='de.grennith.rgc.remotegpscontroller'")
+if [[ "$pol" != 2 ]]; then
+    magisk --sqlite "DELETE from policies WHERE package_name='de.grennith.rgc.remotegpscontroller'"
+    magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($ruid,'de.grennith.rgc.remotegpscontroller',2,0,1,0)"
+fi
+pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.mad.pogodroid'")
+if [[ "$pol" != 2 ]] ;then
+    magisk --sqlite "DELETE from policies WHERE package_name='com.mad.pogodroid'"
+    magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($puid,'com.mad.pogodroid',2,0,1,0)"
+fi
+pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.android.shell'")
+if [[ "$pol" != 2 ]] ;then
+    magisk --sqlite "DELETE from policies WHERE package_name='com.android.shell'"
+    magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($suid,'com.android.shell',2,0,1,1)"
+fi
+}
+
+load_pd_config() {
+    origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
+    pdserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')
+    pduser=$(grep -v raw "$pdconf"|awk -F'>' '/auth_username/{print $2}'|awk -F'<' '{print $1}')
+    pdpass=$(grep -v raw "$pdconf"|awk -F'>' '/auth_password/{print $2}'|awk -F'<' '{print $1}')
+    pdauth="$pduser:$pdpass"
+}
+
 #don't add it for execution as long as no one else is having issues with wrong language
 set_android_language() {
 if ! [[ "$(getprop persist.sys.locale)" == "en-US" ]]; then
@@ -222,89 +391,22 @@ echo "Successfully set the settings for workers"
 }
 
 
-#Not tested yet
-set_mac_unify(){
-echo "Setting Mac in unifykey"
-
-if [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;then
-   newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
-   ifconfig eth0 down
-   until ifconfig eth0 hw ether "$newmac" 2>/dev/null; do
-     newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
-   done
-   echo 1 > /sys/class/unifykeys/lock
-   echo mac > /sys/class/unifykeys/name
-   echo "$newmac" >/sys/class/unifykeys/write
-   cat /sys/class/unifykeys/read
-   echo 0 > /sys/class/unifykeys/lock
-   ifconfig eth0 up
-fi
-}
-
 set_mac_address(){
 #This will get changed, thanks banana and aco
-echo "Setting MAC address (if required)"
-if [[ -e /sdcard/madmac ]] ;then
-   newmac=$(cat /sdcard/madmac)
-   ifconfig eth0 down
-   ifconfig eth0 hw ether "$newmac"
-   ifconfig eth0 up
-elif [[ "$(ifconfig eth0|awk '/HWaddr/{print $5}')" == "00:15:18:01:81:31" ]] ;then
-   newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
-   ifconfig eth0 down
-   until ifconfig eth0 hw ether "$newmac" 2>/dev/null; do
-     newmac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
-   done
-   ifconfig eth0 up
-   echo "$newmac" > /sdcard/madmac
-fi
-#In case you want to set mac on wifi interface
-if [[ -e /sdcard/madmac2 ]] ;then
-   newmac=$(cat /sdcard/madmac2)
-   ifconfig wlan0 down
-   ifconfig wlan0 hw ether "$newmac"
-   ifconfig wlan0 up
-fi
+echo "Setting MAC address"
+ifconfig eth0 hw ether "$1"
 echo "MAC successfully set"
+set_mac_unify "$1"
 }
 
-setup_google_account(){
-# only do this if no account is configured:
-[[ "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]] && echo "google account already setup" && return 2
-# this info will come from mad
-if [ -f /sdcard/google-account ]; then
-    am start -a android.settings.ADD_ACCOUNT_SETTINGS
-    sleep 40
-    input keyevent 20
-    input keyevent 20
-    sleep 5
-    input text $(sed -n 1p /sdcard/google-account)
-    sleep 5
-    input keyevent 66
-    sleep 5
-    input keyevent 20
-    sleep 5
-    input text $(sed -n 2p /sdcard/google-account)
-    sleep 5
-    input keyevent 66
-    sleep 5
-    i=0
-    while [ "$i" -le 9 ]; do
-        input keyevent 20
-        let i=$i+1
-        sleep 1
-    done
-    input keyevent 66
-    sleep 5
-    i=0
-    while [ "$i" -le 3 ]; do
-        input keyevent 20
-        let i=$i+1
-        sleep 1
-    done
-    input keyevent 66
-    echo "done setting up google account"
-fi
+
+set_mac_unify(){
+echo "Setting Mac in unifykey"
+echo 1 > /sys/class/unifykeys/lock
+echo mac > /sys/class/unifykeys/name
+echo "$1" >/sys/class/unifykeys/write
+cat /sys/class/unifykeys/read
+echo 0 > /sys/class/unifykeys/lock
 }
 
 set_permissions() {
@@ -361,14 +463,50 @@ wait_for_network
 mount -o remount,rw /system
 core_installation
 set_android_settings
-set_permissions
 echo "$madver" > /sdcard/madversion
-setup_google_account
+
+usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
+while [[ "$usbfile" == "" ]]; do
+    usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
+    sleep 1
+done
+
+load_pd_config
+if ([[ $origin != "" ]] && [[ $pdserver != "" ]] && [[ $pdauth != "" ]]); then
+    status=$(/system/bin/curl -o /dev/null -w "%{http_code}" -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
+    if [ $status -eq 200 ]; then
+        mad_mac=$(curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
+        current_mac=$(ifconfig eth0|awk '/HWaddr/{print $5}echo ')
+        echo "MAD-assigned MAC: \"$mad_mac\""
+        echo "Current MAC: \"$current_mac\""
+        if [[ "$mad_mac" == "" ]]; then
+            echo "No mac specified.  Determining if a new MAC needs to be generated"
+            # Not sure this is needed with the 64bit rom
+            if [[ "$current_mac" == "00:15:18:01:81:31" ]] ;then
+                current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+                set_mac_address "$current_mac"
+                curl -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+                reboot
+            fi
+            curl -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+        elif [[ "$mad_mac" != "$current_mac" ]]; then
+            set_mac_address "$mad_mac"
+            reboot
+        else
+            requires_autoconf=0
+        fi
+    fi
+fi
+if [[ "$requires_autoconf" -eq 1 ]]; then
+    autoconf_set_vars
+    autoconf_register
+fi
+set_permissions
+if [[ "$reboot_required" -eq 1 ]]; then
+    echo "Rebooting box"
+    reboot
+fi
 execute_autoupdates
-#set_mac_address
-wait_for_network
-autoconfigure_mad
 execute_apk_autoupdates
-mount -o remount,ro /system
 
 # initdebug
