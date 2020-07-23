@@ -81,8 +81,13 @@ if [ ! $(pm list packages com.mad.pogodroid) ]; then
 fi
 pdir="/data/data/com.mad.pogodroid/shared_prefs"
 puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}')
-! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
-curl -o "$pdconf" -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
+if ! [ -d "$pdir" ]; then
+    echo "Dir does not exist"
+    mkdir "$pdir"
+    chmod 771 "$pdir"
+    chown "$puser":"$puser" "$pdir"
+fi
+curl -o "$pdconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
 chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
 reboot_required=1
 }
@@ -114,7 +119,6 @@ for a in *.apk ;do
 done
 pm install-commit $session
 )
-reboot_required=1
 }
 
 autoconf_process_rgc() {
@@ -125,17 +129,23 @@ if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
         rm -f /system/priv-app/RemoteGpsController.apk
         sleep 2
     done
+    /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
+    /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
+    echo "Rebooting device to make RGC user active"
+    reboot
 fi
-/system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
-/system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
 pdir="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs"
 puser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
-! [ -d "$pdir" ] && mkdir "$pdir" && chmod 771 "$pdir" && chown "$puser":"$puser" "$pdir"
-curl -o "$rgcconf" -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc"
+if ! [ -d "$pdir" ]; then
+    echo "Dir does not exist"
+    mkdir "$pdir"
+    chmod 771 "$pdir"
+    chown "$puser":"$puser" "$pdir"
+fi
+curl -o "$rgcconf" -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc"
 chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
 reboot_required=1
 }
-
 
 autoconf_register() {
 registered=false
@@ -301,9 +311,12 @@ cachereboot=1
 
 core_installation(){
 echo "Starting core installation"
+# Setup permissions prior to repackaging after a reboot.  I hated waiting :D
+if [ -f /sbin/magisk ]; then
+    init_magisk_config
+fi
 # Install Core components (Magisk, GApps, etc)
 init_installation
-init_magisk_config
 [[ -f /sdcard/TWRP ]] && rm -rf /sdcard/TWRP
 }
 
@@ -472,14 +485,17 @@ while [[ "$usbfile" == "" ]]; do
 done
 
 load_pd_config
-if ([[ $origin != "" ]] && [[ $pdserver != "" ]] && [[ $pdauth != "" ]]); then
+if ([[ $origin != "" && $pdserver != "" && $pdauth != "" && -f "$rgcconf" && -f "$pdconf" ! -f /sdcard/reg_session ]]); then
     status=$(/system/bin/curl -o /dev/null -w "%{http_code}" -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
     if [ $status -eq 200 ]; then
-        mad_mac=$(curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
+        all_macs=$(curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
+        # TODO - Handle WLAN mac
+        lan_mac=$(echo $all_macs | sed -n 1p)
+        wlan_mac=$(echo $all_macs | sed -n 2p)
         current_mac=$(ifconfig eth0|awk '/HWaddr/{print $5}echo ')
-        echo "MAD-assigned MAC: \"$mad_mac\""
+        echo "MAD-assigned MAC: \"$lan_mac\""
         echo "Current MAC: \"$current_mac\""
-        if [[ "$mad_mac" == "" ]]; then
+        if [[ "$lan_mac" == "" ]]; then
             echo "No mac specified.  Determining if a new MAC needs to be generated"
             # Not sure this is needed with the 64bit rom
             if [[ "$current_mac" == "00:15:18:01:81:31" ]] ;then
@@ -489,8 +505,8 @@ if ([[ $origin != "" ]] && [[ $pdserver != "" ]] && [[ $pdauth != "" ]]); then
                 reboot
             fi
             curl -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
-        elif [[ "$mad_mac" != "$current_mac" ]]; then
-            set_mac_address "$mad_mac"
+        elif [[ "$lan_mac" != "$current_mac" ]]; then
+            set_mac_address "$lan_mac"
             reboot
         else
             requires_autoconf=0
