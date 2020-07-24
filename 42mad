@@ -234,7 +234,7 @@ autoconf_wait_for_status() {
 status_received=false
 until $status_received; do
     status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status")
-    if [ $status -eq 404 ] || [ $status -eq 201 ]; then
+    if [ $status -eq 404 ] || [ $status -eq 200 ]; then
         if [ $status -eq 404 ]; then
             rm /sdcard/reg_session;
         fi
@@ -254,21 +254,21 @@ echo "Configuring Magisk"
 [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
 [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
 #make sure rgc and pogodroid and shell have su root
-puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
-puid=$(id -u "$puser")
 ruser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
 ruid=$(id -u "$ruser")
-suid=$(id -u shell)
 pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='de.grennith.rgc.remotegpscontroller'")
 if [[ "$pol" != 2 ]]; then
     magisk --sqlite "DELETE from policies WHERE package_name='de.grennith.rgc.remotegpscontroller'"
     magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($ruid,'de.grennith.rgc.remotegpscontroller',2,0,1,0)"
 fi
+puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}' 2>/dev/null)
+puid=$(id -u "$puser")
 pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.mad.pogodroid'")
 if [[ "$pol" != 2 ]] ;then
     magisk --sqlite "DELETE from policies WHERE package_name='com.mad.pogodroid'"
     magisk --sqlite "INSERT INTO policies (uid,package_name,policy,until,logging,notification) VALUES($puid,'com.mad.pogodroid',2,0,1,0)"
 fi
+suid=$(id -u shell)
 pol=$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='com.android.shell'")
 if [[ "$pol" != 2 ]] ;then
     magisk --sqlite "DELETE from policies WHERE package_name='com.android.shell'"
@@ -516,13 +516,13 @@ if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && 
     status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
     if [ $status -eq 200 ]; then
         all_macs=$(/system/bin/curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
-        # TODO - Handle WLAN mac
-        lan_mac=$(echo $all_macs | sed -n 1p)
-        wlan_mac=$(echo $all_macs | sed -n 2p)
+        # TODO - Handle WLAN mac through $interface
+        interface=$(echo $all_macs | sed -n 1p)
+        mac=$(echo $all_macs | sed -n 2p)
         current_mac=$(ifconfig eth0|awk '/HWaddr/{print $5}echo ')
-        echo "MAD-assigned MAC: \"$lan_mac\""
+        echo "MAD-assigned MAC: \"$mac\""
         echo "Current MAC: \"$current_mac\""
-        if [[ "$lan_mac" == "" ]]; then
+        if [[ "$mac" == "" ]]; then
             echo "No mac specified.  Determining if a new MAC needs to be generated"
             # Not sure this is needed with the 64bit rom
             if [[ "$current_mac" == "00:15:18:01:81:31" ]] ;then
@@ -533,8 +533,8 @@ if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && 
             fi
             /system/bin/curl -s -k -L -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
             requires_autoconf=0
-        elif [[ "$lan_mac" != "$current_mac" ]]; then
-            set_mac_address "$lan_mac"
+        elif [[ "$mac" != "$current_mac" ]]; then
+            set_mac_address "$mac"
             reboot
         else
             requires_autoconf=0
