@@ -136,7 +136,7 @@ if [ -f /sdcard/google-account ]; then
         sleep 1
     done
     input keyevent 66
-    if [[ ! "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]]; then
+    if [[ "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]]; then
         log_msg 2 "done setting up google account"
     else
         log_msg 4 "Unable to sign-in to the account.  Please manually sign-in"
@@ -230,15 +230,15 @@ while ! $registered; do
         else
             log_msg 2 "No changes required for RGC"
         fi
+        if [[ "$reboot_required" -eq 1 ]]; then
+            log_msg 2 "Rebooting box"
+            reboot_box
+        fi
         # Login to google account
         if [[ ! "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]]; then
             autoconf_process_google
         else
             log_msg 2 "Google account already setup"
-        fi
-        if [[ "$reboot_required" -eq 1 ]]; then
-            log_msg 2 "Rebooting box"
-            reboot_box
         fi
         # PoGo Initialization
         if [ ! $(pm list packages com.nianticlabs.pokemongo) ]; then
@@ -294,15 +294,15 @@ fi
 }
 
 autoconf_wait_for_status() {
-status_received=false
-until $status_received; do
+status_received=0
+until [ "$status_received" -ne "1" ]; do
     status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status")
     if [ $status -eq 404 ] || [ $status -eq 200 ]; then
         if [ $status -eq 404 ]; then
             rm /sdcard/reg_session;
         fi
         echo "Status of session successfully received: $status"
-        status_received=true
+        status_received=1
     elif [ $status -eq 406 ]; then
         log_msg 1 "Pending in MADmin"
         sleep 5
@@ -580,14 +580,14 @@ fi
 
 wait_for_network
 autoconf_set_vars
-if [ ! -f /sbin/magisk || ! $(pm list packages android.vending) ]; then
+if ([ ! -f /sbin/magisk ] ||  [ ! $(pm list packages android.vending) ]) || [[ -f /sdcard/reg_session ]]; then
     autoreg_get_session
 fi
+echo "$madver" > /sdcard/madversion
 mount -o remount,rw /system
 core_installation
 set_android_settings
-echo "$madver" > /sdcard/madversion
-if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && [ -f "$rgcconf" ] && [ -f "$rgcconf" ] && [ ! -f /sdcard/reg_session ]; then
+if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && [ -f "$rgcconf" ] && [ -f "$pdconf" ] && [ ! -f /sdcard/reg_session ]; then
     status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
     if [ $status -eq 200 ]; then
         all_macs=$(/system/bin/curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
