@@ -28,13 +28,84 @@ until /system/bin/curl -s -k -L -A "$useragent" -o "$2" "$1" ;do
 done
 }
 
+log_msg() {
+# $1 = severity
+# $2 = msg
+echo "$msg"
+if [ "$session_id" != "" ]; then
+    /system/bin/curl -s -k -L -d "$1,$2" --user "$pdauth" -H 'Content-Type: text/html' "${pdserver}/autoconfig/${session_id}/log"
+fi
+}
+
+
+autoconf_configure_pd() {
+pdir="/data/data/com.mad.pogodroid/shared_prefs"
+puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}')
+if [ "$puser" != "" ]; then
+    if ! [ -d "$pdir" ]; then
+        log_msg 2 "PD directory does not exist.  Creating"
+        mkdir "$pdir"
+        chmod 771 "$pdir"
+        chown "$puser":"$puser" "$pdir"
+    fi
+    log_msg 2 "Downloading PD config"
+    until /system/bin/curl -s -k -L -o "$pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd" ;do
+        rm -f "$pdconf"
+        sleep 2
+    done
+    log_msg 2 "PD config successfully downloaded"
+    chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
+    # I dunno, sleep and launch it and hope its all good
+    sleep 5
+    set_permissions_pd
+    monkey -p com.mad.pogodroid 1
+    sleep 10
+else
+    log_msg 4 "Unable to find PD user"
+fi
+}
+
+
+autoconf_configure_rgc() {
+pdir="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs"
+puser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
+if [ "$puser" != "" ]; then
+    if ! [ -d "$pdir" ]; then
+        log_msg 2 "RGC directory does not exist.  Creating"
+        mkdir "$pdir"
+        chmod 771 "$pdir"
+        chown "$puser":"$puser" "$pdir"
+    fi
+    log_msg 2 "Downloading RGC config"
+    until /system/bin/curl -s -k -L -o "$rgcconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc" ;do
+        rm -f "$rgcconf"
+        sleep 2
+    done
+    log_msg 2 "RGC config successfully downloaded"
+    chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
+else
+    log_msg 4 "Unable to find RGC user"
+fi
+}
+
+
+autoreg_get_session() {
+    if [ ! -f /sdcard/reg_session ]; then
+        autoreg_create_session
+    else
+        session_id=$(cat /sdcard/reg_session)
+    fi
+}
+
 
 autoconf_process_google() {
+log_msg 2 "Grabbing the google account"
 until /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google" ;do
     rm -f /sdcard/google-account
     sleep 2
 done
 if [ -f /sdcard/google-account ]; then
+    log_msg 2 "Signing in to the google account"
     am start -a android.settings.ADD_ACCOUNT_SETTINGS
     sleep 40
     input keyevent 20
@@ -65,43 +136,28 @@ if [ -f /sdcard/google-account ]; then
         sleep 1
     done
     input keyevent 66
-    echo "done setting up google account"
+    if [[ ! "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]]; then
+        log_msg 2 "done setting up google account"
+    else
+        log_msg 4 "Unable to sign-in to the account.  Please manually sign-in"
+    fi
 fi
 }
 
-autoconf_process_pd() {
-echo "Installing and configuring PD"
-if [ ! $(pm list packages com.mad.pogodroid) ]; then
+autoconf_install_pd() {
+log_msg 2 "Installing PogoDroid"
+rm -f /sdcard/Download/PogoDroid.apk
+until /system/bin/curl -s -k -L -o /sdcard/Download/PogoDroid.apk --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogodroid/download" ;do
     rm -f /sdcard/Download/PogoDroid.apk
-    until /system/bin/curl -s -k -L -o /sdcard/Download/PogoDroid.apk --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/pogodroid/download" ;do
-        rm -f /sdcard/Download/PogoDroid.apk
-        sleep 2
-    done
-    /system/bin/pm install -r /sdcard/Download/PogoDroid.apk
-fi
-pdir="/data/data/com.mad.pogodroid/shared_prefs"
-puser=$(ls -la /data/data/com.mad.pogodroid/|head -n2|tail -n1|awk '{print $3}')
-if ! [ -d "$pdir" ]; then
-    echo "Dir does not exist"
-    mkdir "$pdir"
-    chmod 771 "$pdir"
-    chown "$puser":"$puser" "$pdir"
-fi
-until /system/bin/curl -s -k -L -o "$pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd" ;do
-    rm -f /system/priv-app/RemoteGpsController.apk
     sleep 2
 done
-chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
+/system/bin/pm install -r /sdcard/Download/PogoDroid.apk
 reboot_required=1
-# I dunno, sleep and launch it and hope its all good
-sleep 10
-set_permissions_pd
-monkey -p com.mad.pogodroid 1
-sleep 30
+log_msg 2 "PD installation completed"
 }
 
 autoconf_process_pogo() {
-echo "Installing and configuring PokemonGo"
+log_msg 2 "Installing and configuring PokemonGo"
 mkdir -p /sdcard/Download/pogo
 /system/bin/rm -f /sdcard/Download/pogo/*
 (cd /sdcard/Download/pogo
@@ -120,81 +176,88 @@ until $valid_file; do
  fi
  sleep 2
 done
-echo "Install APK PokemonGo"
+log_msg 2 "Installing PokemonGo zip"
 session=$(pm install-create -r | cut -d [ -f2 | cut -d ] -f1)
 for a in *.apk ;do
  pm install-write -S $(stat -c %s $a) $session $a $a
 done
 pm install-commit $session
 )
+log_msg 2 "PoGO installed"
 set_permissions_pogo
 }
 
-autoconf_process_rgc() {
-echo "Installing and configuring RGC"
-if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
-    until /system/bin/curl -s -k -L -o "/system/priv-app/RemoteGpsController.apk" --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/rgc/download" ;do
-        rm -f /system/priv-app/RemoteGpsController.apk
-        sleep 2
-    done
-    /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
-    /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
-    echo "Rebooting device to make RGC user active"
-    reboot
-fi
-pdir="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs"
-puser=$(ls -la /data/data/de.grennith.rgc.remotegpscontroller/|head -n2|tail -n1|awk '{print $3}')
-if ! [ -d "$pdir" ]; then
-    echo "Dir does not exist"
-    mkdir "$pdir"
-    chmod 771 "$pdir"
-    chown "$puser":"$puser" "$pdir"
-fi
-until /system/bin/curl -s -k -L -o "$rgcconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc" ;do
+autoconf_install_rgc() {
+log_msg 2 "Installing RGC"
+until /system/bin/curl -s -k -L -o "/system/priv-app/RemoteGpsController.apk" --user "$pdauth" -H "origin: $origin" "${pdserver}/mad_apk/rgc/download" ;do
     rm -f /system/priv-app/RemoteGpsController.apk
     sleep 2
 done
-chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
-
+/system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
+/system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
 reboot_required=1
+log_msg 2 "RGC has been put in the directory"
 }
 
 autoconf_register() {
 registered=false
 while ! $registered; do
-    if [ ! -f /sdcard/reg_session ]; then
-        autoreg_create_session
-    else
-        session_id=$(cat /sdcard/reg_session)
-    fi
+    autoreg_get_session
     autoconf_wait_for_status
     if [ ! -f /sdcard/reg_session ]; then
-        echo "Rejected session.  Recreating"
+        log_msg 2 "Rejected session.  Recreating"
     else
         origin=$(/system/bin/curl -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/origin")
-        if [ ! $(pm list packages com.mad.pogodroid) || ! -f "$pdconf" ]; then
-            autoconf_process_pd
+        # PD Initialization
+        if [ ! $(pm list packages com.mad.pogodroid) ]; then
+            autoconf_install_pd
+            reboot_required=1
+        elif [ ! -f "$pdconf" ]; then
+            set_permissions_pd
+            autoconf_configure_pd
+            reboot_required=1
         else
-            echo "PD already installed"
+            log_msg 2 "No changes required for PD"
         fi
-        if [ ! -f /system/priv-app/RemoteGpsController.apk || ! -f "$rgcconf" ]; then
-            autoconf_process_rgc
+        # RGC Initialization
+        if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
+            autoconf_install_rgc
+            reboot_required=1
+        elif [ ! -f "$rgcconf" ]; then
+            set_permissions_rgc
+            autoconf_configure_rgc
+            reboot_required=1
         else
-            echo "RGC already installed"
+            log_msg 2 "No changes required for RGC"
         fi
-        if [ ! $(pm list packages com.nianticlabs.pokemongo) ]; then
-            autoconf_process_pogo
-        else
-            echo "Pogo already installed"
-        fi
+        # Login to google account
         if [[ ! "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]]; then
             autoconf_process_google
         else
-            echo "Google account already setup"
+            log_msg 2 "Google account already setup"
         fi
+        if [[ "$reboot_required" -eq 1 ]]; then
+            log_msg 2 "Rebooting box"
+            reboot_box
+        fi
+        # PoGo Initialization
+        if [ ! $(pm list packages com.nianticlabs.pokemongo) ]; then
+            autoconf_process_pogo
+            set_permissions_pogo
+            reboot_required=1
+        else
+            log_msg 2 "Pogo already installed"
+        fi
+
         registered=true
         /system/bin/curl -s -k -L -X DELETE --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
-        rm /sdcard/reg_session
+        if [ -f "$rgcconf" ] && [ -f "$pdconf" ]; then
+            log_msg 2 "All steps done.  Attempting to remove session"
+            rm /sdcard/reg_session
+        else
+            log_msg 3 "Missing one or more required configuration files"
+            reboot_required=1
+        fi
     fi
 done
 }
@@ -241,7 +304,7 @@ until $status_received; do
         echo "Status of session successfully received: $status"
         status_received=true
     elif [ $status -eq 406 ]; then
-        echo "Pending in MADmin"
+        log_msg 1 "Pending in MADmin"
         sleep 5
     fi
 done
@@ -249,7 +312,7 @@ done
 
 
 init_magisk_config(){
-echo "Configuring Magisk"
+log_msg 2 "Configuring Magisk"
 /sbin/magiskhide --add com.nianticlabs.pokemongo
 [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
 [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
@@ -277,19 +340,20 @@ fi
 }
 
 init_installation() {
-echo "Core Packages being installed"
+log_msg 2 "Core Packages being installed"
 cachereboot=0
 # Install magisk.  If it already exists, check for an update
 if [ ! -f /sbin/magisk ]; then
-    echo "Magisk not installed"
+    log_msg 2 "Magisk not installed"
     install_magisk
 elif [ -f /sbin/magisk ] && ! magisk -c|grep -q "$magisk_ver"; then
-    echo "Magisk requires an upgrade"
+    log_msg 2 "Magisk requires an upgrade"
     pm uninstall com.topjohnwu.magisk
     install_magisk
 elif [[ $(pm list packages com.topjohnwu.magisk) || -f /sdcard/magisk_repackage ]]; then
-    echo "Magisk needs to be repackaged"
+    log_msg 2 "Magisk needs to be repackaged"
     # After installation the manager may not be fully installed.  Wait for it to show then repackage
+    log_msg 2 "Waiting for Magisk Manager to be found"
     until [[ $(pm list packages com.topjohnwu.magisk) ]]; do
         sleep 1
     done;
@@ -297,14 +361,14 @@ elif [[ $(pm list packages com.topjohnwu.magisk) || -f /sdcard/magisk_repackage 
     until [[ ! $(pm list packages com.topjohnwu.magisk) ]]; do
         sleep 1
     done;
+    log_msg 2 "Magisk Manager has been successfully repackaged to a new name"
     rm /sdcard/magisk_repackage
-    echo "Magisk has been repackaged"
 else
-    echo "No changes required to Magisk"
+    log_msg 2 "No changes required to Magisk"
 fi
 # Install gapps
 if [ ! $(pm list packages android.vending) ]; then
-    echo "Installing GApps"
+    log_msg 2 "Installing GApps"
     download "$url_gapps" /sdcard/gapps.zip
     mkdir -p /cache/recovery
     touch /cache/recovery/command
@@ -313,14 +377,13 @@ if [ ! $(pm list packages android.vending) ]; then
 fi
 if (( $cachereboot )) ;then
     echo '--wipe_cache' >> /cache/recovery/command
-    reboot recovery
 fi
-echo "Core packages are installed"
+log_msg 2 "Core packages are installed"
 }
 
 
 install_magisk() {
-echo "Installing Magisk ${magisk_ver}"
+log_msg 2 "Installing Magisk ${magisk_ver}"
 download "$url_magisk" /sdcard/magisk.zip
 mkdir -p /cache/recovery
 touch /cache/recovery/command
@@ -331,7 +394,7 @@ cachereboot=1
 
 
 core_installation(){
-echo "Starting core installation"
+log_msg 2 "Starting core installation"
 # Setup permissions prior to repackaging after a reboot.  I hated waiting :D
 if [ -f /sbin/magisk ]; then
     init_magisk_config
@@ -351,19 +414,19 @@ execute_apk_autoupdates(){
 
 execute_autoupdates(){
 if ! grep -q "version $uver" /system/bin/update_mad.sh; then
-    echo "Downloading update_mad.sh"
+    log_msg 2 "Downloading update_mad.sh"
     download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
     chmod +x /system/bin/update_mad.sh
 fi
 
 if ! grep -q "version $pver" /system/bin/pingreboot.sh; then
-     echo "Downloading pingreboot.sh"
+     log_msg 2 "Downloading pingreboot.sh"
      download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/pingreboot.sh /system/bin/pingreboot.sh
      chmod +x /system/bin/pingreboot.sh
 fi
 
 #if ! grep -q "version $nver" /system/bin/nfs_install.sh; then
-#    echo "Downloading nfs_install.sh"
+#    log_msg 2 "Downloading nfs_install.sh"
 #    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh /system/bin/nfs_install.sh
 #    chmod +x /system/bin/nfs_install.sh
 #fi
@@ -371,7 +434,7 @@ fi
 
 
 init_magisk_config(){
-echo "Configuring Magisk"
+log_msg 2 "Configuring Magisk"
 /sbin/magiskhide --add com.nianticlabs.pokemongo
 [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
 [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
@@ -406,36 +469,46 @@ load_pd_config() {
     pdauth="$pduser:$pdpass"
 }
 
+reboot_box() {
+if [ -f /cache/recovery/command ]; then
+    log_msg 2 "Rebooting box - Recovery"
+    reboot recovery
+else
+    log_msg 2 "Rebooting box"
+    reboot
+fi
+}
+
 #don't add it for execution as long as no one else is having issues with wrong language
 set_android_language() {
 if ! [[ "$(getprop persist.sys.locale)" == "en-US" ]]; then
  setprop persist.sys.locale en-US; setprop ctl.restart zygote
- echo "setting en-US"
+ log_msg 2 "setting en-US"
 fi
 }
 
 set_android_settings() {
-echo "Setting android settings for workers"
+log_msg 2 "Setting android settings for workers"
 ! [[ $(settings get global hdmi_control_enabled) == "0" ]] && settings put global hdmi_control_enabled 0
 [[ "$(/system/bin/getprop persist.sys.app.rotation)" != "middle_port" ]] && /system/bin/setprop persist.sys.app.rotation middle_port
 ! [[ $(settings get global stay_on_while_plugged_in) == 3 ]] && settings put global stay_on_while_plugged_in 3
 [ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
-echo "Successfully set the settings for workers"
+log_msg 2 "Successfully set the settings for workers"
 }
 
 
 set_mac_address(){
 #This will get changed, thanks banana and aco
-echo "Setting MAC address"
+log_msg 2 "Setting MAC address"
 ifconfig eth0 hw ether "$1"
-echo "MAC successfully set"
+log_msg 2 "MAC successfully set"
 set_mac_unify "$1"
 }
 
 
 set_mac_unify(){
-echo "Setting Mac in unifykey"
+log_msg 2 "Setting Mac in unifykey"
 echo 1 > /sys/class/unifykeys/lock
 echo mac > /sys/class/unifykeys/name
 echo "$1" >/sys/class/unifykeys/write
@@ -444,11 +517,11 @@ echo 0 > /sys/class/unifykeys/lock
 }
 
 set_permissions() {
-echo "Setting app permissions"
+log_msg 2 "Setting app permissions"
 set_permissions_pd
 set_permissions_rgc
 set_permissions_pogo
-echo "App permissions set"
+log_msg 2 "App permissions set"
 }
 
 set_permissions_pd() {
@@ -467,7 +540,7 @@ if [[ $(pm list packages com.nianticlabs.pokemongo) ]]; then
         pm grant com.nianticlabs.pokemongo android.permission.GET_ACCOUNTS
     fi
 else
-    echo "PokemonGo is not installed.  Skipping permissions"
+    log_msg 2 "PokemonGo is not installed.  Skipping permissions"
 fi
 }
 
@@ -491,7 +564,7 @@ echo "Network connection detected"
 
 repack_magisk(){
 if [ $(pm list packages com.topjohnwu.magisk) ]; then
-echo "repacking magisk"
+log_msg 2 "repacking magisk"
 monkey -p com.topjohnwu.magisk 1
 sleep 30
 input tap 39 42
@@ -501,17 +574,19 @@ sleep 5
 input tap 315 552
 sleep 5
 input tap 881 277
-echo "done"
+log_msg 2 "Magisk repackaging has started"
 fi
 }
 
 wait_for_network
+autoconf_set_vars
+if [ ! -f /sbin/magisk || ! $(pm list packages android.vending) ]; then
+    autoreg_get_session
+fi
 mount -o remount,rw /system
 core_installation
 set_android_settings
 echo "$madver" > /sdcard/madversion
-
-load_pd_config
 if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && [ -f "$rgcconf" ] && [ -f "$rgcconf" ] && [ ! -f /sdcard/reg_session ]; then
     status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")
     if [ $status -eq 200 ]; then
@@ -523,19 +598,19 @@ if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && 
         echo "MAD-assigned MAC: \"$mac\""
         echo "Current MAC: \"$current_mac\""
         if [[ "$mac" == "" ]]; then
-            echo "No mac specified.  Determining if a new MAC needs to be generated"
+            log_msg 2 "No mac specified.  Determining if a new MAC needs to be generated"
             # Not sure this is needed with the 64bit rom
             if [[ "$current_mac" == "00:15:18:01:81:31" ]] ;then
                 current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
                 set_mac_address "$current_mac"
                 /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
-                reboot
+                reboot_box
             fi
             /system/bin/curl -s -k -L -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
             requires_autoconf=0
         elif [[ "$mac" != "$current_mac" ]]; then
             set_mac_address "$mac"
-            reboot
+            reboot_box
         else
             requires_autoconf=0
         fi
@@ -549,8 +624,7 @@ fi
 
 set_permissions
 if [[ "$reboot_required" -eq 1 ]]; then
-echo "Rebooting box"
-reboot
+reboot_box
 fi
 
 execute_autoupdates
