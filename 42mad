@@ -92,8 +92,6 @@ fi
 autoreg_get_session() {
     if [ ! -f /sdcard/reg_session ]; then
         autoreg_create_session
-    else
-        session_id=$(cat /sdcard/reg_session)
     fi
 }
 
@@ -201,6 +199,7 @@ log_msg 2 "RGC has been put in the directory"
 
 autoconf_register() {
 registered=false
+reboot_install=0
 while ! $registered; do
     autoreg_get_session
     autoconf_wait_for_status
@@ -211,7 +210,7 @@ while ! $registered; do
         # PD Initialization
         if [ ! $(pm list packages com.mad.pogodroid) ]; then
             autoconf_install_pd
-            reboot_required=1
+            reboot_install=1
         elif [ ! -f "$pdconf" ]; then
             set_permissions_pd
             autoconf_configure_pd
@@ -222,7 +221,7 @@ while ! $registered; do
         # RGC Initialization
         if [ ! -f /system/priv-app/RemoteGpsController.apk ]; then
             autoconf_install_rgc
-            reboot_required=1
+            reboot_install=1
         elif [ ! -f "$rgcconf" ]; then
             set_permissions_rgc
             autoconf_configure_rgc
@@ -230,15 +229,14 @@ while ! $registered; do
         else
             log_msg 2 "No changes required for RGC"
         fi
-        if [[ "$reboot_required" -eq 1 ]]; then
-            log_msg 2 "Rebooting box"
-            reboot_box
-        fi
         # Login to google account
         if [[ ! "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]]; then
             autoconf_process_google
         else
             log_msg 2 "Google account already setup"
+        fi
+        if [[ "$reboot_install" -eq 1 ]]; then
+            reboot_box
         fi
         # PoGo Initialization
         if [ ! $(pm list packages com.nianticlabs.pokemongo) ]; then
@@ -254,6 +252,7 @@ while ! $registered; do
         if [ -f "$rgcconf" ] && [ -f "$pdconf" ]; then
             log_msg 2 "All steps done.  Attempting to remove session"
             rm /sdcard/reg_session
+            sh -x /system/bin/update_mad.sh -n
         else
             log_msg 3 "Missing one or more required configuration files"
             reboot_required=1
@@ -272,15 +271,23 @@ until $has_session; do
         sleep 15
     else
         has_session=true
-        echo "$session_id" > /sdcard/reg_session
+        echo -e "$session_id\n$pdserver\n$pdauth" > /sdcard/reg_session
+        log_msg 2 "Registered against session_id $session_id"
     fi
 done
 }
 
 autoconf_set_vars() {
-if [ -f "$pdconf" ]; then
+if [ -f /sdcard/reg_session ]; then
+    log_msg 2 "Loading config from cache"
+    session_id=$(awk 'NR==1{print $1'} /sdcard/reg_session)
+    pdserver=$(awk 'NR==2{print $1'} /sdcard/reg_session)
+    pdauth=$(awk 'NR==3{print $1'} /sdcard/reg_session)
+elif [ -f "$pdconf" ]; then
+    echo "PD Config present without a session.  Probably already configured"
     load_pd_config
 else
+    echo "Loading config from USB"
     usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
     while [[ "$usbfile" == "" ]]; do
         usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
@@ -289,20 +296,21 @@ else
     if [[ "$usbfile" != "" ]]; then
         pdserver=$(awk 'NR==1{print $1'} "$usbfile")
         pdauth=$(awk 'NR==2{print $1'} "$usbfile")
-    fi;
+    fi
+    echo "Loaded config from USB"
 fi
 }
 
 autoconf_wait_for_status() {
-status_received=0
-until [ "$status_received" -ne "1" ]; do
+status_received=false
+until [ "$status_received" == true ]; do
     status=$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status")
     if [ $status -eq 404 ] || [ $status -eq 200 ]; then
         if [ $status -eq 404 ]; then
             rm /sdcard/reg_session;
         fi
-        echo "Status of session successfully received: $status"
-        status_received=1
+        log_msg 2 "Status of session successfully received: $status"
+        status_received=true
     elif [ $status -eq 406 ]; then
         log_msg 1 "Pending in MADmin"
         sleep 5
@@ -471,7 +479,7 @@ load_pd_config() {
 
 reboot_box() {
 if [ -f /cache/recovery/command ]; then
-    log_msg 2 "Rebooting box - Recovery"
+    log_msg 2 "Rebooting box to recovery mode"
     reboot recovery
 else
     log_msg 2 "Rebooting box"
@@ -594,7 +602,7 @@ if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && 
         # TODO - Handle WLAN mac through $interface
         interface=$(echo $all_macs | sed -n 1p)
         mac=$(echo $all_macs | sed -n 2p)
-        current_mac=$(ifconfig eth0|awk '/HWaddr/{print $5}echo ')
+        current_mac=$(ifconfig eth0|awk '/HWaddr/{print $5}')
         echo "MAD-assigned MAC: \"$mac\""
         echo "Current MAC: \"$current_mac\""
         if [[ "$mac" == "" ]]; then
@@ -603,10 +611,10 @@ if [[ "$origin" != "" ]] && [[ "$pdserver" != "" ]] && [[ "$pdauth" != "" ]] && 
             if [[ "$current_mac" == "00:15:18:01:81:31" ]] ;then
                 current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
                 set_mac_address "$current_mac"
-                /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+                /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/plain' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
                 reboot_box
             fi
-            /system/bin/curl -s -k -L -v --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+            /system/bin/curl -s -k -L -v --user "$pdauth" -H 'Content-Type: text/plain' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
             requires_autoconf=0
         elif [[ "$mac" != "$current_mac" ]]; then
             set_mac_address "$mac"
