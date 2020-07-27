@@ -196,8 +196,8 @@ elif [[ -f /sdcard/magisk_repackage ]] ;then
     r=0
     while [[ $(pm list packages com.topjohnwu.magisk) ]] ;do
         sleep 10
-        # if repackaging didnt take place in 100 seconds, try again
-        if ! (( $((r%10)) )); then
+        # if repackaging didnt take place in 200 seconds, try again
+        if ! (( $((r%20)) )); then
             repack_magisk
         fi
         r=$((r+1))
