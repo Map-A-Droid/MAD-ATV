@@ -166,7 +166,7 @@ update_dhcp(){
 grep -q net.hostname /system/build.prop && unset UpdateDHCP && return 1
 origin="$(awk -F'>' '/post_origin/{print $2}' /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|cut -d'<' -f1)"
 if grep -q 'net.hostname' /system/build.prop ;then
- sed -i -e "s/^net.hostname=.*/net.hostname=${origin}/g" /system/build.prop 
+ sed -i -e "s/^net.hostname=.*/net.hostname=${origin}/g" /system/build.prop
 else
  echo "net.hostname=${origin}" >> /system/build.prop
 fi
@@ -179,29 +179,32 @@ just run: /usr/bin/adb -s <DEVICEIP>:5555 shell su -c "update_mad.sh <options>"
 
 Options:
           -r   (Update RemoteGPSController from web)
-          -wr   (Update RemoteGPSController from madmin wizard)
+          -wr  (Update RemoteGPSController from madmin wizard)
           -d   (Update PogoDroid from web)
-          -wd   (Update PogoDroid from madmin wizard)
+          -wd  (Update PogoDroid from madmin wizard)
           -p   (Update PokemonGO)
           -n   (update name in DHCP)
           -i   (Update MAD ROM init script)
           -a   (Update all)
+          -wa  (Update all with wizard)
           -c   (ClearCache of PokemonGo)
+          -pdc (Use /data/local/pdconf instead of $pdconf)
 EOF
 }
 
 for i in "$@" ;do
  case "$i" in
  -r) update_rgc ;;
- -d) update_pogodroid ;;
  -wr) cast_alohomora ;;
+ -d) update_pogodroid ;;
  -wd) cast_imperius ;;
  -p) update_pokemon ;;
  -n) update_dhcp ;;
+ -i) update_init ;;
  -a) update_rgc; update_pokemon; update_pogodroid; update_init ;;
  -wa) cast_alohomora; update_pokemon; cast_imperius; update_init ;;
  -c) echo "clearing cache of app pokemongo" && /system/bin/pm clear com.nianticlabs.pokemongo ;;
- -i) update_init ;;
+ -pdc) pdconf=/data/local/pdconf ;;
   *) print_help ; exit 1 ;;
  esac
 done
