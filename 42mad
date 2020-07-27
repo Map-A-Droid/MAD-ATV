@@ -29,8 +29,8 @@ done
 }
 
 autoconf_google_signin() {
-until [[ -f /sdcard/google-account ]] ;then
-    /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google" ;do
+until [[ -f /sdcard/google-account ]] ;do
+    /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google"
     sleep 10
 done
 if [[ -f /sdcard/google-account ]] ;then
@@ -254,7 +254,7 @@ else
     usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
     if [[ "$usbfile" ]] ;then
         pdserver="$(awk 'NR==1{print $1'} "$usbfile")"
-        pdauth=$"(awk 'NR==2{print $1'} "$usbfile")"
+        pdauth="$(awk 'NR==2{print $1'} "$usbfile")"
         if ! [[ -f /sdcard/reg_session ]] ;then
             make_session
         else
