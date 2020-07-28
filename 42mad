@@ -205,7 +205,6 @@ elif [[ -f /sdcard/magisk_repackage ]] ;then
     until [[ $(pm list packages com.topjohnwu.magisk) ]] ;do
         sleep 10
     done
-    repack_magisk
     r=0
     while [[ $(pm list packages com.topjohnwu.magisk) ]] ;do
         sleep 10
