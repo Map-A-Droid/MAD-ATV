@@ -310,13 +310,23 @@ puser="$(stat -c %u "$pdir")"
 rgcdir="/data/data/de.grennith.rgc.remotegpscontroller/"
 ruser="$(stat -c %u "$rgcdir")"
 if [[ "$puser" ]] && [[ "$pdauth" ]] && [[ -d "$pdir" ]] && ! [[ -f "$pdconf" ]] && [[ "$session_id" ]] ;then
+    if [[ ! -d "$pdir/shared_prefs" ]] ;then
+        mkdir -p "$pdir/shared_prefs"
+        chmod 771 "$pdir/shared_prefs"
+        chown "$puser":"$puser" "$pdir/shared_prefs"
+    fi
     /system/bin/curl -s -k -L -o "$pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
     chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
     rm -f /data/local/pdconf
 fi
 if [[ "$puser" ]] && [[ "$pdauth" ]] && [[ -d "$rgcdir" ]] && ! [[ -f "$rgcconf" ]] ;then
+    if [[ ! -d "$rgcdir/shared_prefs" ]] ;then
+        mkdir -p "$rgcdir/shared_prefs"
+        chmod 771 "$rgcdir/shared_prefs"
+        chown "$ruser":"$ruser" "$rgcdir/shared_prefs"
+    fi
     /system/bin/curl -s -k -L -o "$rgcconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc"
-    chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
+    chmod 660 "$rgcconf" && chown "ruser":"$ruser" "$rgcconf"
 fi
 if [[ "$(pm list packages com.mad.pogodroid)" ]] && ! dumpsys package com.mad.pogodroid |grep READ_EXTERNAL_STORAGE|grep granted|grep -q 'granted=true'; then
     pm grant com.mad.pogodroid android.permission.READ_EXTERNAL_STORAGE
