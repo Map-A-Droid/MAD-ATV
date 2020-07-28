@@ -326,7 +326,7 @@ if [[ "$puser" ]] && [[ "$pdauth" ]] && [[ -d "$rgcdir" ]] && ! [[ -f "$rgcconf"
         chown "$ruser":"$ruser" "$rgcdir/shared_prefs"
     fi
     /system/bin/curl -s -k -L -o "$rgcconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc"
-    chmod 660 "$rgcconf" && chown "ruser":"$ruser" "$rgcconf"
+    chmod 660 "$rgcconf" && chown "$ruser":"$ruser" "$rgcconf"
 fi
 if [[ "$(pm list packages com.mad.pogodroid)" ]] && ! dumpsys package com.mad.pogodroid |grep READ_EXTERNAL_STORAGE|grep granted|grep -q 'granted=true'; then
     pm grant com.mad.pogodroid android.permission.READ_EXTERNAL_STORAGE
