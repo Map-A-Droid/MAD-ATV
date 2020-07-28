@@ -161,7 +161,7 @@ if [[ -f /sbin/magisk ]] ;then
     [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
     [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
     #make sure rgc and pogodroid and shell have su root
-    puid="$(stat -c %u /data/data/com.mad.pogodroid/shared_prefs/)"
+    puid="$(stat -c %u /data/data/com.mad.pogodroid/)"
     ruid="$(stat -c %u /data/data/de.grennith.rgc.remotegpscontroller/)"
     suid="$(id -u shell)"
     pol="$(sqlite3 /data/adb/magisk.db "select policy from policies where package_name='de.grennith.rgc.remotegpscontroller'")"
