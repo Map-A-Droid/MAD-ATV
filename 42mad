@@ -253,8 +253,8 @@ elif [[ -f /data/local/pdconf ]] ;then
 else
     usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
     if [[ "$usbfile" ]] ;then
-        pdserver="$(awk 'NR==1{print $1'} "$usbfile")"
-        pdauth="$(awk 'NR==2{print $1'} "$usbfile")"
+        pdserver="$(awk 'NR==1{print $1}' "$usbfile")"
+        pdauth="$(awk 'NR==2{print $1}' "$usbfile")"
         if ! [[ -f /sdcard/reg_session ]] ;then
             make_session
         else
