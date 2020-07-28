@@ -67,7 +67,7 @@ fi
 checkupdate(){
 # $1 = new version
 # $2 = installed version
-
+! [[ "$2" ]] && return 0 # for first installs
 i=1
 #we start at 1 and go until number of . so we can use our counter as awk position
 places=$(awk -F. '{print NF+1}' <<< "$1")
