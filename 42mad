@@ -364,7 +364,6 @@ fi
 if [[ -f /sdcard/reg_session ]] && [[ -f "$pdconf" ]] && [[ -f "$rgcconf" ]] ;then
     /system/bin/curl -s -k -L -X DELETE --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
     rm -f /sdcard/reg_session
-    log_msg "2" "Rebooting to finalize the installation"
     reboot
 fi
 execute_autoupdates
