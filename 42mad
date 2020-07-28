@@ -28,6 +28,15 @@ until /system/bin/curl -s -k -L -A "$useragent" -o "$2" "$1" ;do
 done
 }
 
+log_msg() {
+# $1 = severity
+# $2 = msg
+echo "$msg"
+if [ "$session_id" != "" ]; then
+    /system/bin/curl -s -k -L -d "$1,$2" --user "$pdauth" -H 'Content-Type: text/html' "${pdserver}/autoconfig/${session_id}/log"
+fi
+}
+
 autoconf_google_signin() {
 until [[ -f /sdcard/google-account ]] ;do
     /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google"
@@ -80,9 +89,9 @@ fi
 #    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh /system/bin/nfs_install.sh
 #    chmod +x /system/bin/nfs_install.sh
 #fi
-! [[ -f /sdcard/disableautopogoupdate ]] && sh -x /system/bin/update_mad.sh -p
-! [[ -f /sdcard/disableautopogodroidupdate ]] && sh -x /system/bin/update_mad.sh -wd
-! [[ -f /sdcard/disableautorgcupdate ]] && sh -x /system/bin/update_mad.sh -wr
+! [[ -f /sdcard/disableautopogoupdate ]] && log_msg 2 "Downloading PoGo" && sh -x /system/bin/update_mad.sh -p
+! [[ -f /sdcard/disableautopogodroidupdate ]] && log_msg 2 "Downloading PogoDroid" && sh -x /system/bin/update_mad.sh -wd
+! [[ -f /sdcard/disableautorgcupdate ]] && log_msg 2 "Downloading RGC" && sh -x /system/bin/update_mad.sh -wr
 }
 
 #don't add it for execution as long as no one else is having issues with wrong language
@@ -135,6 +144,7 @@ echo "Network connection detected"
 }
 
 repack_magisk(){
+log_msg 2 "Starting Magisk repackaging"
 monkey -p com.topjohnwu.magisk 1
 sleep 30
 input tap 39 42
@@ -157,6 +167,7 @@ cachereboot=1
 check_magisk(){
 # We'll attempt to do this a little early since apparently people get impatient
 if [[ -f /sbin/magisk ]] ;then
+    log_msg 2 "Setting Magisk permissions"
     /sbin/magiskhide --add com.nianticlabs.pokemongo
     [[ -f /sdcard/magisk.zip ]] && rm /sdcard/magisk.zip
     [[ -f /sdcard/smali.zip ]] && rm /sdcard/smali.zip
@@ -182,12 +193,14 @@ if [[ -f /sbin/magisk ]] ;then
 fi
 # Install magisk.  If it already exists, check for an update
 if ! [[ -f /sbin/magisk ]] ;then
+    log_msg 2 "Installing Magisk"
     touch /sdcard/magisk_repackage
     install_magisk
 elif ! magisk -c|grep -q "$magisk_ver"; then
     touch /sdcard/magisk_update
     install_magisk
 elif [[ -f /sdcard/magisk_repackage ]] ;then
+    log_msg 2 "Magisk repackaging required"
     # After installation the manager may not be fully installed.  Wait for it to show then repackage
     until [[ $(pm list packages com.topjohnwu.magisk) ]] ;do
         sleep 10
@@ -198,10 +211,12 @@ elif [[ -f /sdcard/magisk_repackage ]] ;then
         sleep 10
         # if repackaging didnt take place in 200 seconds, try again
         if ! (( $((r%20)) )); then
+            log_msg 2 "Magisk repackaging was not successful in the timeframe.  Re-attempting the repacakge"
             repack_magisk
         fi
         r=$((r+1))
     done
+    log_msg 2 "Magisk successfully repackaged"
     rm -f /sdcard/magisk_repackage
     sleep 10
 elif [[ -f /sdcard/magisk_update ]] ;then
@@ -211,7 +226,7 @@ elif [[ -f /sdcard/magisk_update ]] ;then
     done
     rm -f /sdcard/magisk_update
 elif [[ $(pm list packages com.topjohnwu.magisk) ]] ;then
-    echo "Magisk manager is installed and not repackaged. This should not happen. Please report it and tell us if you were installing or updating."
+    log_msg 4 "Magisk manager is installed and not repackaged. This should not happen. Please report it and tell us if you were installing or updating."
 fi
 }
 
@@ -302,6 +317,7 @@ fi
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
 echo "$madver" > /sdcard/madversion
 if (( "$cachereboot" )) ;then
+    log_msg "2" "Rebooting into recovery mode for required installations"
     echo '--wipe_cache' >> /cache/recovery/command
     reboot recovery
 fi
@@ -348,6 +364,7 @@ fi
 if [[ -f /sdcard/reg_session ]] && [[ -f "$pdconf" ]] && [[ -f "$rgcconf" ]] ;then
     /system/bin/curl -s -k -L -X DELETE --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
     rm -f /sdcard/reg_session
+    log_msg "2" "Rebooting to finalize the installation"
     reboot
 fi
 execute_autoupdates
