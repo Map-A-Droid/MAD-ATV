@@ -226,7 +226,7 @@ case "$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth
    ;;
   "") return 2
    ;;
-   *) echo "unexpected status from madmin" && return 4
+   *) echo "unexpected status $(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status") from madmin" && return 4
    ;;
 esac
 }
