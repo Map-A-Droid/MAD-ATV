@@ -11,9 +11,11 @@ done
 }
 
 initfile="/system/etc/init.d/42mad"
-if ! [ -f "$initfile" ] ;then
+
+if ! [[ -f "$initfile" ]] ;then
+ mkdir -p /data/local/madromlogs/
  mount -o remount,rw /system
  download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/42mad "$initfile" && chmod +x /system/etc/init.d/*
  sleep 5
- /system/bin/sh "$initfile"
+ /system/bin/sh -x "$initfile" 2>"/data/local/madromlogs/42mad.log"
 fi
