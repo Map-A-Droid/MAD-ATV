@@ -364,6 +364,10 @@ fi
 if [[ -f /sdcard/reg_session ]] && [[ -f "$pdconf" ]] && [[ -f "$rgcconf" ]] ;then
     /system/bin/curl -s -k -L -X DELETE --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
     rm -f /sdcard/reg_session
+    monkey -p com.mad.pogodroid 1
+    sleep 10
+    monkey -p de.grennith.rgc.remotegpscontroller 1
+    sleep 10
     reboot
 fi
 execute_autoupdates
