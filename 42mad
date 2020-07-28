@@ -32,7 +32,7 @@ log_msg() {
 # $1 = severity
 # $2 = msg
 echo "$msg"
-if [ "$session_id" != "" ]; then
+if [[ "$session_id" ]] ;then
     /system/bin/curl -s -k -L -d "$1,$2" --user "$pdauth" -H 'Content-Type: text/html' "${pdserver}/autoconfig/${session_id}/log"
 fi
 }
