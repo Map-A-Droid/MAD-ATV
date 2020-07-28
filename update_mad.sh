@@ -99,7 +99,13 @@ if checkupdate "$newver" "$installedver" ;then
   rm -f /sdcard/Download/RemoteGpsController.apk
   sleep
  done
- /system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
+ if [[ "$installedver" ]] ;then
+  /system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
+ else
+  mv /sdcard/Download/RemoteGpsController.apk /system/priv-app/RemoteGpsController.apk
+  /system/bin/chmod 644 /system/priv-app/RemoteGpsController.apk
+  /system/bin/chown root:root /system/priv-app/RemoteGpsController.apk
+ fi
 fi
 reboot=1
 }
