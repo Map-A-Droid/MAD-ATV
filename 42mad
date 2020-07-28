@@ -216,6 +216,7 @@ fi
 }
 
 test_session(){
+[[ "$session_id" ]] || return 5
 case "$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/status")" in
  40*) return 3
    ;;
@@ -229,13 +230,15 @@ esac
 }
 
 make_session(){
-until [[ "$session_id" ]] ;do
+until test_session ;do
     echo "Trying to register session"
     session_id=$(/system/bin/curl -s -k -L -X POST --user "$pdauth" "${pdserver}/autoconfig/register")
+    [[ "$session_id" == 1 ]] && unset session_id
     sleep 15
 done
 echo "$session_id" > /sdcard/reg_session
 }
+
 ################ start of execution
 wait_for_network
 if [[ -f "$pdconf" ]] ;then
@@ -268,6 +271,10 @@ else
         /system/bin/curl -s -k -L -o "/data/local/pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
         checkmac
         echo "Installing the apps from the wizard"
+        if ! grep -q "version $uver" /system/bin/update_mad.sh; then
+            download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
+            chmod +x /system/bin/update_mad.sh
+        fi
         sh -x /system/bin/update_mad.sh -pdc -wa
     fi
 fi
