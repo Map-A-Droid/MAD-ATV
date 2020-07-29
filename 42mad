@@ -42,7 +42,7 @@ until [[ -f /sdcard/google-account ]] ;do
     /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google"
     sleep 10
 done
-if [[ -f /sdcard/google-account ]] ;then
+if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
     am start -a android.settings.ADD_ACCOUNT_SETTINGS
     sleep 40
     input keyevent 20
