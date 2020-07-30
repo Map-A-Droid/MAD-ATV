@@ -7,7 +7,7 @@ pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="1.3.2"
+madver="1.3.3"
 #magisk version / url
 mver="20.3"
 murl="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
@@ -252,4 +252,28 @@ if [[ "$usbfile" != "" ]] && [ -d /data/data/de.grennith.rgc.remotegpscontroller
       chmod 660 "$rgcconf" && chown "$puser":"$puser" "$rgcconf"
    fi
 fi
-exit 0
+
+if [[ -f "$pdconf" ]] ;then
+ origin="$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|cut -d'<' -f1)"
+ pduser="$(grep -v raw "$pdconf"|awk -F'>' '/auth_username/{print $2}'|awk -F'<' '{print $1}')"
+ pdpass="$(grep -v raw "$pdconf"|awk -F'>' '/auth_password/{print $2}'|awk -F'<' '{print $1}')"
+ pdauth="$pduser:$pdpass"
+ pdserver="$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')"
+ if [[ "$origin" ]] && [[ "$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")" == "200" ]] ;then
+  all_macs="$(/system/bin/curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")"
+  interface="$(sed -n 1p <<< "$all_macs")"
+  mac="$(sed -n 2p <<< "$all_macs")"
+  if ifconfig|grep -A5 wlan0|grep -q inet ;then
+   current_mac=$(ifconfig wlan0|awk '/HWaddr/{print $5}')
+  elif ifconfig|grep -A5 eth0|grep -q inet ;then
+   current_mac=$(ifconfig eth0|awk '/HWaddr/{print $5}')
+  fi
+  echo "MAD-assigned MAC: \"$mac\""
+  echo "Current MAC: \"$current_mac\""
+  if ! [[ "$mac" ]] && [[ "$current_mac" ]] ;then
+   /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+  fi
+ else
+  echo "After you change branches to 64bit_autoconf this will set your MAC in madmin"
+ fi
+fi
