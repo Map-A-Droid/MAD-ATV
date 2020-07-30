@@ -210,7 +210,7 @@ elif [[ -f /sdcard/magisk_repackage ]] ;then
         sleep 10
         # if repackaging didnt take place in 200 seconds, try again
         if ! (( $((r%20)) )); then
-            log_msg 2 "Magisk repackaging was not successful in the timeframe.  Re-attempting the repacakge"
+            log_msg 2 "Attempting to repackage magisk"
             repack_magisk
         fi
         r=$((r+1))
