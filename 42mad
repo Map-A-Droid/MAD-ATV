@@ -42,6 +42,7 @@ until [[ -f /sdcard/google-account ]] ;do
     /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google"
     sleep 10
 done
+log_msg 2 "Google Account data downloaded to /sdcard/google-account - trying to log in"
 if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
     am start -a android.settings.ADD_ACCOUNT_SETTINGS
     sleep 40
@@ -193,10 +194,11 @@ if [[ -f /sbin/magisk ]] ;then
 fi
 # Install magisk.  If it already exists, check for an update
 if ! [[ -f /sbin/magisk ]] ;then
-    log_msg 2 "Installing Magisk"
+    log_msg 2 "Preparing Magisk installation"
     touch /sdcard/magisk_repackage
     install_magisk
 elif ! magisk -c|grep -q "$magisk_ver"; then
+    log_msg 2 "Updating Magisk"
     touch /sdcard/magisk_update
     install_magisk
 elif [[ -f /sdcard/magisk_repackage ]] ;then
@@ -289,13 +291,17 @@ else
         pdauth="$(awk 'NR==2{print $1}' "$usbfile")"
         check_session
         origin=$(/system/bin/curl -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/origin")
+        log_msg 2 "Hello, this is 42mad from $origin!"
         /system/bin/curl -s -k -L -o "/data/local/pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
+        log_msg 2 "PD configuration downloaded to /data/local/pdconf"
         checkmac
         echo "Installing the apps from the wizard"
         if ! grep -q "version $uver" /system/bin/update_mad.sh; then
             download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
             chmod +x /system/bin/update_mad.sh
+            log_msg 2 "Installed /system/bin/update_mad.sh"
         fi
+        log_msg 2 "Starting install of RGC, PoGo and PD through update_mad.sh"
         sh -x /system/bin/update_mad.sh -pdc -wa
     fi
 fi
@@ -303,6 +309,7 @@ mount -o remount,rw /system
 check_magisk
 # Install gapps
 if [[ ! $(pm list packages android.vending) ]] ;then
+    log_msg 2 "Preparing GApps installation"
     download "$url_gapps" /sdcard/gapps.zip
     mkdir -p /cache/recovery
     touch /cache/recovery/command
@@ -321,6 +328,7 @@ if (( "$cachereboot" )) ;then
     echo '--wipe_cache' >> /cache/recovery/command
     reboot recovery
 fi
+log_msg 2 "Configuring RGC and PD, setting permissions"
 pdir="/data/data/com.mad.pogodroid/"
 puser="$(stat -c %u "$pdir")"
 rgcdir="/data/data/de.grennith.rgc.remotegpscontroller/"
@@ -334,6 +342,7 @@ if [[ "$puser" ]] && [[ "$pdauth" ]] && [[ -d "$pdir" ]] && ! [[ -f "$pdconf" ]]
     /system/bin/curl -s -k -L -o "$pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
     chmod 660 "$pdconf" && chown "$puser":"$puser" "$pdconf"
     rm -f /data/local/pdconf
+    log_msg 2 "PD configuration downloaded and installed"
 fi
 if [[ "$puser" ]] && [[ "$pdauth" ]] && [[ -d "$rgcdir" ]] && ! [[ -f "$rgcconf" ]] ;then
     if [[ ! -d "$rgcdir/shared_prefs" ]] ;then
@@ -343,6 +352,7 @@ if [[ "$puser" ]] && [[ "$pdauth" ]] && [[ -d "$rgcdir" ]] && ! [[ -f "$rgcconf"
     fi
     /system/bin/curl -s -k -L -o "$rgcconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/rgc"
     chmod 660 "$rgcconf" && chown "$ruser":"$ruser" "$rgcconf"
+    log_msg 2 "RGC configuration downloaded and installed"
 fi
 if [[ "$(pm list packages com.mad.pogodroid)" ]] && ! dumpsys package com.mad.pogodroid |grep READ_EXTERNAL_STORAGE|grep granted|grep -q 'granted=true'; then
     pm grant com.mad.pogodroid android.permission.READ_EXTERNAL_STORAGE
