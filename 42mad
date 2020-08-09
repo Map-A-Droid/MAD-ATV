@@ -301,7 +301,7 @@ else
             chmod +x /system/bin/update_mad.sh
             log_msg 2 "Installed /system/bin/update_mad.sh"
         fi
-        log_msg 2 "Starting install of RGC, PoGo and PD through update_mad.sh"
+        log_msg 2 "Starting install of RGC, PoGo and PD from your madmin wizard"
         sh -x /system/bin/update_mad.sh -pdc -wa
     fi
 fi
