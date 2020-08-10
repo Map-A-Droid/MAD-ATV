@@ -1,3 +1,5 @@
+THIS IS ONLY FOR 32bit DEVICES! 64bit devices will work different/better/easier with thw wizard getting more involved!
+
 A new feature in RC5 is the ability to autoconfig your RGC and Pogodroid.
 
 In order to use this, you will need to grab your config files from a system which is already running correctly. So you setup your first device by hand. Then you connect to the working box via adb shell:
