@@ -154,7 +154,12 @@ input tap 150 537
 sleep 5
 input tap 315 552
 sleep 5
-input tap 881 277
+input keyevent 61
+sleep 2
+input keyevent 61
+sleep 2
+input keyevent 66
+sleep 2
 }
 
 install_magisk() {
@@ -318,7 +323,6 @@ if [[ ! $(pm list packages android.vending) ]] ;then
 fi
 [[ -d /sdcard/TWRP ]] && rm -rf /sdcard/TWRP
 [[ $(settings get global hdmi_control_enabled) != "0" ]] && settings put global hdmi_control_enabled 0
-[[ "$(/system/bin/getprop persist.sys.app.rotation)" != "middle_port" ]] && /system/bin/setprop persist.sys.app.rotation middle_port
 [[ $(settings get global stay_on_while_plugged_in) != 3 ]] && settings put global stay_on_while_plugged_in 3
 [[ "$(/system/bin/appops get de.grennith.rgc.remotegpscontroller android:mock_location)" = "No operations." ]] && /system/bin/appops set de.grennith.rgc.remotegpscontroller android:mock_location allow
 ! settings get secure location_providers_allowed|grep -q gps && settings put secure location_providers_allowed +gps
