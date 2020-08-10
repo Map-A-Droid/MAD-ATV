@@ -270,6 +270,7 @@ fi
 
 ################ start of execution
 sleep 20 # in case mounting /sdcard and usb takes awhile
+[[ -f "/system/bin/pingreboot.sh" ]] && echo "starting pingreboot" && /system/bin/sh /system/bin/pingreboot.sh &
 wait_for_network
 if [[ -f "$pdconf" ]] ;then
     origin="$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')"
