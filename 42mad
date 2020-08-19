@@ -90,9 +90,9 @@ fi
 #    download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/nfs_install.sh /system/bin/nfs_install.sh
 #    chmod +x /system/bin/nfs_install.sh
 #fi
-! [[ -f /sdcard/disableautopogoupdate ]] && log_msg 2 "Downloading PoGo" && sh -x /system/bin/update_mad.sh -p
-! [[ -f /sdcard/disableautopogodroidupdate ]] && log_msg 2 "Downloading PogoDroid" && sh -x /system/bin/update_mad.sh -wd
-! [[ -f /sdcard/disableautorgcupdate ]] && log_msg 2 "Downloading RGC" && sh -x /system/bin/update_mad.sh -wr
+! [[ -f /sdcard/disableautopogoupdate ]] && sh -x /system/bin/update_mad.sh -p
+! [[ -f /sdcard/disableautopogodroidupdate ]] && sh -x /system/bin/update_mad.sh -wd
+! [[ -f /sdcard/disableautorgcupdate ]] && sh -x /system/bin/update_mad.sh -wr
 }
 
 #don't add it for execution as long as no one else is having issues with wrong language
