@@ -42,8 +42,8 @@ until [[ -f /sdcard/google-account ]] ;do
     /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google"
     sleep 10
 done
-log_msg 2 "Google Account data downloaded to /sdcard/google-account - trying to log in"
 if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
+    log_msg 2 "Google Account data downloaded to /sdcard/google-account - trying to log in"
     am start -a android.settings.ADD_ACCOUNT_SETTINGS
     sleep 40
     input keyevent 20
@@ -74,6 +74,8 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
         sleep 1
     done
     input keyevent 66
+else
+    log_msg 2 "No google account assigned to this device - skipping google login. I hope you setup PTC and enabled screen detection!"
 fi
 }
 
