@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.5
+# version 3.6
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -142,19 +142,34 @@ installedver="$(dumpsys package com.nianticlabs.pokemongo|awk -F'=' '/versionNam
 echo "updating PokemonGo..."
 mkdir -p /sdcard/Download/pogo
 /system/bin/rm -f /sdcard/Download/pogo/*
-echo "Download APK PokemonGo"
-(cd /sdcard/Download/pogo
-until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" && unzip pogo.zip && rm pogo.zip ;do
- /system/bin/rm -f /sdcard/Download/pogo/*
- sleep 2
-done
-echo "Install APK PokemonGo"
-session=$(pm install-create -r | cut -d [ -f2 | cut -d ] -f1)
-for a in * ;do
- pm install-write -S $(stat -c %s $a) $session $a $a
-done
-pm install-commit $session
-)
+case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download"|grep Content-Type)" in
+ *zip) (cd /sdcard/Download/pogo
+       until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" && unzip pogo.zip && rm pogo.zip ;do
+        echo "Download ZIP PokemonGo"
+        /system/bin/rm -f /sdcard/Download/pogo/*
+        sleep 2
+       done
+       echo "Install ZIP PokemonGo"
+       session=$(pm install-create -r | cut -d [ -f2 | cut -d ] -f1)
+       for a in * ;do
+        pm install-write -S $(stat -c %s $a) $session $a $a
+       done
+       pm install-commit $session )
+ ;;
+ *vnd.android.package-archive)
+       until curl -o /sdcard/Download/pogo/pogo.apk -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" ;do
+        echo "Download APK PokemonGo"
+        /system/bin/rm -f /sdcard/Download/pogo/*
+        sleep 2
+       done
+       echo "Install APK PokemonGo"
+       /system/bin/pm install -r /sdcard/Download/pogo/pogo.apk
+ ;;
+ *)    echo "unknown format pogo detected from madmin wizard"
+       curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download"|grep Content-Type
+       return 1
+ ;;
+esac
 reboot=1
 }
 
