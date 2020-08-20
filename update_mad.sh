@@ -143,7 +143,7 @@ echo "updating PokemonGo..."
 mkdir -p /sdcard/Download/pogo
 /system/bin/rm -f /sdcard/Download/pogo/*
 case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download"|grep Content-Type)" in
- *zip) (cd /sdcard/Download/pogo
+ *zip*) (cd /sdcard/Download/pogo
        until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" && unzip pogo.zip && rm pogo.zip ;do
         echo "Download ZIP PokemonGo"
         /system/bin/rm -f /sdcard/Download/pogo/*
@@ -156,7 +156,7 @@ case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/p
        done
        pm install-commit $session )
  ;;
- *vnd.android.package-archive)
+ *vnd.android.package-archive*)
        until curl -o /sdcard/Download/pogo/pogo.apk -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" ;do
         echo "Download APK PokemonGo"
         /system/bin/rm -f /sdcard/Download/pogo/*
