@@ -46,12 +46,14 @@ if grep -q "Forgot email?" /sdcard/window_dump.xml ;then
     input text $(sed -n 1p /sdcard/google-account)
     sleep 2
     input keyevent 66
+    sleep 5
 elif grep -q "Enter your password" /sdcard/window_dump.xml ;then
     input keyevent 20
     sleep 2
     input text $(sed -n 2p /sdcard/google-account)
     sleep 2
     input keyevent 66
+    sleep 5
 elif grep -q "describes how Google handles information generated" /sdcard/window_dump.xml ;then
     i=0
     while (( "$i" < 5 )); do
@@ -60,6 +62,7 @@ elif grep -q "describes how Google handles information generated" /sdcard/window
         sleep 2
     done
     input keyevent 66
+    sleep 5
 elif grep -q "confirm your selection of these Google services settings." /sdcard/window_dump.xml ;then
     input keyevent 20
     sleep 2
@@ -70,6 +73,7 @@ elif grep -q "confirm your selection of these Google services settings." /sdcard
     input keyevent 20
     sleep 2
     input keyevent 66
+    sleep 5
 else
     log_msg 2 "this google screen can not be detected yet. please get your /sdcard/window_dump.xml from this box to krz. Also please tell him which screen comes before the screen you are stuck on."
     log_msg 2 "exiting the script so you can collect /sdcard/window_dump.xml"
