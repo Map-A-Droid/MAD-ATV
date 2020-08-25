@@ -54,10 +54,10 @@ elif grep -q "Enter your password" /sdcard/window_dump.xml ;then
     input keyevent 66
 elif grep -q "describes how Google handles information generated" /sdcard/window_dump.xml ;then
     i=0
-    while (( "$i" < 9 )); do
+    while (( "$i" < 5 )); do
         input keyevent 20
         i=$((i+1))
-        sleep 1
+        sleep 2
     done
     input keyevent 66
 elif grep -q "confirm your selection of these Google services settings." /sdcard/window_dump.xml ;then
