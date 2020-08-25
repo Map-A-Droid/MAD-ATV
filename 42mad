@@ -37,28 +37,22 @@ if [[ "$session_id" ]] ;then
 fi
 }
 
-autoconf_google_signin() {
-until [[ -f /sdcard/google-account ]] ;do
-    /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google"
-    sleep 10
-done
-if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
-    log_msg 2 "Google Account data downloaded to /sdcard/google-account - trying to log in"
-    am start -a android.settings.ADD_ACCOUNT_SETTINGS
-    sleep 40
+detect_goog_window(){
+if grep -q "Forgot email?" /sdcard/window_dump.xml ;then
     input keyevent 20
+    sleep 2
     input keyevent 20
-    sleep 5
+    sleep 2
     input text $(sed -n 1p /sdcard/google-account)
-    sleep 5
+    sleep 2
     input keyevent 66
-    sleep 5
+elif grep -q "Enter your password" /sdcard/window_dump.xml ;then
     input keyevent 20
-    sleep 5
+    sleep 2
     input text $(sed -n 2p /sdcard/google-account)
-    sleep 5
+    sleep 2
     input keyevent 66
-    sleep 5
+elif grep -q "describes how Google handles information generated" /sdcard/window_dump.xml ;then
     i=0
     while (( "$i" < 9 )); do
         input keyevent 20
@@ -66,14 +60,40 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
         sleep 1
     done
     input keyevent 66
-    sleep 5
-    i=0
-    while (( "$i" < 3 )); do
-        input keyevent 20
-        i=$((i+1))
-        sleep 1
-    done
+elif grep -q "confirm your selection of these Google services settings." /sdcard/window_dump.xml ;then
+    input keyevent 20
+    sleep 2
+    input keyevent 20
+    sleep 2
     input keyevent 66
+    sleep 2
+    input keyevent 20
+    sleep 2
+    input keyevent 66
+else
+    log_msg 2 "this google screen can not be detected yet. please get your /sdcard/window_dump.xml from this box to krz. Also please tell him which screen comes before the screen you are stuck on."
+    log_msg 2 "exiting the script so you can collect /sdcard/window_dump.xml"
+    exit 1
+fi
+}
+
+autoconf_google_signin() {
+until [[ -f /sdcard/google-account ]] ;do
+    /system/bin/curl -s -k -L -o /sdcard/google-account --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/${session_id}/google"
+    sleep 10
+done
+if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
+    log_msg 2 "Google Account data downloaded to /sdcard/google-account"
+    email="$(sed -n 1p /sdcard/google-account)"
+    until awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;do
+        log_msg 2 "trying to log in to gmail as $email"
+        am start -a android.settings.ADD_ACCOUNT_SETTINGS
+        sleep 20
+        while uiautomator dump -a && sleep 1 && grep -q "com.google.android.gms" /sdcard/window_dump.xml ;do
+            detect_goog_window
+            sleep 5
+        done
+    done
 else
     log_msg 2 "No google account assigned to this device - skipping google login. I hope you setup PTC and enabled screen detection!"
 fi
@@ -376,7 +396,7 @@ if [[ "$(pm list packages de.grennith.rgc.remotegpscontroller)" ]] && ! dumpsys 
     pm grant de.grennith.rgc.remotegpscontroller android.permission.ACCESS_COARSE_LOCATION
     pm grant de.grennith.rgc.remotegpscontroller android.permission.WRITE_EXTERNAL_STORAGE
 fi
-[[ -f "$pdconf" ]] && [[ -f "$rgcconf" ]] && [[ "$origin" ]] && ! [[ "$(grep 'com.android.contacts"' /data/system/sync/accounts.xml | cut -d'"' -f8)" ]] && autoconf_google_signin
+[[ -f "$pdconf" ]] && [[ -f "$rgcconf" ]] && [[ "$origin" ]] && ! [[ "$(awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml)" ]] && autoconf_google_signin
 if [[ -f /sdcard/reg_session ]] && [[ -f "$pdconf" ]] && [[ -f "$rgcconf" ]] ;then
     /system/bin/curl -s -k -L -X DELETE --user "$pdauth" "${pdserver}/autoconfig/${session_id}/complete"
     rm -f /sdcard/reg_session
