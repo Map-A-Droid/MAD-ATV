@@ -88,7 +88,7 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
     until awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;do
         log_msg 2 "trying to log in to gmail as $email"
         am start -a android.settings.ADD_ACCOUNT_SETTINGS
-        sleep 20
+        sleep 40
         while uiautomator dump -a && sleep 1 && grep -q "com.google.android.gms" /sdcard/window_dump.xml ;do
             detect_goog_window
             sleep 5
