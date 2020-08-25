@@ -98,7 +98,9 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
                     exit 1
                 fi
                 c="$((c+1))"
-                sleep 10
+                sleep 8
+                uiautomator dump -a
+                sleep 2
             done
             sleep 10
         done
