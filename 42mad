@@ -38,7 +38,9 @@ fi
 }
 
 detect_goog_window(){
-if grep -q "Forgot email?" /sdcard/window_dump.xml ;then
+if awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;then
+    return 0
+elif grep -q "Forgot email?" /sdcard/window_dump.xml ;then
     input keyevent 20
     sleep 2
     input keyevent 20
@@ -105,6 +107,7 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
             sleep 10
         done
     done
+    log_msg 2 "Google login successful"
     monkey -p de.grennith.rgc.remotegpscontroller 1
 else
     log_msg 2 "No google account assigned to this device - skipping google login. I hope you setup PTC and enabled screen detection!"
