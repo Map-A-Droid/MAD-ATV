@@ -92,6 +92,7 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
         am start -a android.settings.ADD_ACCOUNT_SETTINGS
         sleep 40
         while uiautomator dump -a && sleep 5 && grep -q "com.google.android.gms" /sdcard/window_dump.xml ;do
+            awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" && break
             c=0
             until detect_goog_window ;do
                 if (($c > 6)) ;then
