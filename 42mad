@@ -46,14 +46,12 @@ if grep -q "Forgot email?" /sdcard/window_dump.xml ;then
     input text $(sed -n 1p /sdcard/google-account)
     sleep 2
     input keyevent 66
-    sleep 5
 elif grep -q "Enter your password" /sdcard/window_dump.xml ;then
     input keyevent 20
     sleep 2
     input text $(sed -n 2p /sdcard/google-account)
     sleep 2
     input keyevent 66
-    sleep 5
 elif grep -q "describes how Google handles information generated" /sdcard/window_dump.xml ;then
     i=0
     while (( "$i" < 5 )); do
@@ -62,7 +60,6 @@ elif grep -q "describes how Google handles information generated" /sdcard/window
         sleep 2
     done
     input keyevent 66
-    sleep 5
 elif grep -q "confirm your selection of these Google services settings." /sdcard/window_dump.xml ;then
     input keyevent 20
     sleep 2
@@ -73,11 +70,9 @@ elif grep -q "confirm your selection of these Google services settings." /sdcard
     input keyevent 20
     sleep 2
     input keyevent 66
-    sleep 5
 else
-    log_msg 2 "this google screen can not be detected yet. please get your /sdcard/window_dump.xml from this box to krz. Also please tell him which screen comes before the screen you are stuck on."
-    log_msg 2 "exiting the script so you can collect /sdcard/window_dump.xml"
-    exit 1
+    log_msg 2 "Issue detecting the google screen, trying again (up to 6 times) in case it was loading."
+    return 1
 fi
 }
 
@@ -95,7 +90,16 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
         am start -a android.settings.ADD_ACCOUNT_SETTINGS
         sleep 40
         while uiautomator dump -a && sleep 5 && grep -q "com.google.android.gms" /sdcard/window_dump.xml ;do
-            detect_goog_window
+            c=0
+            until detect_goog_window ;do
+                if (($c > 6)) ;then
+                    log_msg 2 "this google screen can not be detected yet. please get your /sdcard/window_dump.xml from this box to krz. Also please tell him which screen comes before the screen you are stuck on."
+                    log_msg 2 "exiting the script so you can collect /sdcard/window_dump.xml"
+                    exit 1
+                fi
+                c="$((c+1))"
+                sleep 10
+            done
             sleep 10
         done
     done
