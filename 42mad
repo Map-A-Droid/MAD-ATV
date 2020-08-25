@@ -92,7 +92,7 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
         sleep 40
         while uiautomator dump -a && sleep 5 && grep -q "com.google.android.gms" /sdcard/window_dump.xml ;do
             detect_goog_window
-            sleep 5
+            sleep 10
         done
     done
     monkey -p de.grennith.rgc.remotegpscontroller 1
