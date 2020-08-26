@@ -326,6 +326,7 @@ elif [[ -f /data/local/pdconf ]] ;then
     pduser="$(grep -v raw /data/local/pdconf|awk -F'>' '/auth_username/{print $2}'|awk -F'<' '{print $1}')"
     pdpass="$(grep -v raw /data/local/pdconf|awk -F'>' '/auth_password/{print $2}'|awk -F'<' '{print $1}')"
     pdauth="$pduser:$pdpass"
+    pm disable-user com.android.vending
     check_session
 else
     usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
