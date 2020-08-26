@@ -320,6 +320,8 @@ if [[ -f "$pdconf" ]] ;then
     pduser="$(grep -v raw "$pdconf"|awk -F'>' '/auth_username/{print $2}'|awk -F'<' '{print $1}')"
     pdpass="$(grep -v raw "$pdconf"|awk -F'>' '/auth_password/{print $2}'|awk -F'<' '{print $1}')"
     pdauth="$pduser:$pdpass"
+    # eventually i can remove this next line, but it needs to be here for people who already installed
+    pm disable-user com.android.vending
 elif [[ -f /data/local/pdconf ]] ;then
     origin="$(awk -F'>' '/post_origin/{print $2}' /data/local/pdconf|awk -F'<' '{print $1}')"
     pdserver="$(grep -v raw /data/local/pdconf|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')"
