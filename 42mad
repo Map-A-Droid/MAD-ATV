@@ -40,6 +40,8 @@ fi
 detect_goog_window(){
 if awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;then
     return 0
+elif ! grep -q "com.google.android.gms" /sdcard/window_dump.xml ;then
+    return 0 # this isnt really success, but it will get caught by an outter loop and start over
 elif grep -q "Forgot email?" /sdcard/window_dump.xml ;then
     input keyevent 20
     sleep 2
@@ -72,6 +74,9 @@ elif grep -q "confirm your selection of these Google services settings." /sdcard
     input keyevent 20
     sleep 2
     input keyevent 66
+elif grep -q "Sorry, something went wrong there. Try again." /sdcard/window_dump.xml ;then
+    am force-stop com.google.android.gms
+    log_msg 2 "Google hates you. killing it and starting over"
 else
     log_msg 2 "Issue detecting the google screen, trying again (up to 6 times) in case it was loading."
     return 1
