@@ -75,9 +75,13 @@ elif grep -q "confirm your selection of these Google services settings." /sdcard
     sleep 2
     input keyevent 66
 elif grep -q "you can add this phone’s number to your account" /sdcard/window_dump.xml ;then
-    log_msg 2 "Congratulations, you are stuck on the add a phone screen. Now if you can figure out shell commands to get past the screen using adb swipe and input keyevent 20/66 we can automate this screen. It can only be figured out by somebody who has this screen active."
-    log_msg 2 "Quitting for now so you may find a solution, but we will get past this once people who get this window confirm a solution"
-    exit 1
+    i=0
+    while (( "$i" < 5 )); do
+        input keyevent 20
+        i=$((i+1))
+        sleep 2
+    done
+    input keyevent 66
 elif grep -q "Confirm your recovery email" /sdcard/window_dump.xml ;then
     log_msg 2 "Congratulations, you are stuck on the recovery email. Now if you can figure out shell commands to get past the screen using input keyevents and such we can automate this screen. It can only be figured out by somebody who has this screen active."
     log_msg 2 "Quitting for now so you may find a solution, but we will get past this once people who get this window confirm a solution"
