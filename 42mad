@@ -47,13 +47,13 @@ elif grep -q "Forgot email?" /sdcard/window_dump.xml ;then
     sleep 2
     input keyevent 20
     sleep 2
-    input text $(sed -n 1p /sdcard/google-account)
+    input text "$email"
     sleep 2
     input keyevent 66
 elif grep -q "Enter your password" /sdcard/window_dump.xml ;then
     input keyevent 20
     sleep 2
-    input text $(sed -n 2p /sdcard/google-account)
+    input text "$(sed -n 2p /sdcard/google-account)"
     sleep 2
     input keyevent 66
 elif grep -q "describes how Google handles information generated" /sdcard/window_dump.xml ;then
@@ -103,7 +103,7 @@ done
 if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
     am force-stop de.grennith.rgc.remotegpscontroller
     log_msg 2 "Google Account data downloaded to /sdcard/google-account"
-    email="$(sed -n 1p /sdcard/google-account)"
+    email="$(sed -n 1p /sdcard/google-account|tr [:upper:] [:lower:])"
     until awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;do
         log_msg 2 "trying to log in to gmail as $email"
         am start -a android.settings.ADD_ACCOUNT_SETTINGS
