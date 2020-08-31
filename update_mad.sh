@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.6
+# version 3.7
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -137,8 +137,8 @@ pserver=$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'
 origin=$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')
 newver="$(curl -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch")"
 installedver="$(dumpsys package com.nianticlabs.pokemongo|awk -F'=' '/versionName/{print $2}')"
-[[ "$newver" == "$installedver" ]] && unset UpdatePoGo && echo "The madmin wizard has version $newver and so do we, doing nothing." && return 0
 [[ "$newver" == "" ]] && unset UpdatePoGo && echo "The madmin wizard has no pogo in its system apks, or your pogodroid is not configured" && return 1
+[[ "$newver" == "$installedver" ]] && unset UpdatePoGo && echo "The madmin wizard has version $newver and so do we, doing nothing." && return 0
 echo "updating PokemonGo..."
 mkdir -p /sdcard/Download/pogo
 /system/bin/rm -f /sdcard/Download/pogo/*
