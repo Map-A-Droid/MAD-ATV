@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.7
+# version 3.8
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -142,7 +142,7 @@ installedver="$(dumpsys package com.nianticlabs.pokemongo|awk -F'=' '/versionNam
 echo "updating PokemonGo..."
 mkdir -p /sdcard/Download/pogo
 /system/bin/rm -f /sdcard/Download/pogo/*
-case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download"|grep Content-Type)" in
+case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download"|grep -i Content-Type)" in
  *zip*) (cd /sdcard/Download/pogo
        until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" && unzip pogo.zip && rm pogo.zip ;do
         echo "Download ZIP PokemonGo"
@@ -166,7 +166,7 @@ case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/p
        /system/bin/pm install -r /sdcard/Download/pogo/pogo.apk
  ;;
  *)    echo "unknown format pogo detected from madmin wizard"
-       curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download"|grep Content-Type
+       curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download"|grep -i Content-Type
        return 1
  ;;
 esac
