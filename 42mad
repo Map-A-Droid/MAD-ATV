@@ -83,9 +83,15 @@ elif grep -q "you can add this phone’s number to your account" /sdcard/window_
     done
     input keyevent 66
 elif grep -q "Add phone number?" /sdcard/window_dump.xml ;then
-    log_msg 2 "Congratulations, you are stuck on the add a phone screen. Now if you can figure out ONLY keyboard presses to get past this get it to krz. It can only be figured out by somebody who has this screen active."
-    log_msg 2 "Quitting for now so you may find a solution, but we will get past this once people who get this window confirm a solution"
-    exit 1
+    input keyevent 66
+    sleep 5
+    input keyevent 20
+    sleep 2
+    input keyevent 20
+    sleep 2
+    input keyevent 20
+    sleep 2
+    input keyevent 66
 elif grep -q "Confirm your recovery email" /sdcard/window_dump.xml ;then
     log_msg 2 "Congratulations, you are stuck on the recovery email screen. Now if you can figure out ONLY keyboard presses to get past this get it to krz. It can only be figured out by somebody who has this screen active."
     log_msg 2 "Quitting for now so you may find a solution, but we will get past this once people who get this window confirm a solution"
