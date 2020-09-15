@@ -34,13 +34,12 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
 <br><br>If you see a red x - you have failed to set up your SD card correctly (to FAT schema)</strong>
 <p>
 <ul>
- 	<li>Start <em>compmgmt.msc</em></li>
+ 	<li>Start <em>compmgmt.msc</em> on your Microsoft Windowssystem</li>
  	<li>Navigate -&gt; Disk Management (Datenträgerverwaltung)</li>
  	<li>Look for SD Card</li>
  	<li>Delete the whole (f.e. 8GB) partition</li>
- 	<li>Create a new one with <=4000MB (FAT is able to address up to 4096MB)</li>
+ 	<li>Create a new one with <=4096MB (FAT is able to address up to 4096MB)</li>
  	<li>format with FAT16</li>
-<a href="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/fat16.png"><img class="wp-image-229 size-full" src="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/fat16.png" alt="" width="490" height="383" /></a>
 </ul>
 <hr />
 
@@ -48,14 +47,11 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
 <ul>
  	<li>Start Burn_Card_Maker.exe
  	<li>Hit the menu and tick english language</li>
-
-<a href="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/burnen.png"><img class="wp-image-226 " src="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/burnen.png" alt="" width="225" height="211" /></a>
 </ul>
-&nbsp;
 <ul>
 <li>Make sure, you are selecting the right volume letter of your SD card!</li>
+	<li>Don't untick anything (DON'T EREASE BOOTLOADER!)</li>
  	<li>Flash the MAD RC ROM Imagefile with Burn_Card_Maker with '<em>make</em>'</li>
-<a href="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/burncardmaker2.png"><img class="wp-image-181 aligncenter" src="https://pixlblog.pixlmap.de/wp-content/uploads/2019/06/burncardmaker2.png" alt="" width="405" height="291" /></a>
 </ul>
 <hr />
 
@@ -68,4 +64,3 @@ Make sure youre formatting your SD Card with a <strong>FAT(16)</strong> partitio
  	<li>X96 should boot directly into <strong>Flashingmode</strong></li>
  	<li><strong>release</strong> <strong>toothpick</strong></li>
  	<li>let the <strong>flash</strong> process end</li>
-
