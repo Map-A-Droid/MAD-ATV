@@ -37,6 +37,12 @@ if [[ "$session_id" ]] ;then
 fi
 }
 
+wait_for_google(){
+until awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;do
+ sleep 60
+done
+}
+
 detect_goog_window(){
 if awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;then
     return 0
@@ -93,9 +99,13 @@ elif grep -q "Add phone number?" /sdcard/window_dump.xml ;then
     sleep 2
     input keyevent 66
 elif grep -q "Confirm your recovery email" /sdcard/window_dump.xml ;then
-    log_msg 2 "Congratulations, you are stuck on the recovery email screen. Now if you can figure out ONLY keyboard presses to get past this get it to krz. It can only be figured out by somebody who has this screen active."
-    log_msg 2 "Quitting for now so you may find a solution, but we will get past this once people who get this window confirm a solution"
-    exit 1
+    log_msg 2 "Google is demanding that you verify the recovery email which you added to your account. You're the one who added an email, theres nothing I can do about it. You'll need to complete the process yourself."
+    log_msg 2 "I will check every 60 seconds to see if you are done signing in to google yet. After I see you are finished I should continue the process."
+    wait_for_google
+elif grep -q "Enter a phone number to get a text message with a verification code." /sdcard/window_dump.xml ;then
+    log_msg 2 "Google is demanding that you verify the phone number which you added to your account. You're the one who added a phone number, theres nothing I can do about it. You'll need to complete the process yourself."
+    log_msg 2 "I will check every 60 seconds to see if you are done signing in to google yet. After I see you are finished I should continue the process."
+    wait_for_google
 elif grep -q "Sorry, something went wrong there. Try again." /sdcard/window_dump.xml ;then
     am force-stop com.google.android.gms
     log_msg 2 "Google hates you. killing it and starting over"
