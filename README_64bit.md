@@ -30,7 +30,7 @@ Auto-Config steps for use with 64-bit ROM:
 ---
 
 **2) Flash 64-bit ROM on device:**
- - Get burning tool from links here: https://github.com/Map-A-Droid/MAD-ATV/wiki#flashing-instructions
+ - Get burning tool from links [here](https://github.com/Map-A-Droid/MAD-ATV/wiki#flashing-instructions):
  - Open burning tool
  - Import correct 64-bit image for device(*1)
  - Click Start
@@ -39,8 +39,9 @@ Auto-Config steps for use with 64-bit ROM:
    - (connect another device if you are flashing more than one)
  - Click Stop
  - Close burning tool 
-   - (*1) - Find ROMs here: https://github.com/Map-A-Droid/MAD-ATV/releases (Currently under the "This is beta!" link)
-   - (*2) - On Tx9s, flash with the USB port closest to the network port
+   - (*1) - Find ROMs [here](https://github.com/Map-A-Droid/MAD-ATV/releases): (Currently under the "This is beta!" link)
+   - (*2) - Recommended USB ports for flashing (use other if first doesn't work):
+     - On Tx9s, flash with the USB port closest to the network port
      - On x96mini use left USB port (recommended on Discord)
      - On A95xF1 use right USB port (recommended on Discord)
 
@@ -87,7 +88,7 @@ Auto-Config steps for use with 64-bit ROM:
 
 **1) Problems flashing image onto device:**
  - Make sure you are using a high quality short USB-A to USB-A cable
-   * see Cabling under beavis's PimpMyAtv wiki for good options: https://github.com/madBeavis/PimpMyAtv/wiki
+   * see Cabling under beavis's [PimpMyAtv wiki](https://github.com/madBeavis/PimpMyAtv/wiki) for good options:
  - Try to use a different USB port on the device
  - Try to use a different USB port on the computer
  - Sometimes there are flashing problems with USB3 ports, try to use a USB2 port
