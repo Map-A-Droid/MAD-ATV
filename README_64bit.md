@@ -4,7 +4,7 @@ Auto-Config steps for use with 64-bit ROM:
 3) Prepare device for auto-config
 4) Accept device in MADmin
 
-===========================================================
+---
 
 **1) Configure MAD to prepare for auto-configuring devices:**
  - **System -> MADmin Packages -> Click Wizard Hat (Update Everything)**
@@ -27,7 +27,7 @@ Auto-Config steps for use with 64-bit ROM:
  - **System -> Auto-Config** -> click Download Configuration
  - Save mad_autoconf.txt file onto FAT formatted USB drive
 
-===========================================================
+---
 
 **2) Flash 64-bit ROM on device:**
  - Get burning tool from links here: https://github.com/Map-A-Droid/MAD-ATV/wiki#flashing-instructions
@@ -44,7 +44,7 @@ Auto-Config steps for use with 64-bit ROM:
      - On x96mini use left USB port (recommended on Discord)
      - On A95xF1 use right USB port (recommended on Discord)
 
-===========================================================
+---
 
 **3) Prepare device for auto-config:**
  - *see optional network config steps below (*2)
@@ -70,7 +70,7 @@ Auto-Config steps for use with 64-bit ROM:
      - Disconnect the keyboard and plug the USB drive into that USB port
      - Continue with "3. Prepare device for auto-config"
 
-===========================================================
+---
 
 **4) Accept device in MADmin:**
  - You should see your device under **System -> Auto-Config -> Pending Devices**
@@ -80,10 +80,8 @@ Auto-Config steps for use with 64-bit ROM:
  - Once an origin is assigned the device will start downloading files and configuring its settings
    - You can watch its progress by clicking on the View Device logs on the Pending Devices page
 
-```
-===========================================================
-===========================================================
-```
+---
+---
 
 **Trouble-shooting:**
 
@@ -101,7 +99,7 @@ Auto-Config steps for use with 64-bit ROM:
  - Sometimes you need to plug in power to the device at the same time you plugin in the USB cable
    * This is usally to correct lowper warnings
 
-===========================================================
+---
 
 **2) Device not showing up in MADmin -> System -> Auto-Config -> Pending Devices:**
 
