@@ -1,18 +1,17 @@
-Auto-Config steps for use with 64-bit ROM:
-1) Configure MAD to prepare for auto-configuring devices
-2) Flash 64-bit ROM on device
-3) Prepare device for auto-config
-4) Accept device in MADmin
+How to use Auto-Config with the 64-bit ROMs
+1. [Configure MAD to prepare for auto-configuring devices](#configure-mad-to-prepare-for-auto-configuring-devices)
+2. [Flash 64-bit ROM on device](#flash-64-bit-rom-on-device)
+3. [Prepare device for auto-config](#prepare-device-for-auto-config)
+4. [Accept device in MADmin](#accept-device-in-mad)
+5. [Troubleshooting](#troublehooting)
 
----
-
-**1) Configure MAD to prepare for auto-configuring devices:**
+## Configure MAD to prepare for auto-configuring devices
  - **System -> MADmin Packages -> Click Wizard Hat (Update Everything)**
  - Configure: **Settings -> Auth**
-   - with custom user-name and password for basic authentication between device and MAD
+   - With custom user-name and password for basic authentication between device and MAD
  - Configure: **Settings -> Devices**
    - Add and configure new device, not needed if upgrading device from 32-bit to 64-bit
-   - May need Apply Settings for new devices to show up in next step
+   - May need to click **Apply Settings** for new devices to show up in next step
  - Configure: **Settings -> PoGo Auth**
    - Add GMail, or PTC, accounts and passwords
    - Assign to appropriate existing device
@@ -24,90 +23,87 @@ Auto-Config steps for use with 64-bit ROM:
    - set Websocket URI
    - set Basic Authentication
  - **Apply Settings!**
- - **System -> Auto-Config** -> click Download Configuration
- - Save mad_autoconf.txt file onto FAT formatted USB drive
+ - **System -> Auto-Config**, click **Download Configuration*
+ - Save the downloaded mad_autoconf.txt file onto a FAT formatted USB drive
 
----
-
-**2) Flash 64-bit ROM on device:**
- - Get burning tool from links [here](https://github.com/Map-A-Droid/MAD-ATV/wiki#flashing-instructions):
- - Open burning tool
- - Import correct 64-bit image for device(*1)
+## Flash 64-bit ROM on device
+ - Get burning tool from [here](https://github.com/Map-A-Droid/MAD-ATV/wiki#flashing-instructions)
+ - Install burning tool
+ - Open burning tool (may need to "Run as Administrator")
+ - Import correct 64-bit image for device<sup>1</sup>
  - Click Start
- - Connect device(*2) to computer with USB-A to USB-A cable
+ - Press the reset button for the ATV
+   - Use something like a wooden toothpick
+   - On the A95X F1 and the X96 Mini the reset button is inside the AV port
+ - Connect device<sup>2</sup> to computer with a USB-A to USB-A cable
+ - Connect power cable to ATV
  - When burning is 100% done, disconnect the USB cable from the device
-   - (connect another device if you are flashing more than one)
+   - (Connect the next device if you are flashing more than one)
  - Click Stop
- - Close burning tool 
-   - (*1) - Find ROMs [here](https://github.com/Map-A-Droid/MAD-ATV/releases): (Currently under the "This is beta!" link)
-   - (*2) - Recommended USB ports for flashing (use other if first doesn't work):
-     - On Tx9s, flash with the USB port closest to the network port
-     - On x96mini use left USB port (recommended on Discord)
-     - On A95xF1 use right USB port (recommended on Discord)
+ - Close burning tool
 
----
+<sup>1</sup> Find the current beta 64-bit ROMs [here](https://github.com/Map-A-Droid/MAD-ATV/releases/tag/mad64_beta5).
 
-**3) Prepare device for auto-config:**
- - *see optional network config steps below (*2)
- - Plug FAT formatted USB drive with mad_autoconf.txt file into appropriate USB port (*1)
- - Plug network cable into device
+<sup>2</sup> Recommended USB ports for flashing (use other if first doesn't work):
+ - On TX9S, flash with the USB port closest to the network port
+ - On X96 Mini use left USB port (recommended on Discord)
+ - On A95X F1 use right USB port (recommended on Discord)
+
+## Prepare device for auto-config
+See optional network config [steps](#manual-network-configuration) if you need to set a Static IP on the ATV.
+
+ - Plug FAT formatted USB drive with the mad_autoconf.txt file into appropriate USB port
+   - On the TX9S use the USB port farthest away from network port
+ - Plug network cable into the device
  - Plug power into device (usb-to-barrel, or power brick-to-barrel)
-   - (*1) - On Tx9s, plug USB drive into USB port farthest away from network port
 
-   - (*2) - optional steps to manually configure network on device, ie no DHCP:
-     - This option is advanced and is not recommended and is not likely to be supported on Discord
-     - Do not plug in the network cable yet!
-     - Connect video and keyboard to device (keyboard into non-flash usb port)
-     - Connect power to the device
-     - Wait for it to boot up and get to the Khadas Welcome screen
-     - Press enter (once or twice) to select Got It
-     - Use keyboard to enter the App Tray (6 dots in the circle at the bottom)
-     - Enter the "Settings" (gear) icon
-     - Select the "Network" option
-     - Select the "IP settings" option
-     - Select the "Static" option
-     - Enter manual ip address info
-     - Once that is saved, you can press escape to get back to the app tray
-     - Disconnect the keyboard and plug the USB drive into that USB port
-     - Continue with "3. Prepare device for auto-config"
+### Manual network configuration
+Optional steps to manually configure the network interface on device (ie no DHCP).
 
----
+This option is advanced and is not recommended and is not likely to be supported on Discord.
 
-**4) Accept device in MADmin:**
+ - Do not plug in the network cable yet!
+ - Connect video and keyboard to device (keyboard into non-flash usb port)
+ - Connect power to the device
+ - Wait for it to boot up and get to the Khadas Welcome screen
+ - Press enter (once or twice) to select "Got It"
+ - Use keyboard to enter the App Tray (6 dots in the circle at the bottom)
+ - Enter the "Settings" (gear) icon
+ - Select the "Network" option
+ - Select the "IP settings" option
+ - Select the "Static" option
+ - Enter manual ip address info
+ - Once that is saved, you can press escape to get back to the app tray
+ - Disconnect the keyboard and plug the USB drive into the USB port for that device
+ - Continue with [Prepare device for auto-config](#prepare-device-for-auto-config)
+
+## Accept device in MAD
  - You should see your device under **System -> Auto-Config -> Pending Devices**
-   - if not, see trouble-shooting steps below
+   - If not, see [troubleshooting](#troubleshooting) below
  - Click the IP-address of the pending device, then assign it an origin
    - Do not just click accept, if you do then MAD will create a new origin named madromxyz and assign it to the device
  - Once an origin is assigned the device will start downloading files and configuring its settings
    - You can watch its progress by clicking on the View Device logs on the Pending Devices page
 
----
----
+## Troubleshooting
 
-**Trouble-shooting:**
+### Problems flashing image onto device
+The flashing tool is known to be tempremental. Some steps you can try include:
 
-**1) Problems flashing image onto device:**
  - Make sure you are using a high quality short USB-A to USB-A cable
-   * see Cabling under beavis's [PimpMyAtv wiki](https://github.com/madBeavis/PimpMyAtv/wiki) for good options:
+   - See beavis's [PimpMyAtv wiki](https://github.com/madBeavis/PimpMyAtv/wiki/Cabling) for good options
  - Try to use a different USB port on the device
  - Try to use a different USB port on the computer
  - Sometimes there are flashing problems with USB3 ports, try to use a USB2 port
- - Sometimes there are flashing problems from computers with an AMD processor,
-       try flashing from a computer with an Intel processor
- - Sometimes you need to hold down the reset button to get the flashing process started
-   * On A95xF1 the reset button is inside the AV port
-   * Usually when it gets to about 3-7% flashing you can stop holding the reset button
+ - Sometimes there are flashing problems from computers with an AMD processor, try flashing from a computer with an Intel processor
  - Sometimes you need to plug in power to the device at the same time you plugin in the USB cable
-   * This is usally to correct lowper warnings
+   - This is usally to correct low power warnings
 
----
+### Device not showing up in MADmin -> System -> Auto-Config -> Pending Devices
 
-**2) Device not showing up in MADmin -> System -> Auto-Config -> Pending Devices:**
-
-If at this point it never showed up in madmin and goes direct to flashing things in TWRP,
+If at this point it has never showed up in MADmin and goes direct to flashing things in TWRP,
 then you have a problem with it reading the autoconfig file from your USB drive.
-You can try using the other USB port, be sure it is fat formatted, no windows line endings,
-and double check the file is formatted as described above.
+You can try using the other USB port, be sure it is FAT formatted, no windows line endings.
 
 To verify the device can access the USB drive:
  - `adb connect <ip>`
