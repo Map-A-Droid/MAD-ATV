@@ -24,6 +24,12 @@ How to use Auto-Config with the 64-bit ROMs
    - set Basic Authentication
  - **Apply Settings!**
  - **System -> Auto-Config**, click **Download Configuration*
+   - This file will only have two lines in it:
+     - Your PogoDroid *Post Destination*
+     - Your basic auth *user:password*
+ - Under **System -> Auto-Config -> Pending Devices**
+   - You may see a note saying: *No available Google logins for auto creation of devices. Configure through PogoAuth*
+   - This is normal since we want to assign a preconfigured device to an auto-config request, and we do not want MAD to auto-create a new device (which would later need to be configured anyway)
  - Save the downloaded mad_autoconf.txt file onto a FAT formatted USB drive
 
 ## Flash 64-bit ROM on device
@@ -54,8 +60,12 @@ See optional network config [steps](#manual-network-configuration) if you need t
 
  - Plug FAT formatted USB drive with the mad_autoconf.txt file into appropriate USB port
    - On the TX9S use the USB port farthest away from network port
+   - On A95X F1 use the right USB port
  - Plug network cable into the device
  - Plug power into device (usb-to-barrel, or power brick-to-barrel)
+ - If the device contacted your MAD server successfully, it will not do anything until you [Accept the device in MAD](#accept-device-in-mad)
+   - It may take a minute or two for your device to show up on the **Auto-Config -> Pending Devices** page
+ - If your device reboots into TWRP to flash packages and never showed up in MAD, then see [Troubleshooting](#troubleshooting)
 
 ### Manual network configuration
 Optional steps to manually configure the network interface on device (ie no DHCP).
