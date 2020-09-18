@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.8
+# version 3.9
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -186,11 +186,13 @@ fi
 update_dhcp(){
 grep -q net.hostname /system/build.prop && unset UpdateDHCP && return 1
 origin="$(awk -F'>' '/post_origin/{print $2}' /data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml|cut -d'<' -f1)"
+mount -o remount,rw /system
 if grep -q 'net.hostname' /system/build.prop ;then
  sed -i -e "s/^net.hostname=.*/net.hostname=${origin}/g" /system/build.prop
 else
  echo "net.hostname=${origin}" >> /system/build.prop
 fi
+mount -o remount,ro /system
 reboot=1
 }
 
