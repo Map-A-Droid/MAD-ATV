@@ -1,12 +1,12 @@
 #!/system/bin/sh
 #This is for update_mad version
-uver="3.8"
+uver="3.9"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="0.2"
+madver="0.3"
 #magisk version / url
 magisk_ver="20.3"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
