@@ -82,7 +82,7 @@ This option is advanced and is not recommended and is not likely to be supported
  - Select the "Network" option
  - Select the "IP settings" option
  - Select the "Static" option
- - Enter manual ip address info
+ - Enter manual IP address info
  - Once that is saved, you can press escape to get back to the app tray
  - Disconnect the keyboard and plug the USB drive into the USB port for that device
  - Continue with [Prepare device for auto-config](#prepare-device-for-auto-config)
@@ -93,12 +93,12 @@ This option is advanced and is not recommended and is not likely to be supported
  - Click the IP-address of the pending device, then assign it an origin
    - Do not just click accept, if you do then MAD will create a new origin named madromxyz and assign it to the device
  - Once an origin is assigned the device will start downloading files and configuring its settings
-   - You can watch its progress by clicking on the View Device logs on the Pending Devices page
+   - You can watch its progress by clicking on the View Session logs on the Pending Devices page
 
 ## Troubleshooting
 
 ### Problems flashing image onto device
-The flashing tool is known to be tempremental. Some steps you can try include:
+The flashing tool is known to be temperamental. Some steps you can try include:
 
  - Make sure you are using a high quality short USB-A to USB-A cable
    - See beavis's [PimpMyAtv wiki](https://github.com/madBeavis/PimpMyAtv/wiki/Cabling) for good options
@@ -107,7 +107,7 @@ The flashing tool is known to be tempremental. Some steps you can try include:
  - Sometimes there are flashing problems with USB3 ports, try to use a USB2 port
  - Sometimes there are flashing problems from computers with an AMD processor, try flashing from a computer with an Intel processor
  - Sometimes you need to plug in power to the device at the same time you plugin in the USB cable
-   - This is usally to correct low power warnings
+   - This is usually to correct low power warnings
 
 ### Device not showing up in MADmin -> System -> Auto-Config -> Pending Devices
 
