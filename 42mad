@@ -106,6 +106,11 @@ elif grep -q "Enter a phone number to get a text message with a verification cod
     log_msg 2 "Google is demanding that you verify the phone number which you added to your account. You're the one who added a phone number, theres nothing I can do about it. You'll need to complete the process yourself."
     log_msg 2 "I will check every 60 seconds to see if you are done signing in to google yet. After I see you are finished I should continue the process."
     wait_for_google
+elif grep -q "any number verified on this device will be added to your Google Account" ;then
+    log_msg 2 "Google weants you to add a number to your account. Congratulations, you can help me improve this part of the sign-in process! With your keyboard I want you to see exactly what keypresses get you past this screen."
+    log_msg 2 "For example, maybe you press TAB 5 times, and then enter. If you find the answer, tell krz in #atv please.
+    log_msg 2 "I will check every 60 seconds to see if you are done signing in to google yet. After I see you are finished I should continue the process."
+    wait_for_google
 elif grep -q "Sorry, something went wrong there. Try again." /sdcard/window_dump.xml ;then
     am force-stop com.google.android.gms
     log_msg 2 "Google hates you. killing it and starting over"
@@ -133,7 +138,7 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
             c=0
             until detect_goog_window ;do
                 if (($c > 6)) ;then
-                    log_msg 2 "this google screen can not be detected yet. please get your /sdcard/window_dump.xml from this box to krz. Also please tell him which screen comes before the screen you are stuck on."
+                    log_msg 2 "this google screen can not be detected yet. please get your /sdcard/window_dump.xml from this box to krz. Also if you can bypass this screen, tell krz exactly what keyboard keypresses gets past the screen."
                     log_msg 2 "exiting the script so you can collect /sdcard/window_dump.xml"
                     exit 1
                 fi
