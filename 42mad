@@ -201,6 +201,7 @@ while [[ "$mac" == "" ]] ;do
     until ifconfig eth0 hw ether "$current_mac" 2>/dev/null; do
         current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
     done
+    ifconfig eth0 up
     sleep 3
     # set a new one
     /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
