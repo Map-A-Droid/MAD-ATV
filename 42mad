@@ -185,21 +185,43 @@ cat /sys/class/unifykeys/read
 echo 0 > /sys/class/unifykeys/lock
 }
 
+getmadminmac(){
+all_macs="$(/system/bin/curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")"
+interface="$(sed -n 1p <<< "$all_macs")"
+mac="$(sed -n 2p <<< "$all_macs")"
+}
+
+setmadminmac(){
+/system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+getmadminmac
+while [[ "$mac" == "" ]] ;do
+    # if that mac was not accepted
+    current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+    ifconfig eth0 down
+    until ifconfig eth0 hw ether "$current_mac" 2>/dev/null; do
+        current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+    done
+    sleep 3
+    # set a new one
+    /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
+    # check again
+    getmadminmac
+done
+}
+
 checkmac(){
 if [[ "$(/system/bin/curl -s -k -L -o /dev/null -w "%{http_code}" --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")" == "200" ]] ;then
-    all_macs="$(/system/bin/curl -s -k -L --user "$pdauth" -H "origin: $origin" "${pdserver}/autoconfig/mymac")"
-    interface="$(sed -n 1p <<< "$all_macs")"
-    mac="$(sed -n 2p <<< "$all_macs")"
     if ifconfig|grep -A5 wlan0|grep -q inet ;then
         current_mac=$(ifconfig wlan0|awk '/HWaddr/{print $5}')
     elif ifconfig|grep -A5 eth0|grep -q inet ;then
         current_mac=$(ifconfig eth0|awk '/HWaddr/{print $5}')
+        getmadminmac
         echo "MAD-assigned MAC: \"$mac\""
         echo "Current MAC: \"$current_mac\""
         if [[ "$mac" == "" ]] ;then
             # use our current mac for now on
+            setmadminmac
             set_mac "$current_mac"
-            /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
         elif [[ "$mac" != "$current_mac" ]] ;then
             #use the mac suppplied from madmin
             set_mac "$mac"
