@@ -108,7 +108,7 @@ elif grep -q "Enter a phone number to get a text message with a verification cod
     wait_for_google
 elif grep -q "any number verified on this device will be added to your Google Account" ;then
     log_msg 2 "Google weants you to add a number to your account. Congratulations, you can help me improve this part of the sign-in process! With your keyboard I want you to see exactly what keypresses get you past this screen."
-    log_msg 2 "For example, maybe you press TAB 5 times, and then enter. If you find the answer, tell krz in #atv please.
+    log_msg 2 "For example, maybe you press TAB 5 times, and then enter. If you find the answer, tell krz in #atv please."
     log_msg 2 "I will check every 60 seconds to see if you are done signing in to google yet. After I see you are finished I should continue the process."
     wait_for_google
 elif grep -q "Sorry, something went wrong there. Try again." /sdcard/window_dump.xml ;then
