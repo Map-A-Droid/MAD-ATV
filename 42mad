@@ -89,14 +89,23 @@ elif grep -q "you can add this phone’s number to your account" /sdcard/window_
     done
     input keyevent 66
 elif grep -q "Add phone number?" /sdcard/window_dump.xml ;then
-    input keyevent 66
-    sleep 5
-    input keyevent 20
-    sleep 2
-    input keyevent 20
-    sleep 2
-    input keyevent 20
-    sleep 2
+#    input keyevent 66
+#    sleep 5
+#    input keyevent 20
+#    sleep 2
+#    input keyevent 20
+#    sleep 2
+#    input keyevent 20
+#    sleep 2
+#    input keyevent 66
+# itrack says this was no good
+# replaced with what he says works for him:
+    i=0
+    while (( "$i" < 5 )); do
+        input keyevent 20
+        i=$((i+1))
+        sleep 2
+    done
     input keyevent 66
 elif grep -q "Confirm your recovery email" /sdcard/window_dump.xml ;then
     log_msg 2 "Google is demanding that you verify the recovery email which you added to your account. You're the one who added an email, theres nothing I can do about it. You'll need to complete the process yourself."
