@@ -112,8 +112,17 @@ The flashing tool is known to be temperamental. Some steps you can try include:
 ### Device not showing up in MADmin -> System -> Auto-Config -> Pending Devices
 
 If at this point it has never showed up in MADmin and goes direct to flashing things in TWRP,
-then you have a problem with it reading the autoconfig file from your USB drive.
-You can try using the other USB port, be sure it is FAT formatted, no windows line endings.
+then you have a problem with it reading the autoconfig file from your USB drive, or the device
+has a problem accessing your MAD server due to incorrect settings or network issues.
+
+To find out what errors or problems your device is encountering, or just to see the status of 42mad
+configuring your device, you can adb into your device and check the following log:
+```
+/data/local/madromlogs/42mad.log
+```
+
+For problems reading the USB drive you can try using the other USB port,
+make sure the drive is FAT formatted, and that the mad_autoconf.txt file has no Windows line endings.
 
 To verify the device can access the USB drive:
  - `adb connect <ip>`
