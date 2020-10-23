@@ -19,6 +19,16 @@ requires_autoconf=1
 reboot_required=0
 cachereboot=0
 
+# this is copy-paste of download() method without useragent spoof. Sourceforge serves now links via JS if we spoof modern browser
+download_nospoof(){
+# $1 = url
+# $2 = local path
+# lets see that curl exits successfully
+until /system/bin/curl -s -k -L -o "$2" "$1" ;do
+    sleep 15
+done
+}
+
 download(){
 # $1 = url
 # $2 = local path
@@ -430,7 +440,7 @@ check_magisk
 # Install gapps
 if [[ ! $(pm list packages android.vending) ]] ;then
     log_msg 2 "Preparing GApps installation"
-    download "$url_gapps" /sdcard/gapps.zip
+    download_nospoof "$url_gapps" /sdcard/gapps.zip
     mkdir -p /cache/recovery
     touch /cache/recovery/command
     echo '--update_package=/sdcard/gapps.zip' >> /cache/recovery/command
