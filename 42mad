@@ -14,6 +14,7 @@ url_magisk="https://github.com/Map-A-Droid/MAD-ATV/raw/master/Magisk-v20.3.zip"
 url_gapps="https://madatv.b-cdn.net/open_gapps-arm64-7.1-pico-20200715.zip"
 rgcconf="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml"
 pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
+useragent='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0'
 
 requires_autoconf=1
 reboot_required=0
