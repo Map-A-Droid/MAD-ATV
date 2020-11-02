@@ -6,7 +6,7 @@ pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="0.3"
+madver="0.4"
 #magisk version / url
 magisk_ver="20.3"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
@@ -139,6 +139,10 @@ if [[  "$(sed -n 2p /sdcard/google-account)" ]] ;then
     am force-stop de.grennith.rgc.remotegpscontroller
     log_msg 2 "Google Account data downloaded to /sdcard/google-account"
     email="$(sed -n 1p /sdcard/google-account|tr [:upper:] [:lower:])"
+    if grep -q 'html public' <<< "$email" ;then
+        log_msg 2 "ignoring garbage google login from madmin, i hope you're using ptc! if not go setup google by hand."
+        return 0
+    fi
     until awk -F'"' '/com.android.contacts"/{print $8}' /data/system/sync/accounts.xml |grep -q "$email" ;do
         log_msg 2 "trying to log in to gmail as $email"
         am start -a android.settings.ADD_ACCOUNT_SETTINGS
@@ -395,8 +399,8 @@ if [[ -f "$pdconf" ]] ;then
     pduser="$(grep -v raw "$pdconf"|awk -F'>' '/auth_username/{print $2}'|awk -F'<' '{print $1}')"
     pdpass="$(grep -v raw "$pdconf"|awk -F'>' '/auth_password/{print $2}'|awk -F'<' '{print $1}')"
     pdauth="$pduser:$pdpass"
-    # eventually i can remove this next line, but it needs to be here for people who already installed
     pm disable-user com.android.vending
+    [[ -f /sdcard/reg_session ]] && check_session
 elif [[ -f /data/local/pdconf ]] ;then
     origin="$(awk -F'>' '/post_origin/{print $2}' /data/local/pdconf|awk -F'<' '{print $1}')"
     pdserver="$(grep -v raw /data/local/pdconf|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')"
