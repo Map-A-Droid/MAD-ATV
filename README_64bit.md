@@ -3,7 +3,7 @@ How to use Auto-Config with the 64-bit ROMs
 2. [Flash 64-bit ROM on device](#flash-64-bit-rom-on-device)
 3. [Prepare device for auto-config](#prepare-device-for-auto-config)
 4. [Accept device in MADmin](#accept-device-in-mad)
-5. [Troubleshooting](#troublehooting)
+5. [Troubleshooting](#troubleshooting)
 
 ## Configure MAD to prepare for auto-configuring devices
  - **System -> MADmin Packages -> Click Wizard Hat (Update Everything)**
