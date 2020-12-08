@@ -116,16 +116,25 @@ Either it had a problem reading the autoconfig file from your USB drive and it g
 or it read the autoconfig file from the USB drive but it has a problem accessing your MAD server due to incorrect settings or network issues.
 
 To find out what errors or problems your device is encountering, or just to see the status of 42mad
-configuring your device, you can adb into your device and check the following log:
-```
-/data/local/madromlogs/42mad.log
-```
+configuring your device, you can adb into your device and check the `/data/local/madromlogs/42mad.log` log
+file.
+
+To view the log remotely on the device:
+ - `adb connect <ip>`
+ - `adb shell`
+ - `su`
+ - `cat /data/local/madromlogs/42mad.log`
+
+Or to bring the file locally (and save it to `/tmp/42mad.log`):
+ - `adb connect <ip>`
+ - `adb pull /data/local/madromlogs/42mad.log /tmp/42mad.log`
 
 For problems reading the USB drive you can try using the other USB port,
 make sure the drive is FAT formatted, and that the mad_autoconf.txt file has no Windows line endings.
 
 To verify the device can access the USB drive:
  - `adb connect <ip>`
+ - `adb shell`
  - `su`
  - `ls -la /mnt/media_rw/`
  
@@ -134,6 +143,7 @@ If you see only two lines like:
 drwxr-x---  2 root media_rw  40 1970-01-01 00:00 .
 drwxr-xr-x 10 root system   220 1970-01-01 00:00 ..
 ```
+
 That means the device hasn't recognized the USB drive, try the other USB port on the device.
 You should see a result like:
 ```
