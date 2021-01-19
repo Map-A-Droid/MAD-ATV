@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 3.9
+# version 4.0
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -37,7 +37,7 @@ echo "Delete old APK PogoDroid"
 /system/bin/rm -f /sdcard/Download/PogoDroid.apk
 echo "Download APK PogoDroid"
 cd /sdcard/Download/
-/system/bin/curl -L -o PogoDroid.apk -k -s https://www.maddev.de/apk/PogoDroid.apk
+/system/bin/curl -L -o PogoDroid.apk -k -s https://www.maddev.eu/apk/PogoDroid.apk
 echo "Install APK PogoDroid"
 /system/bin/pm install -r /sdcard/Download/PogoDroid.apk
 reboot=1
