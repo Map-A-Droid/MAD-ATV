@@ -52,7 +52,7 @@ How to use Auto-Config with the 64-bit ROMs
 
 <sup>2</sup> Recommended USB ports for flashing (use other if first doesn't work):
  - On TX9S, flash with the USB port closest to the network port
- - On X96 Mini use left USB port (recommended on Discord)
+ - On X96 Mini use port farther away from SD-card slot.
  - On A95X F1 use right USB port (recommended on Discord)
 
 ## Prepare device for auto-config
@@ -61,6 +61,7 @@ See optional network config [steps](#manual-network-configuration) if you need t
  - Plug FAT formatted USB drive with the mad_autoconf.txt file into appropriate USB port
    - On the TX9S use the USB port farthest away from network port
    - On A95X F1 use the right USB port
+   - On X96 Mini use port closest/next to SD-card slot.
  - Plug network cable into the device
  - Plug power into device (usb-to-barrel, or power brick-to-barrel)
  - If the device contacted your MAD server successfully, it will not do anything until you [Accept the device in MAD](#accept-device-in-mad)
