@@ -23,7 +23,7 @@ How to use Auto-Config with the 64-bit ROMs
    - set Websocket URI
    - set Basic Authentication
  - **Apply Settings!**
- - **System -> Auto-Config**, click **Download Configuration*
+ - **System -> Auto-Config**, click **Download Configuration**
    - This file will only have two lines in it:
      - Your PogoDroid *Post Destination*
      - Your basic auth *user:password*
