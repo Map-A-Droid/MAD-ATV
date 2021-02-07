@@ -52,15 +52,16 @@ How to use Auto-Config with the 64-bit ROMs
 
 <sup>2</sup> Recommended USB ports for flashing (use other if first doesn't work):
  - On TX9S, flash with the USB port closest to the network port
- - On X96 Mini use left USB port (recommended on Discord)
- - On A95X F1 use right USB port (recommended on Discord)
+ - On X96 Mini use USB port farther away from SD-card slot
+ - On A95X F1 use USB port closest to power connection
 
 ## Prepare device for auto-config
 See optional network config [steps](#manual-network-configuration) if you need to set a Static IP on the ATV.
 
- - Plug FAT formatted USB drive with the mad_autoconf.txt file into appropriate USB port
+ - Plug FAT32 formatted USB drive with the mad_autoconf.txt file into appropriate USB port
    - On the TX9S use the USB port farthest away from network port
-   - On A95X F1 use the right USB port
+   - On A95X F1 use USB port closest/next to SD-card slot
+   - On X96 Mini use USB port closest/next to SD-card slot
  - Plug network cable into the device
  - Plug power into device (usb-to-barrel, or power brick-to-barrel)
  - If the device contacted your MAD server successfully, it will not do anything until you [Accept the device in MAD](#accept-device-in-mad)
@@ -104,6 +105,7 @@ The flashing tool is known to be temperamental. Some steps you can try include:
    - See beavis's [PimpMyAtv wiki](https://github.com/madBeavis/PimpMyAtv/wiki/Cabling) for good options
  - Try to use a different USB port on the device
  - Try to use a different USB port on the computer
+ - Reboot Windows, those USB drivers are funky
  - Sometimes there are flashing problems with USB3 ports, try to use a USB2 port
  - Sometimes there are flashing problems from computers with an AMD processor, try flashing from a computer with an Intel processor
  - Sometimes you need to plug in power to the device at the same time you plugin in the USB cable
