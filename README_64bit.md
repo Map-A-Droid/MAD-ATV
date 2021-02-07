@@ -43,7 +43,7 @@ How to use Auto-Config with the 64-bit ROMs
    - On the A95X F1 and the X96 Mini the reset button is inside the AV port
  - Connect device<sup>2</sup> to computer with a USB-A to USB-A cable
  - Connect power cable to ATV
- - When burning is 100% done, disconnect the USB cable from the device
+ - When burning is 100% done, disconnect the USB and power cables from the device
    - (Connect the next device if you are flashing more than one)
  - Click Stop
  - Close burning tool
