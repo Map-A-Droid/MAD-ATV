@@ -15,7 +15,7 @@ url_gapps="https://madatv.b-cdn.net/open_gapps-arm64-7.1-pico-20200715.zip"
 rgcconf="/data/data/de.grennith.rgc.remotegpscontroller/shared_prefs/de.grennith.rgc.remotegpscontroller_preferences.xml"
 pdconf="/data/data/com.mad.pogodroid/shared_prefs/com.mad.pogodroid_preferences.xml"
 useragent='Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:53.0) Gecko/20100101 Firefox/53.0'
-ip="$(ifconfig | grep -A 1 'eth0' | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
+ip="$(ifconfig 'eth0'|awk '/inet addr/{print $2}'|cut -d ':' -f 2)"
 
 requires_autoconf=1
 reboot_required=0
@@ -417,10 +417,13 @@ else
         pdauth="$(awk 'NR==2{print $1}' "$usbfile")"
         check_session
         origin=$(/system/bin/curl -s -k -L --user "$pdauth" "${pdserver}/autoconfig/${session_id}/origin")
-        log_msg 2 "Hello, this is 42mad from $origin! My current connection and IP is $ip"
+        log_msg 2 "Hello, this is 42mad from $origin! My current IP is $ip"
         /system/bin/curl -s -k -L -o "/data/local/pdconf" --user "$pdauth" "${pdserver}/autoconfig/${session_id}/pd"
         log_msg 2 "PD configuration downloaded to /data/local/pdconf"
         checkmac
+        wait_for_network
+        ip="$(ifconfig 'eth0'|awk '/inet addr/{print $2}'|cut -d ':' -f 2)"
+        log_msg 2 "Check for MAC adress change completed! This may have cause an IP change. My current IP is $ip "
         echo "Installing the apps from the wizard"
         if ! grep -q "version $uver" /system/bin/update_mad.sh; then
             download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
