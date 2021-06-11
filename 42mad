@@ -423,7 +423,7 @@ else
         checkmac
         wait_for_network
         ip="$(ifconfig 'eth0'|awk '/inet addr/{print $2}'|cut -d ':' -f 2)"
-        log_msg 2 "Check for MAC adress change completed! This may have cause an IP change. My current IP is $ip "
+        log_msg 2 "Check for the need to MAC adress change completed! This may have caused an IP change. My current IP is $ip "
         echo "Installing the apps from the wizard"
         if ! grep -q "version $uver" /system/bin/update_mad.sh; then
             download https://raw.githubusercontent.com/Map-A-Droid/MAD-ATV/master/update_mad.sh /system/bin/update_mad.sh
