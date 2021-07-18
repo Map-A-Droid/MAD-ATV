@@ -1,12 +1,12 @@
 #!/system/bin/sh
 #This is for update_mad version
-uver="4.0"
+uver="4.1"
 #This is for pingreboot version
 pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="0.5"
+madver="0.6"
 #magisk version / url
 magisk_ver="20.3"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
@@ -212,6 +212,15 @@ mac="$(sed -n 2p <<< "$all_macs")"
 }
 
 setmadminmac(){
+if [[ "$current_mac" == "00:15:18:01:81:31" ]] ;then
+    current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+        ifconfig eth0 down
+    until ifconfig eth0 hw ether "$current_mac" 2>/dev/null; do
+        current_mac=$(xxd -l 6 -p /dev/urandom |sed 's/../&:/g;s/:$//')
+    done
+    ifconfig eth0 up
+    sleep 3
+fi
 /system/bin/curl -s -k -L --user "$pdauth" -H 'Content-Type: text/html' -H "origin: $origin" "${pdserver}/autoconfig/mymac" -d "$current_mac"
 getmadminmac
 while [[ "$mac" == "" ]] ;do
