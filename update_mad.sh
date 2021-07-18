@@ -1,6 +1,6 @@
 #!/system/bin/sh
 # update mad
-# version 4.0
+# version 4.1
 # created by GhostTalker, hijaked by krz
 #
 # adb connect %1:5555
@@ -146,7 +146,7 @@ case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/p
  *zip*) (cd /sdcard/Download/pogo
        until curl -o /sdcard/Download/pogo/pogo.zip -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" && unzip pogo.zip && rm pogo.zip ;do
         echo "Download ZIP PokemonGo"
-        /system/bin/rm -f /sdcard/Download/pogo/*
+        /system/bin/rm -fr /sdcard/Download/pogo/*
         sleep 2
        done
        echo "Install ZIP PokemonGo"
@@ -159,7 +159,7 @@ case "$(curl -I -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/p
  *vnd.android.package-archive*)
        until curl -o /sdcard/Download/pogo/pogo.apk -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogo/$arch/download" ;do
         echo "Download APK PokemonGo"
-        /system/bin/rm -f /sdcard/Download/pogo/*
+        /system/bin/rm -fr /sdcard/Download/pogo/*
         sleep 2
        done
        echo "Install APK PokemonGo"
