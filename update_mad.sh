@@ -97,7 +97,7 @@ if checkupdate "$newver" "$installedver" ;then
  rm -f /sdcard/Download/RemoteGpsController.apk
  until curl -o /sdcard/Download/RemoteGpsController.apk  -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/rgc/download" ;do
   rm -f /sdcard/Download/RemoteGpsController.apk
-  sleep
+  sleep 2
  done
  if [[ "$installedver" ]] ;then
   /system/bin/pm install -r /sdcard/Download/RemoteGpsController.apk
@@ -123,7 +123,7 @@ if checkupdate "$newver" "$installedver" ;then
  rm -f /sdcard/Download/PogoDroid.apk
  until curl -o /sdcard/Download/PogoDroid.apk -s -k -L $(get_pd_user) -H "origin: $origin" "$pserver/mad_apk/pogodroid/download" ;do
   rm -f /sdcard/Download/PogoDroid.apk
-  sleep
+  sleep 2
  done
  /system/bin/pm install -r /sdcard/Download/PogoDroid.apk
 fi
