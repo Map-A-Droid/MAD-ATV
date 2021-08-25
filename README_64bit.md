@@ -127,9 +127,9 @@ To view the log remotely on the device:
  - `su`
  - `cat /data/local/madromlogs/42mad.log`
 
-Or to bring the file locally (and save it to `/tmp/42mad.log`):
+Or to bring the file locally (and save it in current folder as `mydevice.log`):
  - `adb connect <ip>`
- - `adb pull /data/local/madromlogs/42mad.log /tmp/42mad.log`
+ - `adb pull /data/local/madromlogs/42mad.log mydevice.log`
 
 For problems reading the USB drive you can try using the other USB port,
 make sure the drive is FAT formatted, and that the mad_autoconf.txt file has no Windows line endings.
