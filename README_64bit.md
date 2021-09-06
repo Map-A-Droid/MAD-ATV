@@ -38,7 +38,7 @@ How to use Auto-Config with the 64-bit ROMs
  - Open burning tool (may need to "Run as Administrator")
  - Import correct 64-bit image for device<sup>1</sup>
  - Click Start
- - Press the reset button for the ATV
+ - Press and hold the reset button for the ATV until device is detected - yes, hold while connecting USB cable in next step [this step is mostly not needed, but some devices require it - you can try without hand gymnastics first]
    - Use something like a wooden toothpick
    - On the A95X F1 and the X96 Mini the reset button is inside the AV port
  - Connect device<sup>2</sup> to computer with a USB-A to USB-A cable
