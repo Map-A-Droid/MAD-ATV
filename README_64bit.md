@@ -119,7 +119,7 @@ or it read the autoconfig file from the USB drive but it has a problem accessing
 
 To find out what errors or problems your device is encountering, or just to see the status of 42mad
 configuring your device, you can adb into your device and check the `/data/local/madromlogs/42mad.log` log
-file.
+file. If there is no such file or directory scroll to bottom of this section<sup>3</sup>
 
 To view the log remotely on the device:
  - `adb connect <ip>`
@@ -155,3 +155,4 @@ drwxrwx---  4 media_rw media_rw 16384 1970-01-01 00:00 2A58-B057
 ```
 
 When you see that, this is the port you should plug the USB drive into after flashing and before powering the device up for the first time.
+<sup>3</sup>/system/bin/sh: cat: /data/local/madromlogs/42mad.log: No such file or directory
