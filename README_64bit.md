@@ -36,21 +36,19 @@ How to use Auto-Config with the 64-bit ROMs
  - Get burning tool from [here](https://github.com/Map-A-Droid/MAD-ATV/wiki#flashing-instructions)
  - Install burning tool
  - Open burning tool (may need to "Run as Administrator")
- - Import correct 64-bit image for device<sup>1</sup>
+ - Import correct 64-bit image for device from [downloaded from here](https://github.com/Map-A-Droid/MAD-ATV/releases/tag/mad64_beta5)
  - Click Start
  - Press and hold the reset button for the ATV until device is detected - yes, hold while connecting USB cable in next step [this step is mostly not needed, but some devices require it - you can try without hand gymnastics first]
    - Use something like a wooden toothpick
    - On the A95X F1 and the X96 Mini the reset button is inside the AV port
- - Connect device<sup>2</sup> to computer with a USB-A to USB-A cable
+ - Connect device<sup>1</sup> to computer with a USB-A to USB-A cable
  - Connect power cable to ATV
  - When burning is 100% done, disconnect the USB and power cables from the device
    - (Connect the next device if you are flashing more than one)
  - Click Stop
  - Close burning tool
 
-<sup>1</sup> Find the current beta 64-bit ROMs [here](https://github.com/Map-A-Droid/MAD-ATV/releases/tag/mad64_beta5).
-
-<sup>2</sup> Recommended USB ports for flashing (use other if first doesn't work):
+<sup>1</sup> Recommended USB ports for flashing (use other if first doesn't work):
  - On TX9S, flash with the USB port closest to the network port
  - On X96 Mini use USB port farther away from SD-card slot
  - On A95X F1 use USB port closest to power connection
@@ -119,7 +117,7 @@ or it read the autoconfig file from the USB drive but it has a problem accessing
 
 To find out what errors or problems your device is encountering, or just to see the status of 42mad
 configuring your device, you can adb into your device and check the `/data/local/madromlogs/42mad.log` log
-file. If there is no such file or directory scroll to bottom of this section<sup>3</sup>
+file.
 
 To view the log remotely on the device:
  - `adb connect <ip>`
@@ -155,4 +153,19 @@ drwxrwx---  4 media_rw media_rw 16384 1970-01-01 00:00 2A58-B057
 ```
 
 When you see that, this is the port you should plug the USB drive into after flashing and before powering the device up for the first time.
-<sup>3</sup>/system/bin/sh: cat: /data/local/madromlogs/42mad.log: No such file or directory
+
+### Can't find 42mad.log, there is no such file/directory!
+If your output looks like that:
+```
+atvX_s905w:/ # cat /data/local/madromlogs/42mad.log
+/system/bin/sh: cat: /data/local/madromlogs/42mad.log: No such file or directory
+1|atvX_s905w:/ # cd /data/local/madromlogs
+/system/bin/sh: cd: /data/local/madromlogs: No such file or directory
+```
+or your prompt ***DOES NOT*** look like that (kvim is the keyword)
+```
+kvim2:/ $
+kvim:/ $
+```
+then you flashed 32-bit image rather than 64-bit image. Scroll back to [Flash 64-bit ROM on device](#flash-64-bit-rom-on-device) and download correct image linked there.
+If you are sure you have 64-bit image and you still don't have that file the only other way for lack of it is github is blocked/down for you and ROM at first boot did not download appropriate scripts - make sure that you (or your country) does not block github.com and it's reachable from device network.
