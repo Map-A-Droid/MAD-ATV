@@ -36,7 +36,7 @@ How to use Auto-Config with the 64-bit ROMs
  - Get burning tool from [here](https://github.com/Map-A-Droid/MAD-ATV/wiki#flashing-instructions)
  - Install burning tool
  - Open burning tool (may need to "Run as Administrator")
- - Import correct 64-bit image for device from [downloaded from here](https://github.com/Map-A-Droid/MAD-ATV/releases/tag/mad64_beta5)
+ - Import correct 64-bit image for device [downloaded from here](https://github.com/Map-A-Droid/MAD-ATV/releases/tag/mad64_beta5)
  - Click Start
  - Press and hold the reset button for the ATV until device is detected - yes, hold while connecting USB cable in next step [this step is mostly not needed, but some devices require it - you can try without hand gymnastics first]
    - Use something like a wooden toothpick
