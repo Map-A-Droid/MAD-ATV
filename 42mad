@@ -6,7 +6,7 @@ pver="2.0"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
-madver="0.6"
+madver="0.7"
 #magisk version / url
 magisk_ver="20.3"
 msum="959e46971c2eb500b91a053b2f1c1a8c"
@@ -409,7 +409,9 @@ if [[ -f "$pdconf" ]] ;then
     pduser="$(grep -v raw "$pdconf"|awk -F'>' '/auth_username/{print $2}'|awk -F'<' '{print $1}')"
     pdpass="$(grep -v raw "$pdconf"|awk -F'>' '/auth_password/{print $2}'|awk -F'<' '{print $1}')"
     pdauth="$pduser:$pdpass"
-    pm disable-user com.android.vending
+    ### PlayStore is needed for Play Integrity so let's change this to enabled rather than deleting whole line
+    ### and making people run two jobs - ROM update & enabling PlayStore
+    pm enable com.android.vending
     [[ -f /sdcard/reg_session ]] && check_session
 elif [[ -f /data/local/pdconf ]] ;then
     origin="$(awk -F'>' '/post_origin/{print $2}' /data/local/pdconf|awk -F'<' '{print $1}')"
@@ -417,7 +419,6 @@ elif [[ -f /data/local/pdconf ]] ;then
     pduser="$(grep -v raw /data/local/pdconf|awk -F'>' '/auth_username/{print $2}'|awk -F'<' '{print $1}')"
     pdpass="$(grep -v raw /data/local/pdconf|awk -F'>' '/auth_password/{print $2}'|awk -F'<' '{print $1}')"
     pdauth="$pduser:$pdpass"
-    pm disable-user com.android.vending
     check_session
 else
     usbfile="$(find /mnt/media_rw/ -name mad_autoconf.txt|head -n1)"
