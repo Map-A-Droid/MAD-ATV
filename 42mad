@@ -2,7 +2,7 @@
 #This is for update_mad version
 uver="4.1"
 #This is for pingreboot version
-pver="2.0"
+pver="2.1"
 #This is for nfs install script
 nver="1.2"
 # mad rom version
@@ -20,6 +20,10 @@ ip="$(ifconfig 'eth0'|awk '/inet addr/{print $2}'|cut -d ':' -f 2)"
 requires_autoconf=1
 reboot_required=0
 cachereboot=0
+
+lolcat(){
+log -t 42mad "$1"
+}
 
 download(){
 # $1 = url
@@ -265,7 +269,7 @@ fi
 wait_for_network(){
 echo "Waiting for network"
 until ping -c1 8.8.8.8 >/dev/null 2>/dev/null; do
-    "No network detected.  Sleeping 10s"
+    echo "No network detected.  Sleeping 10s"
     sleep 10
 done
 echo "Network connection detected"
@@ -401,8 +405,10 @@ fi
 }
 
 ################ start of execution
+lolcat "starting up, sleep 20"
 sleep 20 # in case mounting /sdcard and usb takes awhile
 wait_for_network
+lolcat "network established, start 42mad execution"
 if [[ -f "$pdconf" ]] ;then
     origin="$(awk -F'>' '/post_origin/{print $2}' "$pdconf"|awk -F'<' '{print $1}')"
     pdserver="$(grep -v raw "$pdconf"|awk -F'>' '/post_destination/{print $2}'|awk -F'<' '{print $1}')"
@@ -519,5 +525,7 @@ if [[ -f /sdcard/reg_session ]] && [[ -f "$pdconf" ]] && [[ -f "$rgcconf" ]] ;th
     reboot
 fi
 execute_autoupdates
+lolcat "start PingReboot"
+/system/bin/sh /system/bin/pingreboot.sh &
 mount -o remount,ro /system
 # initdebug
